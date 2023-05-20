@@ -7,9 +7,8 @@ import './App.css'
 
 import {
   BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
+  Routes,
+  Route
 } from "react-router-dom"
 
 import { CREATE_USER } from './constants/routes.tsx'
@@ -21,24 +20,11 @@ function App() {
 
   return (
     <>
-      {/* This is the alias of BrowserRouter i.e. Router */}
       <Router>
-      <Switch>
-          {/* This route is for home component 
-          with exact path "/", in component props 
-          we passes the imported component*/}
-          <Route exact path="/" component={Home} />
-            
-          {/* This route is for contactus component
-          with exact path "/contactus", in 
-          component props we passes the imported component*/}
+      <Routes>
+          <Route exact path="/" element={<Home />}/>
           <Route path={CREATE_USER} element={<CreateUser />} />
-            
-          {/* If any route mismatches the upper 
-          route endpoints then, redirect triggers 
-          and redirects app to home component with to="/" */}
-          <Redirect to="/" />
-        </Switch>
+        </Routes>
         
       </Router>
     </>
