@@ -38,7 +38,7 @@ export default function AsideNavigation({ collapse, collapseLayout }: Props) {
 
   return (
     <>
-      <MenuList className={`${"height-7/10 pt-0 overflow-hidden text-gray-200"}`}>
+      <MenuList className={`${"height-7/10 pt-0 overflow-hidden text-gray-200"} ${collapse ? "mr-1 min-w-fit" : ""}`}>
         {!collapse &&
           menuData.map((menuItem, i) => {
             return menuItem.type == "link" ? (
