@@ -41,9 +41,8 @@ export default function AsideNavigation({ collapse, collapseLayout }: Props) {
       <MenuList className={`${"height-7/10 pt-0 overflow-hidden text-gray-200"}`}>
         {!collapse &&
           menuData.map((menuItem, i) => {
-            console.log(`/${location.pathname.split("/", 2)[1]}` === menuItem.href, menuItem.href, `/${location.pathname.split("/", 2)[1]}`);
             return menuItem.type == "link" ? (
-              <a key={`menu-item-${i}`} href={menuItem.href ?? ""}>
+              <a id={menuItem.id} key={`menu-item-${i}`} href={menuItem.href ?? ""}>
                 <MenuItem>
                   <ListItemIcon>
                     <menuItem.leftIcon className={`${`/${location.pathname.split("/", 2)[1]}` === menuItem.href ? "text-blue-600" : "text-slate-500"} text-left`} />
@@ -52,7 +51,7 @@ export default function AsideNavigation({ collapse, collapseLayout }: Props) {
                 </MenuItem>
               </a>
             ) : (
-              <Accordion key={`menu-item-${i}`} disableGutters={true} className={"bg-transparent shadow-none"} expanded={expanded === menuItem.id || menuItem.subMenu?.find((subMenuItem) => subMenuItem.href === location.pathname) !== undefined} onChange={handleChange(menuItem.id)}>
+              <Accordion id={menuItem.id} key={`menu-item-${i}`} disableGutters={true} className={"bg-transparent shadow-none"} expanded={expanded === menuItem.id || menuItem.subMenu?.find((subMenuItem) => subMenuItem.href === location.pathname) !== undefined} onChange={handleChange(menuItem.id)}>
                 <AccordionSummary>
                   <MenuItem>
                     <ListItemIcon>
@@ -64,7 +63,7 @@ export default function AsideNavigation({ collapse, collapseLayout }: Props) {
                 <AccordionDetails>
                   <MenuList>
                     {menuItem.subMenu?.map((subItem, j) => (
-                      <a key={`submenu-item-${j}`} href={subItem.href ?? ""}>
+                      <a id={subItem.id} key={`submenu-item-${j}`} href={subItem.href ?? ""}>
                         <MenuItem>
                           <ListItemText className={`${`/${location.pathname.split("/", 2)[1]}` === menuItem.href ? "text-blue-600" : "text-slate-500"} text-left`}>
                             {location.pathname === subItem.href && <CircleIcon />} {subItem.text}
