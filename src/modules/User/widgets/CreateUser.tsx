@@ -51,40 +51,42 @@ const CreateUser = () => {
         <main>
           <DashboardLayoutBasic>
             <>
-            <title>Create a User</title>
+            <title>Crea una cuenta</title>
 
             <div style={{marginTop : '10%'}}>
-            <h1>Signing Up</h1>
+            <h1>Crear una cuenta nueva</h1>
             <div style={{ margin: 25}}/>
             <form autoComplete="off" onSubmit={handleSubmit}>
                       <div style={{textAlign : 'center'}}>
                       <TextField 
-                          label="Username"
+                          label="Nombre de usuario"
                           required
                           onChange={e => handleChangingUsername(e)}
                           variant="outlined"
                           color="primary"
                           type="text"
-                          helperText = {usernameError ? 'The username can only start with a letter and can contain letters, numbers and underscore.' : ' '}
+                          helperText = {usernameError ? 'El nombre de usuario debe comenzar en letra y puede contener letras, números y guión bajo.' : ' '}
                           value = {username}
                           sx={{ width: 600}}
                           error={usernameError}
+                          id = "username"
                        />
                        <div style={{ margin: 10 }}/>
                        <TextField 
-                          label="Password"
+                          label="Contraseña"
                           required
                           onChange={e => handleChangingPassword(e)}
                           variant="outlined"
                           color="primary"
                           type="password"
-                          helperText = {passwordError ? 'The password needs a length between 8 and 16 characters.' : ' '}
+                          helperText = {passwordError ? 'La contraseña tiene un tamaño de 8 a 16 caracteres. Puede contener letras, números y caracteres especiales.' : ' '}
                           value = {password}
                           sx={{ width: 600}}
                           error={passwordError}
+                          id = "password"
                        />
                        <div style={{ margin: 10 }}/>
-                       <Button variant="contained" color="primary" type="submit">Sign Up</Button>
+                       <Button variant="contained" color="primary" type="submit">Registrarse</Button>
                        </div>
                    
               </form>
