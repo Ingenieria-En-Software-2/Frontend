@@ -1,24 +1,32 @@
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import { DashboardWrapper } from "modules/Layout/context/dashboardLayout";
-import DashboardLayoutBasic from "modules/Layout/containers/DashboardLayoutBasic";
-import "./App.css";
+import { useState } from 'react'
+//import { Link } from "react-router-dom"
+
+import reactLogo from './assets/react.svg'
+import viteLogo from '/vite.svg'
+import './App.css'
+
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route
+} from "react-router-dom"
+
+import Home from "modules/Home/widgets/Home.tsx"
+import CreateUser from "modules/User/widgets/CreateUser.tsx"
+import SERVER_URLS from 'utils/serversUrls.ts'
+
+const {URL_CREATE_USER, URL_HOME} = SERVER_URLS
 
 function App() {
   return (
-    <Router>
-      <>
-        <div className="main-container">
-          <DashboardWrapper>
-            <main>
-              <DashboardLayoutBasic>
-                <></>
-              </DashboardLayoutBasic>
-            </main>
-          </DashboardWrapper>
-        </div>
-      </>
-    </Router>
-  );
+    <>
+      <Routes>
+          <Route path={URL_HOME} element={<Home />}/>
+          <Route path={URL_CREATE_USER} element={<CreateUser />} />
+        </Routes>
+        
+    </>
+  )
 }
 
 export default App;

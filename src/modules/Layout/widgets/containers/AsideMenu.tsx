@@ -1,6 +1,9 @@
 import React, { useEffect } from "react";
+import viteLogo from '/vite.svg'
+import reactLogo from 'assets/react.svg'
 
-import { useDashboardLayoutContext } from "../context/dashboardLayout";
+
+import { useDashboardLayoutContext } from "../../context/dashboardLayout";
 import AsideNavigation from "../AsideNavigation/AsideNavigation";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { MenuIcon, ArrowLeftLineIcon } from "components/ux/Icons";
@@ -22,13 +25,13 @@ export default function AsideMenu({}: Props) {
   }, [lg]);
   return (
     <aside className={`${"fixed left-0 bottom-0 top-0 bg-white shadow-md"} ${state.asideMenu.collapse ? "w-0" : "w-72"}`}>
-      <div className={"h-1/6 flex flex-col justify-start items-end"}>
+      <div className={"h-1/6 flex flex-col justify-center items-end"}>
         <button className={`${"p-1 text-grey-700 absolute top-2"} ${state.asideMenu.collapse ? "left-2 right-auto" : "right-0.5"}`} onClick={() => dispatch({ type: "TOGGLE_COLLAPSE" })}>
           {state.asideMenu.collapse ? <MenuIcon /> : <ArrowLeftLineIcon />}
         </button>
         <div className={`${"w-full overflow-hidden mt-1 self-start"} ${state.asideMenu.collapse ? "w-0" : ""}`}>
-          <img src="" />
-        </div>
+{          <img src={reactLogo} />
+}        </div>
       </div>
       <AsideNavigation collapseLayout={collapseLayout} collapse={state.asideMenu.collapse as boolean} />
     </aside>

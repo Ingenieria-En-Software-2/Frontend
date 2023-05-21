@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useDashboardLayoutContext } from "../context/dashboardLayout";
+import { useDashboardLayoutContext } from "../../context/dashboardLayout";
 
 type Props = {
   children: React.ReactNode;
