@@ -11,22 +11,22 @@ import {
   Route
 } from "react-router-dom"
 
-import { CREATE_USER } from './constants/routes.tsx'
-import Home from "./components/Home"
-import CreateUser from "./components/CreateUser"
+import Home from "modules/Home/widgets/Home.tsx"
+import CreateUser from "modules/User/widgets/CreateUser.tsx"
+import SERVER_URLS from 'utils/serversUrls.ts'
+
+const {URL_CREATE_USER, URL_HOME} = SERVER_URLS
 
 function App() {
   return (
     <>
-      <Router>
       <Routes>
-          <Route exact path="/" element={<Home />}/>
-          <Route path={CREATE_USER} element={<CreateUser />} />
+          <Route path={URL_HOME} element={<Home />}/>
+          <Route path={URL_CREATE_USER} element={<CreateUser />} />
         </Routes>
         
-      </Router>
     </>
   )
 }
 
-export default App
+export default App;
