@@ -1,32 +1,27 @@
-import { useState } from 'react'
+import { useState } from "react";
 //import { Link } from "react-router-dom"
 
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./App.css";
 
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route
-} from "react-router-dom"
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import { CREATE_USER } from './constants/routes.tsx'
-import Home from "./components/Home"
-import CreateUser from "./components/CreateUser"
+import { CREATE_USER, USER_PROFILES } from "./constants/routes.tsx";
+import Home from "./components/Home";
+import CreateUser from "./components/CreateUser";
+import GenericTable from "./components/GenericTable";
 
 function App() {
   return (
     <>
       <Router>
-      <Routes>
-          <Route exact path="/" element={<Home />}/>
+        <Routes>
+          <Route exact path="/" element={<Home />} />
           <Route path={CREATE_USER} element={<CreateUser />} />
+          <Route path={USER_PROFILES} element={<GenericTable />} />
         </Routes>
-        
       </Router>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
