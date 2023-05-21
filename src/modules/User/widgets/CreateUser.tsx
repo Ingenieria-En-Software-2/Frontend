@@ -54,7 +54,7 @@ const CreateUser = () => {
             <title>Crea una cuenta</title>
 
             <div style={{marginTop : '10%'}}>
-            <h1>Crear una nueva cuenta</h1>
+            <h1>Crear una cuenta nueva</h1>
             <div style={{ margin: 25}}/>
             <form autoComplete="off" onSubmit={handleSubmit}>
                       <div style={{textAlign : 'center'}}>
