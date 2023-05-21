@@ -69,6 +69,7 @@ const CreateUser = () => {
                           value = {username}
                           sx={{ width: 600}}
                           error={usernameError}
+                          id = "username"
                        />
                        <div style={{ margin: 10 }}/>
                        <TextField 
@@ -82,6 +83,7 @@ const CreateUser = () => {
                           value = {password}
                           sx={{ width: 600}}
                           error={passwordError}
+                          id = "password"
                        />
                        <div style={{ margin: 10 }}/>
                        <Button variant="contained" color="primary" type="submit">Registrarse</Button>
