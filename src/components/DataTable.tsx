@@ -101,13 +101,12 @@ export default function DataTable({ title, columns, rows }: Props): Box {
       <Grid container direction="row" justifyContent="flex-end" alignItems="center" sx={{ my: 2 }}>
         <Box>
           <TextField
-            label="Search"
             variant="outlined"
             color="grey"
             size="small"
-            border="1px solid #e0e7ff"
+            placeholder="Buscar..."
+            border="solid #e0e7ff"
             sx={{ width: "auto", height: "auto", backgroundColor: "#e0e7ff" }}
-            placeholder="Search"
             type="search"
             onInput={(e) => requestSearch(e.target.value)}
             InputProps={{
