@@ -1,4 +1,18 @@
-import { faAngleDown, faAngleUp, faArrowDown, faArrowLeft, faArrowRight, faBars, faCircle, faHome, faTimes } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAngleDown,
+  faAngleUp,
+  faArrowDown,
+  faArrowLeft,
+  faArrowRight,
+  faBars,
+  faCircle,
+  faHome,
+  faTimes,
+  faPlus,
+  faMagnifyingGlass,
+  faPenToSquare,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type IconProps = {
@@ -40,4 +54,20 @@ export function CircleIcon({ className }: ComponentProps) {
 }
 export function MenuIcon({ className }: ComponentProps) {
   return <FontAwesomeIcon className={className} icon={faBars} />;
+}
+
+export function SearchIcon({ className }: ComponentProps) {
+  return <FontAwesomeIcon className={className} icon={faMagnifyingGlass} />;
+}
+
+export function AddIcon({ className }: ComponentProps) {
+  return <FontAwesomeIcon className={className} icon={faPlus} />;
+}
+
+export function EditIcon({ className }: ComponentProps) {
+  return <FontAwesomeIcon className={className} icon={faPenToSquare} />;
+}
+
+export function DeleteIcon({ className }: ComponentProps) {
+  return <FontAwesomeIcon className={className} icon={faXmark} />;
 }

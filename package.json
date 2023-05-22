@@ -1,5 +1,5 @@
 {
-  "name": "my-first-app",
+  "name": "Caribbean Wallet",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -19,6 +19,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.1",
     "path": "^0.12.7",
     "react": "^18.2.0",
