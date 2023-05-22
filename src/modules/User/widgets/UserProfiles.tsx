@@ -2,8 +2,7 @@ import DashboardLayoutBasic from "modules/Layout/widgets/containers/DashboardLay
 import { DashboardWrapper } from "modules/Layout/context/dashboardLayout";
 import DataTable from "components/DataTable";
 import { Column } from "components/DataTable";
-import EditIcon from '@mui/icons-material/Edit';
-import ClearIcon from '@mui/icons-material/Clear';
+import { EditIcon, DeleteIcon } from "components/ux/Icons";
 
 const UserProfiles = () => {
   const columns: Array<Column> = [
@@ -21,7 +20,7 @@ const UserProfiles = () => {
       {
         id: "1",
         label: "Editar",
-        icon: <EditIcon sx={{ color: "action.active", my: 0.1 }}/>,
+        icon: <EditIcon className="text-gray-700 hover:text-gray-500"/>,
         onClick: () => {
           console.log("Editar");
         },
@@ -29,7 +28,7 @@ const UserProfiles = () => {
       {
         id: "2",
         label: "Eliminar",
-        icon:  <ClearIcon sx={{ color: "action.active", my: 0.1 }}/>,
+        icon:  <DeleteIcon className="text-gray-700 hover:text-gray-500"/>,
         onClick: () => {
           console.log("Eliminar");
         },

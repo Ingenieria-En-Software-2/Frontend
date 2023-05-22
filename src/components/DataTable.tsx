@@ -1,4 +1,6 @@
 import * as React from "react";
+import Title from "./Title";
+
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -9,10 +11,9 @@ import Paper from "@mui/material/Paper";
 import TablePagination from "@mui/material/TablePagination";
 import { Grid, Box } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import SearchIcon from "@mui/icons-material/Search";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import Button from "@mui/material/Button";
-import Title from "./Title";
+
+import { SearchIcon, AddIcon } from "components/ux/Icons";
 
 export interface Column {
   id: string;
@@ -59,6 +60,17 @@ export default function DataTable({ title, columns, rows }: Props): Box {
     color: "#fff",
   };
 
+  const buttonStyle = {
+    ml: 1,
+    borderRadius: "4px",
+    border: "1px solid #9ca3af",
+    height: "40px",
+    maxWidth: "40px",
+    minWidth: "40px",
+    backgroundColor: "#e0e7ff",
+    "&:hover": { border: "1px solid #a5b4fc", backgroundColor: "#a5b4fc" },
+  };
+
   const begin = page * rowsPerPage;
   const end = begin + rowsPerPage;
 
@@ -82,7 +94,7 @@ export default function DataTable({ title, columns, rows }: Props): Box {
 
   return (
     <Box>
-      <Title title={title} />      
+      <Title title={title} />
 
       {/* Search Bar */}
       <Grid container direction="row" justifyContent="flex-end" alignItems="center" sx={{ my: 2 }}>
@@ -92,12 +104,13 @@ export default function DataTable({ title, columns, rows }: Props): Box {
             variant="outlined"
             color="grey"
             size="small"
-            sx={{ width: "auto", height: "auto" }}
+            border="1px solid #e0e7ff"
+            sx={{ width: "auto", height: "auto", backgroundColor: "#e0e7ff" }}
             placeholder="Search"
             type="search"
             onInput={(e) => requestSearch(e.target.value)}
             InputProps={{
-              endAdornment: <SearchIcon sx={{ color: "action.active", my: 0.5 }} />,
+              endAdornment: <SearchIcon />,
             }}
           />
         </Box>
@@ -105,17 +118,12 @@ export default function DataTable({ title, columns, rows }: Props): Box {
         {/* Add Button */}
         <Button
           variant="text"
-          sx={{
-            ml: 1,
-            borderRadius: "5px",
-            border: "1px solid #ccc",
-            "&:hover": { border: "1px solid #000" },
-          }}
+          sx={buttonStyle}
           onClick={() => {
             console.log("Add Button Clicked");
           }}
         >
-          <AddCircleOutlineIcon sx={{ color: "action.active", my: 0.1 }} />
+          <AddIcon className="text-gray-700 hover:text-gray-500" />
         </Button>
       </Grid>
       <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
@@ -152,19 +160,14 @@ export default function DataTable({ title, columns, rows }: Props): Box {
                   const value = row[column.id];
                   return (
                     <TableCell key={column.id} align={column.align}>
-                      {/* If is a dictionary, then is actions */}
+                      {/* Actions */}
                       {typeof value === "object" ? (
                         <Grid container direction="row" justifyContent="flex-start" alignItems="center">
                           {value.map((action) => (
                             <Button
                               key={action.id}
                               variant="text"
-                              sx={{
-                                ml: 1,
-                                borderRadius: "5px",
-                                border: "1px solid #ccc",
-                                "&:hover": { border: "1px solid #000" },
-                              }}
+                              sx={buttonStyle}
                               onClick={() => {
                                 console.log("Action Button Clicked");
                               }}
