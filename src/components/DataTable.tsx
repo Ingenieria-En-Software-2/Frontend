@@ -155,7 +155,7 @@ export default function DataTable({ title, columns, rows }: Props): Box {
                     <TableCell key={column.id} align={column.align}>
                       {/* Actions */}
                       {typeof value === "object" ? (
-                        <Grid container direction="row" justifyContent="flex-start" alignItems="center">
+                        <Grid container justifyContent="center">
                           {value.map((action) => ( action.button ))}
                         </Grid>
                       ) : (
