@@ -2,9 +2,10 @@ import DashboardLayoutBasic from "modules/Layout/widgets/containers/DashboardLay
 import { DashboardWrapper } from "modules/Layout/context/dashboardLayout";
 import DataTable from "components/DataTable";
 import { Column } from "components/DataTable";
+import EditIcon from '@mui/icons-material/Edit';
+import ClearIcon from '@mui/icons-material/Clear';
 
 const UserProfiles = () => {
-
   const columns: Array<Column> = [
     { id: "username", label: "Usuario", align: "center" },
     { id: "names", label: "Nombres" },
@@ -15,7 +16,26 @@ const UserProfiles = () => {
   ];
 
   function createData(username: string, names: string, surnames: string, role: string, usertype: string) {
-    const actions = "(Dropdown)";
+    // Lista de acciones donde guarda el icono y la función a ejecutar
+    const actions = [
+      {
+        id: "1",
+        label: "Editar",
+        icon: <EditIcon sx={{ color: "action.active", my: 0.1 }}/>,
+        onClick: () => {
+          console.log("Editar");
+        },
+      },
+      {
+        id: "2",
+        label: "Eliminar",
+        icon:  <ClearIcon sx={{ color: "action.active", my: 0.1 }}/>,
+        onClick: () => {
+          console.log("Eliminar");
+        },
+      },
+    ];
+
     return { username, names, surnames, role, usertype, actions };
   }
 
@@ -31,7 +51,7 @@ const UserProfiles = () => {
     <DashboardWrapper>
       <DashboardLayoutBasic>
         {/* <h1>Perfiles de Usuario</h1> */}
-        <DataTable title="Detalles de Usuario" columns={columns} rows={rows} />
+        <DataTable title="Detalles de Usuario" columns={columns} rows={rows}/>
       </DashboardLayoutBasic>
     </DashboardWrapper>
   );

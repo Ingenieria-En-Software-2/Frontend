@@ -10,6 +10,9 @@ import TablePagination from "@mui/material/TablePagination";
 import { Grid, Box } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import SearchIcon from "@mui/icons-material/Search";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import Button from "@mui/material/Button";
+import Title from "./Title";
 
 export interface Column {
   id: string;
@@ -23,6 +26,7 @@ interface Props {
   title: string;
   columns: ReadonlyArray<Column>;
   rows: ReadonlyArray<any>;
+  actions: ReadonlyArray<any>;
 }
 
 /**
@@ -34,9 +38,9 @@ interface Props {
  * @param {readonly Column[]} columns The columns of the table.
  * @param {Data[]} rows The rows of the table.
  *
- * @returns {JSX.Element} The GenericTable component
+ * @returns {Box} The GenericTable component
  */
-export default function DataTable({ title, columns, rows }: Props): JSX.Element {
+export default function DataTable({ title, columns, rows }: Props): Box {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(15);
   const [visibleRows, setVisibleRows] = React.useState(rows);
@@ -78,13 +82,15 @@ export default function DataTable({ title, columns, rows }: Props): JSX.Element 
 
   return (
     <Box>
+      <Title title={title} />      
+
       {/* Search Bar */}
-      <Grid container direction="row" justifyContent="flex-end" alignItems="center" sx={{ mb: 2 }}>
+      <Grid container direction="row" justifyContent="flex-end" alignItems="center" sx={{ my: 2 }}>
         <Box>
           <TextField
             label="Search"
             variant="outlined"
-            color="primary"
+            color="grey"
             size="small"
             sx={{ width: "auto", height: "auto" }}
             placeholder="Search"
@@ -95,16 +101,32 @@ export default function DataTable({ title, columns, rows }: Props): JSX.Element 
             }}
           />
         </Box>
+
+        {/* Add Button */}
+        <Button
+          variant="text"
+          sx={{
+            ml: 1,
+            borderRadius: "5px",
+            border: "1px solid #ccc",
+            "&:hover": { border: "1px solid #000" },
+          }}
+          onClick={() => {
+            console.log("Add Button Clicked");
+          }}
+        >
+          <AddCircleOutlineIcon sx={{ color: "action.active", my: 0.1 }} />
+        </Button>
       </Grid>
       <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
         <Table stickyHeader sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             {/* Title */}
-            <TableRow>
+            {/* <TableRow>
               <TableCell colSpan={columns.length} align="center" sx={headerStyle}>
                 {title}
               </TableCell>
-            </TableRow>
+            </TableRow> */}
 
             {/* Column names */}
             <TableRow>
@@ -115,13 +137,12 @@ export default function DataTable({ title, columns, rows }: Props): JSX.Element 
               ))}
             </TableRow>
           </TableHead>
-
           <TableBody>
             {visibleRows.map((row) => (
               // Alternate row color
               <TableRow
                 hover
-                key={row.id}
+                key={row.id ? row.id : Object.values(row).join("")}
                 sx={{
                   "&:last-child td, &:last-child th": { border: 0 },
                   "&:nth-of-type(odd)": { backgroundColor: "#f0f0ff" },
@@ -131,7 +152,30 @@ export default function DataTable({ title, columns, rows }: Props): JSX.Element 
                   const value = row[column.id];
                   return (
                     <TableCell key={column.id} align={column.align}>
-                      {column.format ? column.format(value) : value}
+                      {/* If is a dictionary, then is actions */}
+                      {typeof value === "object" ? (
+                        <Grid container direction="row" justifyContent="flex-start" alignItems="center">
+                          {value.map((action) => (
+                            <Button
+                              key={action.id}
+                              variant="text"
+                              sx={{
+                                ml: 1,
+                                borderRadius: "5px",
+                                border: "1px solid #ccc",
+                                "&:hover": { border: "1px solid #000" },
+                              }}
+                              onClick={() => {
+                                console.log("Action Button Clicked");
+                              }}
+                            >
+                              {action.icon}
+                            </Button>
+                          ))}
+                        </Grid>
+                      ) : (
+                        value
+                      )}
                     </TableCell>
                   );
                 })}
