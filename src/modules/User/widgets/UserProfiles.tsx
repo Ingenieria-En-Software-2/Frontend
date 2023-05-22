@@ -2,7 +2,8 @@ import DashboardLayoutBasic from "modules/Layout/widgets/containers/DashboardLay
 import { DashboardWrapper } from "modules/Layout/context/dashboardLayout";
 import DataTable from "components/DataTable";
 import { Column } from "components/DataTable";
-import { EditIcon, DeleteIcon } from "components/ux/Icons";
+import  { DeleteButton, EditButton } from "components/Buttons";
+
 
 const UserProfiles = () => {
   const columns: Array<Column> = [
@@ -20,18 +21,12 @@ const UserProfiles = () => {
       {
         id: "1",
         label: "Editar",
-        icon: <EditIcon className="text-gray-700 hover:text-gray-500"/>,
-        onClick: () => {
-          console.log("Editar");
-        },
+        button: <EditButton />,
       },
       {
         id: "2",
         label: "Eliminar",
-        icon:  <DeleteIcon className="text-gray-700 hover:text-gray-500"/>,
-        onClick: () => {
-          console.log("Eliminar");
-        },
+        button: <DeleteButton />,
       },
     ];
 
@@ -50,7 +45,7 @@ const UserProfiles = () => {
     <DashboardWrapper>
       <DashboardLayoutBasic>
         {/* <h1>Perfiles de Usuario</h1> */}
-        <DataTable title="Detalles de Usuario" columns={columns} rows={rows}/>
+        <DataTable title="Detalles de Usuario" columns={columns} rows={rows} />
       </DashboardLayoutBasic>
     </DashboardWrapper>
   );

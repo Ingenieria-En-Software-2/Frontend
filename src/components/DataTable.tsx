@@ -13,7 +13,8 @@ import { Grid, Box } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
-import { SearchIcon, AddIcon } from "components/ux/Icons";
+import { SearchIcon } from "components/ux/Icons";
+import { AddButton } from "components/Buttons";
 
 export interface Column {
   id: string;
@@ -116,15 +117,7 @@ export default function DataTable({ title, columns, rows }: Props): Box {
         </Box>
 
         {/* Add Button */}
-        <Button
-          variant="text"
-          sx={buttonStyle}
-          onClick={() => {
-            console.log("Add Button Clicked");
-          }}
-        >
-          <AddIcon className="text-gray-700 hover:text-gray-500" />
-        </Button>
+        <AddButton />
       </Grid>
       <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
         <Table stickyHeader sx={{ minWidth: 650 }} aria-label="simple table">
@@ -163,18 +156,7 @@ export default function DataTable({ title, columns, rows }: Props): Box {
                       {/* Actions */}
                       {typeof value === "object" ? (
                         <Grid container direction="row" justifyContent="flex-start" alignItems="center">
-                          {value.map((action) => (
-                            <Button
-                              key={action.id}
-                              variant="text"
-                              sx={buttonStyle}
-                              onClick={() => {
-                                console.log("Action Button Clicked");
-                              }}
-                            >
-                              {action.icon}
-                            </Button>
-                          ))}
+                          {value.map((action) => ( action.button ))}
                         </Grid>
                       ) : (
                         value
