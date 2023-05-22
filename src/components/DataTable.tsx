@@ -1,5 +1,4 @@
 import * as React from "react";
-import Title from "./Title";
 
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -11,7 +10,6 @@ import Paper from "@mui/material/Paper";
 import TablePagination from "@mui/material/TablePagination";
 import { Grid, Box } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
 
 import { SearchIcon } from "components/ux/Icons";
 import { AddButton } from "components/Buttons";
@@ -28,7 +26,6 @@ interface Props {
   title: string;
   columns: ReadonlyArray<Column>;
   rows: ReadonlyArray<any>;
-  actions: ReadonlyArray<any>;
 }
 
 /**
@@ -40,9 +37,9 @@ interface Props {
  * @param {readonly Column[]} columns The columns of the table.
  * @param {Data[]} rows The rows of the table.
  *
- * @returns {Box} The GenericTable component
+ * @returns {JSX.Element} The DataTable component
  */
-export default function DataTable({ title, columns, rows }: Props): Box {
+export default function DataTable({ title, columns, rows }: Props): JSX.Element {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(15);
   const [visibleRows, setVisibleRows] = React.useState(rows);
@@ -59,17 +56,6 @@ export default function DataTable({ title, columns, rows }: Props): Box {
   const headerStyle = {
     backgroundColor: "#3f51b5",
     color: "#fff",
-  };
-
-  const buttonStyle = {
-    ml: 1,
-    borderRadius: "4px",
-    border: "1px solid #9ca3af",
-    height: "40px",
-    maxWidth: "40px",
-    minWidth: "40px",
-    backgroundColor: "#e0e7ff",
-    "&:hover": { border: "1px solid #a5b4fc", backgroundColor: "#a5b4fc" },
   };
 
   const begin = page * rowsPerPage;
@@ -95,17 +81,13 @@ export default function DataTable({ title, columns, rows }: Props): Box {
 
   return (
     <Box>
-      <Title title={title} />
-
       {/* Search Bar */}
       <Grid container direction="row" justifyContent="flex-end" alignItems="center" sx={{ my: 2 }}>
         <Box>
           <TextField
-            label="Search"
+            label="Filtrar"
             variant="outlined"
-            color="grey"
             size="small"
-            border="1px solid #e0e7ff"
             sx={{ width: "auto", height: "auto", backgroundColor: "#e0e7ff" }}
             placeholder="Search"
             type="search"
@@ -123,11 +105,11 @@ export default function DataTable({ title, columns, rows }: Props): Box {
         <Table stickyHeader sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             {/* Title */}
-            {/* <TableRow>
+            <TableRow>
               <TableCell colSpan={columns.length} align="center" sx={headerStyle}>
                 {title}
               </TableCell>
-            </TableRow> */}
+            </TableRow>
 
             {/* Column names */}
             <TableRow>
@@ -156,7 +138,7 @@ export default function DataTable({ title, columns, rows }: Props): Box {
                       {/* Actions */}
                       {typeof value === "object" ? (
                         <Grid container direction="row" justifyContent="flex-start" alignItems="center">
-                          {value.map((action) => ( action.button ))}
+                          {value.map((action) => action.button)}
                         </Grid>
                       ) : (
                         value
@@ -177,6 +159,8 @@ export default function DataTable({ title, columns, rows }: Props): Box {
         page={page}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+        labelRowsPerPage="Filas por página"
+        labelDisplayedRows={({ from, to, count }) => `${from}-${to} de ${count !== -1 ? count : `más de ${to}`}`}
       />
     </Box>
   );

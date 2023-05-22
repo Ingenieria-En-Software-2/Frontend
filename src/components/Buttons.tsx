@@ -6,7 +6,7 @@ import { AddIcon, EditIcon, DeleteIcon } from "components/ux/Icons";
 const buttonStyle = {
   ml: 1,
   borderRadius: "4px",
-  border: "1px solid #9ca3af",
+  border: "none",
   height: "40px",
   maxWidth: "40px",
   minWidth: "40px",
