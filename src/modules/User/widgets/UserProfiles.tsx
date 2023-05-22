@@ -2,8 +2,9 @@ import DashboardLayoutBasic from "modules/Layout/widgets/containers/DashboardLay
 import { DashboardWrapper } from "modules/Layout/context/dashboardLayout";
 import DataTable from "components/DataTable";
 import { Column } from "components/DataTable";
-import  { DeleteButton, EditButton } from "components/Buttons";
-
+import { DeleteButton, EditButton } from "components/Buttons";
+import Title from "components/Title";
+import Box from "@mui/material/Box";
 
 const UserProfiles = () => {
   const columns: Array<Column> = [
@@ -18,16 +19,8 @@ const UserProfiles = () => {
   function createData(username: string, names: string, surnames: string, role: string, usertype: string) {
     // Lista de acciones donde guarda el icono y la función a ejecutar
     const actions = [
-      {
-        id: "1",
-        label: "Editar",
-        button: <EditButton />,
-      },
-      {
-        id: "2",
-        label: "Eliminar",
-        button: <DeleteButton />,
-      },
+      { id: "1", label: "Editar", button: <EditButton />, align: "center" },
+      { id: "2", label: "Eliminar", button: <DeleteButton />, align: "center" },
     ];
 
     return { username, names, surnames, role, usertype, actions };
@@ -44,8 +37,10 @@ const UserProfiles = () => {
   return (
     <DashboardWrapper>
       <DashboardLayoutBasic>
-        {/* <h1>Perfiles de Usuario</h1> */}
-        <DataTable title="Detalles de Usuario" columns={columns} rows={rows} />
+        <Box sx={{ width: "100%" }}>
+          <Title title="Perfiles de Usuarios" />
+          <DataTable title="Detalles de Usuario" columns={columns} rows={rows} />
+        </Box>
       </DashboardLayoutBasic>
     </DashboardWrapper>
   );
