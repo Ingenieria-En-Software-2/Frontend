@@ -104,11 +104,15 @@ export default function DataTable({ title, columns, rows }: Props): JSX.Element 
         <Table stickyHeader sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             {/* Title */}
-            <TableRow>
-              <TableCell colSpan={columns.length} align="center" sx={headerStyle}>
-                {title}
-              </TableCell>
-            </TableRow>
+            {/* // SI title no es "" entonces mostrar el titulo */}
+
+            {title !== "" && (
+              <TableRow>
+                <TableCell colSpan={columns.length} align="center" sx={headerStyle}>
+                  {title}
+                </TableCell>
+              </TableRow>
+            )}            
 
             {/* Column names */}
             <TableRow>

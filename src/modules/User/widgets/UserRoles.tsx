@@ -3,6 +3,8 @@ import { DashboardWrapper } from "modules/Layout/context/dashboardLayout";
 import DataTable from "components/DataTable";
 import { Column } from "components/DataTable";
 import { DeleteButton, EditButton } from "components/Buttons";
+import Title from "components/Title";
+import Box from "@mui/material/Box";
 
 const UserRoles = () => {
   const columns: Array<Column> = [
@@ -41,7 +43,10 @@ const UserRoles = () => {
   return (
     <DashboardWrapper>
       <DashboardLayoutBasic>
-        <DataTable title="Roles de Usuarios" columns={columns} rows={rows} />
+        <Box sx={{ width: "100%" }}>
+          <Title title="Roles de Usuarios" />
+          <DataTable title="" columns={columns} rows={rows} />
+        </Box>
       </DashboardLayoutBasic>
     </DashboardWrapper>
   );
