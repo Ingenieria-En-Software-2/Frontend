@@ -39,7 +39,7 @@ interface Props {
  *
  * @returns {JSX.Element} The DataTable component
  */
-export default function DataTable({ title, columns, rows }: Props): JSX.Element {
+export default function DataTable({ title, columns, rows }: Props): Box {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(15);
   const [visibleRows, setVisibleRows] = React.useState(rows);
@@ -104,15 +104,13 @@ export default function DataTable({ title, columns, rows }: Props): JSX.Element 
         <Table stickyHeader sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             {/* Title */}
-            {/* // SI title no es "" entonces mostrar el titulo */}
-
             {title !== "" && (
               <TableRow>
                 <TableCell colSpan={columns.length} align="center" sx={headerStyle}>
                   {title}
                 </TableCell>
               </TableRow>
-            )}            
+            )}
 
             {/* Column names */}
             <TableRow>
@@ -141,7 +139,7 @@ export default function DataTable({ title, columns, rows }: Props): JSX.Element 
                       {/* Actions */}
                       {typeof value === "object" ? (
                         <Grid container justifyContent="center">
-                          {value.map((action) => ( action.button ))}
+                          {value.map((action) => action.button(action.form(row)))}
                         </Grid>
                       ) : (
                         value

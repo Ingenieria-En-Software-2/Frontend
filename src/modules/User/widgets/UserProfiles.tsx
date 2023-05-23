@@ -4,8 +4,71 @@ import DataTable from "components/DataTable";
 import { Column } from "components/DataTable";
 import { DeleteButton, EditButton } from "components/Buttons";
 import Title from "components/Title";
-import Box from "@mui/material/Box";
 
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import FormControl from "@mui/material/FormControl";
+
+// ------------------ Formularios ------------------
+const formLabels: Array<Column> = [
+  { id: "username", label: "Usuario" },
+  { id: "names", label: "Nombres" },
+  { id: "surnames", label: "Apellidos" },
+  { id: "role", label: "Rol" },
+  { id: "usertype", label: "Tipo de Usuario" },
+];
+
+function AddUser() {
+  const handleAdd = () => {
+    console.log("agregando...");
+  };
+
+  return (
+    <FormControl sx={{ my: 2 }}>
+      {formLabels.map((formLabel) => (
+        <TextField autoFocus required id={formLabel.id} label={formLabel.label} sx={{ my: 2 }}/>
+      ))}
+      <Button sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleAdd}>
+        Enviar
+      </Button>
+    </FormControl>
+  );
+}
+
+function EditUser(user: any) {
+  const handleEdit = () => {
+    console.log("editando...", user);
+  };
+
+  return (
+    <FormControl sx={{ my: 2 }}>
+      {formLabels.map((formLabel) => (
+        <TextField autoFocus required id={formLabel.id} label={formLabel.label} defaultValue={user[formLabel.id]}  sx={{ my: 2 }}/>
+      ))}
+      <Button sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleEdit}>
+        Enviar
+      </Button>
+    </FormControl>
+  );
+}
+
+function DeleteUser(user: any) {
+  const handleDelete = () => {
+    console.log("eliminando...", user);
+  };
+
+  return (
+    <Box sx={{ my: 2 }}>
+      <Box>¿Estás seguro de eliminar al usuario "{user.username}"?</Box>
+      <Button sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleDelete}>
+        Eliminar
+      </Button>
+    </Box>
+  );
+}
+
+// ------------------ Vista Principal ------------------
 const UserProfiles = () => {
   const columns: Array<Column> = [
     { id: "username", label: "Usuario", align: "center" },
@@ -19,8 +82,18 @@ const UserProfiles = () => {
   function createData(username: string, names: string, surnames: string, role: string, usertype: string) {
     // Lista de acciones donde guarda el icono y la función a ejecutar
     const actions = [
-      { id: "1", label: "Editar", button: <EditButton />, align: "center" },
-      { id: "2", label: "Eliminar", button: <DeleteButton />, align: "center" },
+      {
+        id: "1",
+        label: "Editar usuario",
+        button: EditButton,
+        form: EditUser,
+      },
+      {
+        id: "2",
+        label: "Eliminar usuario",
+        button: DeleteButton,
+        form: DeleteUser,
+      },
     ];
 
     return { username, names, surnames, role, usertype, actions };
