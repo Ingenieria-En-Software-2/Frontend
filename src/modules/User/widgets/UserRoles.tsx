@@ -104,7 +104,7 @@ const UserRoles = () => {
       <DashboardLayoutBasic>
         <Box sx={{ width: "100%" }}>
           <Title title="Roles de Usuarios" />
-          <DataTable title="" columns={columns} rows={rows} />
+          <DataTable columns={columns} rows={rows} addForm={<AddUserRole />} />
         </Box>
       </DashboardLayoutBasic>
     </DashboardWrapper>

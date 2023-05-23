@@ -23,9 +23,10 @@ export interface Column {
 }
 
 interface Props {
-  title: string;
+  title?: string;
   columns: ReadonlyArray<Column>;
   rows: ReadonlyArray<any>;
+  addForm: JSX.Element;
 }
 
 /**
@@ -33,13 +34,13 @@ interface Props {
  *
  * @description This component is used to display a table with just data.
  *
- * @param {string} title The title of the table.
+ * @param {string} title (Optional) The title of the table (default: "")
  * @param {readonly Column[]} columns The columns of the table.
  * @param {Data[]} rows The rows of the table.
  *
  * @returns {JSX.Element} The DataTable component
  */
-export default function DataTable({ title, columns, rows }: Props): Box {
+export default function DataTable({ title = "", columns, rows, addForm }: Props): JSX.Element {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(15);
   const [visibleRows, setVisibleRows] = React.useState(rows);
@@ -85,10 +86,11 @@ export default function DataTable({ title, columns, rows }: Props): Box {
       <Grid container direction="row" justifyContent="flex-end" alignItems="center" sx={{ my: 2 }}>
         <Box>
           <TextField
-            placeholder="Filtrar"
+            label="Filtrar"
             variant="outlined"
             size="small"
             sx={{ width: "auto", height: "auto", backgroundColor: "#e0e7ff" }}
+            placeholder="Filtrar"
             type="search"
             onInput={(e) => requestSearch(e.target.value)}
             InputProps={{
@@ -98,13 +100,13 @@ export default function DataTable({ title, columns, rows }: Props): Box {
         </Box>
 
         {/* Add Button */}
-        <AddButton />
+        {AddButton(addForm)}
       </Grid>
       <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
         <Table stickyHeader sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             {/* Title */}
-            {title !== "" && (
+            {title && (
               <TableRow>
                 <TableCell colSpan={columns.length} align="center" sx={headerStyle}>
                   {title}
@@ -138,8 +140,10 @@ export default function DataTable({ title, columns, rows }: Props): Box {
                     <TableCell key={column.id} align={column.align}>
                       {/* Actions */}
                       {typeof value === "object" ? (
-                        <Grid container justifyContent="center">
-                          {value.map((action) => action.button(action.form(row)))}
+                        <Grid container direction="row" justifyContent="center" alignItems="center">
+                          {value.map((action: any) => (
+                            <React.Fragment key={action.id}>{action.button(action.form(row))}</React.Fragment>
+                          ))}
                         </Grid>
                       ) : (
                         value

@@ -73,15 +73,15 @@ function ModalButton({ title, content, icon }: any) {
   );
 }
 
-function AddButton() {
-  return <ModalButton title="Agregar" content={"hola"} icon={<AddIcon className={iconStyle} />} />;
+function AddButton(content: JSX.Element) {
+  return <ModalButton title="Agregar" content={content} icon={<AddIcon className={iconStyle} />} />;
 }
 
-function EditButton(content: any) {
+function EditButton(content: JSX.Element) {
   return <ModalButton title="Editar" content={content} icon={<EditIcon className={iconStyle} />} />;
 }
 
-function DeleteButton(content: any) {
+function DeleteButton(content: JSX.Element) {
   return <ModalButton title="Eliminar" content={content} icon={<DeleteIcon className={iconStyle} />} />;
 }
 

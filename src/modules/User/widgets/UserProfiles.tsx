@@ -27,7 +27,7 @@ function AddUser() {
   return (
     <FormControl sx={{ my: 2 }}>
       {formLabels.map((formLabel) => (
-        <TextField autoFocus required id={formLabel.id} label={formLabel.label} sx={{ my: 2 }}/>
+        <TextField autoFocus required id={formLabel.id} label={formLabel.label} sx={{ my: 2 }} />
       ))}
       <Button sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleAdd}>
         Enviar
@@ -44,7 +44,15 @@ function EditUser(user: any) {
   return (
     <FormControl sx={{ my: 2 }}>
       {formLabels.map((formLabel) => (
-        <TextField autoFocus required id={formLabel.id} label={formLabel.label} defaultValue={user[formLabel.id]}  sx={{ my: 2 }}/>
+        <TextField
+          key={formLabel.id}
+          autoFocus
+          required
+          id={formLabel.id}
+          label={formLabel.label}
+          defaultValue={user[formLabel.id]}
+          sx={{ my: 2 }}
+        />
       ))}
       <Button sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleEdit}>
         Enviar
@@ -112,7 +120,7 @@ const UserProfiles = () => {
       <DashboardLayoutBasic>
         <Box sx={{ width: "100%" }}>
           <Title title="Perfiles de Usuarios" />
-          <DataTable title="Detalles de Usuario" columns={columns} rows={rows} />
+          <DataTable title="Detalles de Usuario" columns={columns} rows={rows} addForm={<AddUser />} />
         </Box>
       </DashboardLayoutBasic>
     </DashboardWrapper>
