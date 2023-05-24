@@ -1,35 +1,35 @@
-import { createContext, useContext, useReducer } from 'react'
-import { asideMenuReducer } from './dashboardReducer'
+import { createContext, useContext, useReducer } from "react";
+import { asideMenuReducer } from "./dashboardReducer";
 
 type Props = {
-  children: React.ReactNode
-}
+  children: React.ReactNode;
+};
 
 interface SubStateInterface {
-  [key:string]: boolean | string | number
+  [key: string]: boolean | string | number;
 }
 
 interface DashboardLayoutContextInterface {
-  asideMenu: SubStateInterface
+  asideMenu: SubStateInterface;
 }
 
 interface Action {
-  type: string,
-  payload?: any
+  type: string;
+  payload?: any;
 }
 
 const initDashboardLayoutContext: DashboardLayoutContextInterface = {
   asideMenu: {
-    collapse: false
-  }
+    collapse: false,
+  },
 };
 
 const DashboardLayoutContext = createContext<{
-  state: DashboardLayoutContextInterface,
-  dispatch: React.Dispatch<Action>
+  state: DashboardLayoutContextInterface;
+  dispatch: React.Dispatch<Action>;
 }>({
   state: initDashboardLayoutContext,
-  dispatch: () => null
+  dispatch: () => null,
 });
 
 const mainReducer = ({ asideMenu }: DashboardLayoutContextInterface, action: Action) => ({
@@ -37,12 +37,8 @@ const mainReducer = ({ asideMenu }: DashboardLayoutContextInterface, action: Act
 });
 
 export function DashboardWrapper({ children }: Props) {
-    const [state, dispatch] = useReducer(mainReducer, initDashboardLayoutContext)
-    return (
-    <DashboardLayoutContext.Provider value={{state, dispatch}}>
-      {children}
-    </DashboardLayoutContext.Provider>
-  );
+  const [state, dispatch] = useReducer(mainReducer, initDashboardLayoutContext);
+  return <DashboardLayoutContext.Provider value={{ state, dispatch }}>{children}</DashboardLayoutContext.Provider>;
 }
 
 export function useDashboardLayoutContext() {

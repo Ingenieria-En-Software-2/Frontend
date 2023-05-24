@@ -117,13 +117,13 @@ const UserProfiles = () => {
 
   return (
     <div className="main-container">
-      <DashboardWrapper className="main-container">
-          <DashboardLayoutBasic>
-            <Box sx={{ width: "100%" }}>
-              <Title title="Perfiles de Usuarios" />
-              <DataTable title="Detalles de Usuario" columns={columns} rows={rows} addForm={<AddUser />} />
-            </Box>
-          </DashboardLayoutBasic>
+      <DashboardWrapper /* className="main-container" */>
+        <DashboardLayoutBasic>
+          <Box sx={{ width: "100%" }}>
+            <Title title="Perfiles de Usuarios" />
+            <DataTable title="Detalles de Usuario" columns={columns} rows={rows} addForm={<AddUser />} />
+          </Box>
+        </DashboardLayoutBasic>
       </DashboardWrapper>
     </div>
   );

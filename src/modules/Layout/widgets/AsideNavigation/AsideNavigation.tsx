@@ -31,7 +31,7 @@ export default function AsideNavigation({ collapse, collapseLayout }: Props) {
     setExpanded(false);
   }, [collapse]);
 
-  const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+  const handleChange = (panel: string) => (_event: React.SyntheticEvent, isExpanded: boolean) => {
     collapseLayout(false);
     setExpanded(isExpanded ? panel : false);
   };
@@ -45,19 +45,51 @@ export default function AsideNavigation({ collapse, collapseLayout }: Props) {
               <a id={menuItem.id} key={`menu-item-${i}`} href={menuItem.href ?? ""}>
                 <MenuItem>
                   <ListItemIcon>
-                    <menuItem.leftIcon className={`${`/${location.pathname.split("/", 2)[1]}` === menuItem.href ? "text-blue-600" : "text-slate-500"} text-left`} />
+                    <menuItem.leftIcon
+                      className={`${
+                        `/${location.pathname.split("/", 2)[1]}` === menuItem.href ? "text-blue-600" : "text-slate-500"
+                      } text-left`}
+                    />
                   </ListItemIcon>
-                  <ListItemText className={`${`/${location.pathname.split("/", 2)[1]}` === menuItem.href ? "text-blue-600" : "text-slate-500"} text-left`}>{menuItem.text}</ListItemText>
+                  <ListItemText
+                    className={`${
+                      `/${location.pathname.split("/", 2)[1]}` === menuItem.href ? "text-blue-600" : "text-slate-500"
+                    } text-left`}
+                  >
+                    {menuItem.text}
+                  </ListItemText>
                 </MenuItem>
               </a>
             ) : (
-              <Accordion id={menuItem.id} key={`menu-item-${i}`} disableGutters={true} className={"bg-transparent shadow-none"} expanded={expanded === menuItem.id || menuItem.subMenu?.find((subMenuItem) => subMenuItem.href === location.pathname) !== undefined} onChange={handleChange(menuItem.id)}>
+              <Accordion
+                id={menuItem.id}
+                key={`menu-item-${i}`}
+                disableGutters={true}
+                className={"bg-transparent shadow-none"}
+                expanded={
+                  expanded === menuItem.id ||
+                  menuItem.subMenu?.find((subMenuItem) => subMenuItem.href === location.pathname) !== undefined
+                }
+                onChange={handleChange(menuItem.id)}
+              >
                 <AccordionSummary>
                   <MenuItem>
                     <ListItemIcon>
-                      <menuItem.leftIcon className={`${`/${location.pathname.split("/", 2)[1]}` === menuItem.href ? "text-blue-600" : "text-slate-500"} text-left`} />
+                      <menuItem.leftIcon
+                        className={`${
+                          `/${location.pathname.split("/", 2)[1]}` === menuItem.href
+                            ? "text-blue-600"
+                            : "text-slate-500"
+                        } text-left`}
+                      />
                     </ListItemIcon>
-                    <ListItemText className={`${`/${location.pathname.split("/", 2)[1]}` === menuItem.href ? "text-blue-600" : "text-slate-500"} text-left`}>{menuItem.text}</ListItemText>
+                    <ListItemText
+                      className={`${
+                        `/${location.pathname.split("/", 2)[1]}` === menuItem.href ? "text-blue-600" : "text-slate-500"
+                      } text-left`}
+                    >
+                      {menuItem.text}
+                    </ListItemText>
                   </MenuItem>
                 </AccordionSummary>
                 <AccordionDetails>
@@ -65,7 +97,13 @@ export default function AsideNavigation({ collapse, collapseLayout }: Props) {
                     {menuItem.subMenu?.map((subItem, j) => (
                       <a id={subItem.id} key={`submenu-item-${j}`} href={subItem.href ?? ""}>
                         <MenuItem>
-                          <ListItemText className={`${`/${location.pathname.split("/", 2)[1]}` === menuItem.href ? "text-blue-600" : "text-slate-500"} text-left`}>
+                          <ListItemText
+                            className={`${
+                              `/${location.pathname.split("/", 2)[1]}` === menuItem.href
+                                ? "text-blue-600"
+                                : "text-slate-500"
+                            } text-left`}
+                          >
                             {location.pathname === subItem.href && <CircleIcon />} {subItem.text}
                           </ListItemText>
                         </MenuItem>

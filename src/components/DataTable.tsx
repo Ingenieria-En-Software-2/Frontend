@@ -91,7 +91,7 @@ export default function DataTable({ title = "", columns, rows, addForm }: Props)
             sx={{ width: "auto", height: "auto", backgroundColor: "#e0e7ff" }}
             placeholder="Filtrar"
             type="search"
-            onInput={(e) => requestSearch(e.target.value)}
+            onInput={(e) => requestSearch((e.target as HTMLInputElement).value)}
             InputProps={{
               endAdornment: <SearchIcon />,
             }}
