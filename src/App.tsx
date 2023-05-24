@@ -15,8 +15,12 @@ const { URL_CREATE_USER, URL_HOME, URL_USER_PROFILES, URL_USER_ROLES } = SERVER_
 function App() {
   /* This is an example of how to use the generated API */
 
-  /* How to get all users */
-  // const { data, error, isLoading } = useGetUsersQuery();
+  /* How to get users by query params */
+  // const { data, error, isLoading } = useGetUsersQuery(undefined); get first 10 users
+  // const { data, error, isLoading } = useGetUsersQuery({
+  //   // get users with name "admin"
+  //   name: "admin",
+  // });
 
   // useEffect(() => {
   //   if (data) console.log(data);

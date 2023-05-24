@@ -1,5 +1,5 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
-import { Role, User } from './types';
+import { QueryParamsRole, QueryParamsUser, Role, User } from './types';
 
 export const dbApi = createApi({
   reducerPath: 'dbApi',
@@ -7,9 +7,13 @@ export const dbApi = createApi({
   tagTypes: ['User', 'Role'],
   endpoints: (builder) => ({
     // User Api
-    // Get all users
-    getUsers: builder.query<User[], void>({
-      query: () => 'user',
+    // Get users by query params
+    getUsers: builder.query<User[], QueryParamsUser>({
+      query: (params) => ({
+        url: 'user',
+        params,
+        
+      }),
       providesTags: ['User'],
     }),
     getUserById: builder.query<User, number>({
@@ -40,9 +44,12 @@ export const dbApi = createApi({
       invalidatesTags: ['User'],
     }),
     // Role Api
-    // Get all roles
-    getRoles: builder.query<Role[], void>({
-      query: () => 'role',
+    // Get roles by query params
+    getRoles: builder.query<Role[], QueryParamsRole>({
+      query: (params) => ({
+        url: 'role',
+        params,
+      }),
       providesTags: ['Role'],
     }),
     getRoleById: builder.query<Role, number>({
