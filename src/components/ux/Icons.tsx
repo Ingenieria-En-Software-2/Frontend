@@ -12,6 +12,8 @@ import {
   faMagnifyingGlass,
   faPenToSquare,
   faXmark,
+  faUsers,
+  faUsersGear,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -70,4 +72,12 @@ export function EditIcon({ className }: ComponentProps) {
 
 export function DeleteIcon({ className }: ComponentProps) {
   return <FontAwesomeIcon className={className} icon={faXmark} />;
+}
+
+export function UsersIcon({ className }: ComponentProps) {
+  return <FontAwesomeIcon className={className} icon={faUsers} />;
+}
+
+export function RolesIcon({ className }: ComponentProps) {
+  return <FontAwesomeIcon className={className} icon={faUsersGear} />;
 }
