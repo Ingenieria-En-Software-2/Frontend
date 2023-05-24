@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import banner from "assets/images/banner.jpg";
 
 import { useDashboardLayoutContext } from "../../context/dashboardLayout";

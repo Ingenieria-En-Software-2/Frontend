@@ -1,7 +1,5 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState } from "react";
 import Button from "@mui/material/Button";
-import { FormControl, FormLabel } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import DashboardLayoutBasic from "modules/Layout/widgets/containers/DashboardLayoutBasic";
 import { DashboardWrapper } from "modules/Layout/context/dashboardLayout";
@@ -12,7 +10,7 @@ const CreateUser = () => {
   const [usernameError, setUsernameError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: any) => {
     event.preventDefault();
 
     setUsernameError(false);
@@ -43,12 +41,12 @@ const CreateUser = () => {
       console.log(username);
     }
   };
-  const handleChangingPassword = (e) => {
+  const handleChangingPassword = (e: any) => {
     setPassword(e.target.value);
     setPasswordError(false);
     setUsernameError(false);
   };
-  const handleChangingUsername = (e) => {
+  const handleChangingUsername = (e: any) => {
     setUsername(e.target.value);
     setPasswordError(false);
     setUsernameError(false);

@@ -31,7 +31,7 @@ export default function AsideNavigation({ collapse, collapseLayout }: Props) {
     setExpanded(false);
   }, [collapse]);
 
-  const handleChange = (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+  const handleChange = (panel: string) => (_event: React.SyntheticEvent, isExpanded: boolean) => {
     collapseLayout(false);
     setExpanded(isExpanded ? panel : false);
   };
