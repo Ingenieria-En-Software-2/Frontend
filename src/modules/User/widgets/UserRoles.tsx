@@ -1,3 +1,5 @@
+import React, { useState } from "react";
+
 import DashboardLayoutBasic from "modules/Layout/widgets/containers/DashboardLayoutBasic";
 import { DashboardWrapper } from "modules/Layout/context/dashboardLayout";
 import DataTable from "components/DataTable";
@@ -14,14 +16,33 @@ import FormControl from "@mui/material/FormControl";
 const formLabels = [{ id: "description", label: "Descripción" }];
 
 function AddUserRole() {
+  // Guarda los inputs del formulario
+  const [inputs, setInputs] = useState({ description: "" });
+  const handleInputChange = (event: any) => {
+    event.persist();
+    setInputs((inputs) => ({
+      ...inputs,
+      [event.target.id]: event.target.value,
+    }));
+  };
+
+  // Agrega el rol
   const handleAdd = () => {
-    console.log("agregando...");
+    console.log("agregando...", inputs);
   };
 
   return (
     <FormControl sx={{ my: 2 }}>
       {formLabels.map((formLabel) => (
-        <TextField autoFocus required id={formLabel.id} label={formLabel.label}  sx={{ my: 2 }}/>
+        <TextField
+          autoFocus
+          required
+          id={formLabel.id}
+          label={formLabel.label}
+          sx={{ my: 2 }}
+          onChange={handleInputChange}
+          value={inputs[formLabel.id]}
+        />
       ))}
       <Button sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleAdd}>
         Enviar
@@ -31,14 +52,36 @@ function AddUserRole() {
 }
 
 function EditUserRole(role: any) {
+  // Guarda los inputs del formulario
+  const [inputs, setInputs] = useState({ description: role.description });
+
+  // Actualiza el estado de los inputs
+  const handleInputChange = (event: any) => {
+    event.persist();
+    setInputs((inputs) => ({
+      ...inputs,
+      [event.target.id]: event.target.value,
+    }));
+  };
+
   const handleEdit = () => {
-    console.log("editando...", role);
+    console.log("editando...", inputs);
   };
 
   return (
     <FormControl sx={{ my: 2 }}>
       {formLabels.map((formLabel) => (
-        <TextField autoFocus required id={formLabel.id} label={formLabel.label} defaultValue={role[formLabel.id]} />
+        <TextField
+          key={formLabel.id}
+          autoFocus
+          required
+          id={formLabel.id}
+          label={formLabel.label}
+          defaultValue={inputs[formLabel.id]}
+          sx={{ my: 2 }}
+          onChange={handleInputChange}
+          value={inputs[formLabel.id]}
+        />
       ))}
       <Button sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleEdit}>
         Enviar
@@ -100,14 +143,16 @@ const UserRoles = () => {
   ];
 
   return (
-    <DashboardWrapper>
-      <DashboardLayoutBasic>
-        <Box sx={{ width: "100%" }}>
-          <Title title="Roles de Usuarios" />
-          <DataTable columns={columns} rows={rows} addForm={<AddUserRole />} />
-        </Box>
-      </DashboardLayoutBasic>
-    </DashboardWrapper>
+    <div className="main-container">
+      <DashboardWrapper>
+        <DashboardLayoutBasic>
+          <Box sx={{ width: "100%" }}>
+            <Title title="Roles de Usuarios" />
+            <DataTable columns={columns} rows={rows} addForm={<AddUserRole />} />
+          </Box>
+        </DashboardLayoutBasic>
+      </DashboardWrapper>
+    </div>
   );
 };
 

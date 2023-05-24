@@ -86,7 +86,6 @@ export default function DataTable({ title = "", columns, rows, addForm }: Props)
       <Grid container direction="row" justifyContent="flex-end" alignItems="center" sx={{ my: 2 }}>
         <Box>
           <TextField
-            label="Filtrar"
             variant="outlined"
             size="small"
             sx={{ width: "auto", height: "auto", backgroundColor: "#e0e7ff" }}
