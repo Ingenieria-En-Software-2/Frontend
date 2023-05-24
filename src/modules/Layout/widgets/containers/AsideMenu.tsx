@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
-import viteLogo from '/vite.svg'
-import reactLogo from 'assets/react.svg'
+import banner from "assets/images/banner.jpg";
 
 
 import { useDashboardLayoutContext } from "../../context/dashboardLayout";
@@ -30,7 +29,7 @@ export default function AsideMenu({}: Props) {
           {state.asideMenu.collapse ? <MenuIcon /> : <ArrowLeftLineIcon />}
         </button>
         <div className={`${"w-full overflow-hidden mt-1 self-start"} ${state.asideMenu.collapse ? "w-0" : ""}`}>
-{          <img src={reactLogo} />
+{          <img src={banner} alt="banner" className={"w-full"} />
 }        </div>
       </div>
       <AsideNavigation collapseLayout={collapseLayout} collapse={state.asideMenu.collapse as boolean} />

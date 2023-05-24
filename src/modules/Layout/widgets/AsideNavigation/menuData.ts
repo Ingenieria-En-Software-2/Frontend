@@ -1,8 +1,8 @@
-import { HomeIcon } from "components/ux/Icons";
+import { HomeIcon, UsersIcon, RolesIcon } from "components/ux/Icons";
 import MenuItemInterface from "../../types/menuItem.type";
 import SERVER_URLS from "utils/serversUrls";
 
-const { URL_HOME } = SERVER_URLS;
+const { URL_HOME, URL_USER_PROFILES, URL_USER_ROLES } = SERVER_URLS;
 
 export const menuData: Array<MenuItemInterface> = [
   {
@@ -11,5 +11,19 @@ export const menuData: Array<MenuItemInterface> = [
     href: URL_HOME,
     leftIcon: HomeIcon,
     text: "Home",
-  }
+  },
+  {
+    id: "users-link",
+    type: "link",
+    href: URL_USER_PROFILES,
+    leftIcon: UsersIcon,
+    text: "Perfiles de Usuarios",
+  },
+  {
+    id: "roles-link",
+    type: "link",
+    href: URL_USER_ROLES,
+    leftIcon: RolesIcon,
+    text: "Roles de Usuarios",
+  },
 ];
