@@ -1,83 +1,82 @@
-import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
-import { QueryParamsRole, QueryParamsUser, Role, User } from './types';
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { QueryParamsRole, QueryParamsUser, Role, User } from "./types";
 
 export const dbApi = createApi({
-  reducerPath: 'dbApi',
+  reducerPath: "dbApi",
   baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_API_URL }),
-  tagTypes: ['User', 'Role'],
+  tagTypes: ["User", "Role"],
   endpoints: (builder) => ({
     // User Api
     // Get users by query params
     getUsers: builder.query<User[], QueryParamsUser>({
       query: (params) => ({
-        url: 'user',
+        url: "user",
         params,
-        
       }),
-      providesTags: ['User'],
+      providesTags: ["User"],
     }),
     getUserById: builder.query<User, number>({
       query: (id) => `user/${id}`,
-      providesTags: ['User'],
+      providesTags: ["User"],
     }),
     createUser: builder.mutation<number, Omit<User, "id">>({
       query: (body) => ({
-        url: 'user',
-        method: 'POST',
+        url: "user",
+        method: "POST",
         body,
       }),
-      invalidatesTags: ['User'],
+      invalidatesTags: ["User"],
     }),
     updateUser: builder.mutation<number, User>({
       query: ({ id, ...body }) => ({
         url: `user/${id}`,
-        method: 'PUT',
+        method: "PUT",
         body,
       }),
-      invalidatesTags: ['User'],
+      invalidatesTags: ["User"],
     }),
     deleteUser: builder.mutation<void, number>({
       query: (id) => ({
         url: `user/${id}`,
-        method: 'DELETE',
+        method: "DELETE",
       }),
-      invalidatesTags: ['User'],
+      invalidatesTags: ["User"],
     }),
     // Role Api
     // Get roles by query params
     getRoles: builder.query<Role[], QueryParamsRole>({
       query: (params) => ({
-        url: 'role',
+        url: "role",
         params,
       }),
-      providesTags: ['Role'],
+      providesTags: ["Role"],
     }),
     getRoleById: builder.query<Role, number>({
       query: (id) => `role/${id}`,
-      providesTags: ['Role'],
+      providesTags: ["Role"],
     }),
     createRole: builder.mutation<number, Omit<Role, "id">>({
       query: (body) => ({
-        url: 'role',
-        method: 'POST',
+        url: "role",
+        method: "POST",
         body,
       }),
-      invalidatesTags: ['Role'],
+      invalidatesTags: ["Role"],
     }),
     updateRole: builder.mutation<Role, Role>({
       query: ({ id, ...body }) => ({
         url: `role/${id}`,
-        method: 'PUT',
+        method: "PUT",
         body,
       }),
-      invalidatesTags: ['Role'],
+      invalidatesTags: ["Role"],
     }),
     deleteRole: builder.mutation<void, number>({
       query: (id) => ({
         url: `role/${id}`,
-        method: 'DELETE',
+        method: "DELETE",
       }),
-      invalidatesTags: ['Role'],
+      invalidatesTags: ["Role"],
     }),
   }),
 });
