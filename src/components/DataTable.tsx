@@ -101,7 +101,22 @@ export default function DataTable({ title = "", columns, rows, addForm }: Props)
         {/* Add Button */}
         {AddButton(addForm)}
       </Grid>
-      <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
+      <TableContainer
+        component={Paper}
+        sx={{
+          maxHeight: 440,
+          "&::-webkit-scrollbar": {
+            width: 5,
+          },
+          "&::-webkit-scrollbar-track": {
+            backgroundColor: "#f0f0ff",
+          },
+          "&::-webkit-scrollbar-thumb": {
+            backgroundColor: "#3f51b5",
+            borderRadius: 5,
+          },
+        }}
+      >
         <Table stickyHeader sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             {/* Title */}
