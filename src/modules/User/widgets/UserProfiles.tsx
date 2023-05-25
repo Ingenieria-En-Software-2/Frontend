@@ -117,7 +117,7 @@ const UserProfiles = () => {
 
   return (
     <div className="main-container">
-      <DashboardWrapper /* className="main-container" */>
+      <DashboardWrapper>
         <DashboardLayoutBasic>
           <Box sx={{ width: "100%" }}>
             <Title title="Perfiles de Usuarios" />

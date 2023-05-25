@@ -14,6 +14,10 @@ import {
   faXmark,
   faUsers,
   faUsersGear,
+  faEye,
+  faSpinner,
+  faCheckCircle,
+  faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -80,4 +84,20 @@ export function UsersIcon({ className }: ComponentProps) {
 
 export function RolesIcon({ className }: ComponentProps) {
   return <FontAwesomeIcon className={className} icon={faUsersGear} />;
+}
+
+export function EyeFillIcon({ className }: ComponentProps) {
+  return <FontAwesomeIcon className={className} icon={faEye} />;
+}
+
+export function SpinnerIcon({ className }: ComponentProps) {
+  return <FontAwesomeIcon className={className} icon={faSpinner} />;
+}
+
+export function CheckIcon({ className }: ComponentProps) {
+  return <FontAwesomeIcon className={className} icon={faCheckCircle} />;
+}
+
+export function ErrorIcon({ className }: ComponentProps) {
+  return <FontAwesomeIcon className={className} icon={faTimesCircle} />;
 }
