@@ -86,4 +86,4 @@ function DeleteButton(title: string, content: JSX.Element) {
   return <ModalButton title={title} content={content} icon={<DeleteIcon className={iconStyle} />} />;
 }
 
-export { AddButton, EditButton, DeleteButton };
+export { AddButton, EditButton, DeleteButton, Modal, buttonStyle, iconStyle };

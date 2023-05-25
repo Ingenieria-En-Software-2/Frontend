@@ -99,7 +99,7 @@ export default function DataTable({ title = "", columns, rows, addForm }: Props)
         </Box>
 
         {/* Add Button */}
-        {AddButton("Agregar", addForm)}
+        {addForm}
       </Grid>
       <TableContainer
         component={Paper}

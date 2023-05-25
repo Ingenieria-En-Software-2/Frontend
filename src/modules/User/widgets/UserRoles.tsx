@@ -4,8 +4,9 @@ import DashboardLayoutBasic from "modules/Layout/widgets/containers/DashboardLay
 import { DashboardWrapper } from "modules/Layout/context/dashboardLayout";
 import DataTable from "components/DataTable";
 import { Column } from "components/DataTable";
-import { EditButton, DeleteButton } from "components/Buttons";
 import Title from "components/Title";
+import { Modal, iconStyle, buttonStyle } from "components/Buttons";
+import { AddIcon, EditIcon, DeleteIcon } from "components/ux/Icons";
 
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -13,27 +14,28 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 
-import {
-  useGetRolesQuery,
-  useCreateRoleMutation,
-  useUpdateRoleMutation,
-  useDeleteRoleMutation,
-} from "services/dbApi";
+import { useGetRolesQuery, useCreateRoleMutation, useUpdateRoleMutation, useDeleteRoleMutation } from "services/dbApi";
 
 // ------------------ Formularios ------------------
 const formLabels: Array<Column> = [{ id: "description", label: "Descripción" }];
 
 /**
- * Form to insert a new role in the database
+ * Modal Form to insert a new role in the database
  * @returns
  */
 function AddUserRole() {
   // Guarda los inputs del formulario
   const [inputs, setInputs] = useState<{ description: string }>({ description: "" });
   const [createRole, { data, error, isLoading }] = useCreateRoleMutation();
+  const [open, setOpen] = useState(false);
+  const handleOpenModal = () => setOpen(true);
+  const handleCloseModal = () => setOpen(false);
+  const title = "Agregar rol";
 
   // Add rol to database
-  const handleAdd = () => {
+  const handleAdd = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     // TO-DO: Verify inputs
 
     createRole(inputs);
@@ -41,41 +43,64 @@ function AddUserRole() {
     // TO-DO: error and loading pages
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>{error.message}</div>;
+
+    // Close modal
+    handleCloseModal();
   };
 
   return (
-    <FormControl sx={{ my: 2 }}>
-      {formLabels.map((formLabel) => (
-        <TextField
-          autoFocus
-          required
-          autoComplete="off"
-          sx={{ my: 2 }}
-          id={formLabel.id}
-          label={formLabel.label}
-          value={inputs[formLabel.id as keyof typeof inputs]}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setInputs({ ...inputs, [formLabel.id]: e.target.value })
-          }
-        />
-      ))}
-      <Button type="submit" sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleAdd}>
-        Enviar
+    <Box>
+      <Button variant="outlined" onClick={handleOpenModal} sx={buttonStyle}>
+        <AddIcon className={iconStyle} />
       </Button>
-    </FormControl>
+      <Modal
+        open={open}
+        handleClose={handleCloseModal}
+        title={title}
+        content={
+          <FormControl sx={{ my: 2 }} component="form" onSubmit={handleAdd}>
+            {formLabels.map((formLabel) => (
+              <TextField
+                autoFocus
+                required
+                autoComplete="off"
+                sx={{ my: 2 }}
+                id={formLabel.id}
+                label={formLabel.label}
+                value={inputs[formLabel.id as keyof typeof inputs]}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setInputs({ ...inputs, [formLabel.id]: e.target.value })
+                }
+              />
+            ))}
+            <Button type="submit" sx={{ mt: 2, backgroundColor: "#e0e7ff" }}>
+              Enviar
+            </Button>
+          </FormControl>
+        }
+      />
+    </Box>
   );
 }
 
 /**
- * Form to edit a role in the database
+ * Modal Form to edit a role in the database
  * @param param0
  * @returns
  */
 function EditUserRole({ role }: any) {
-  const [inputs, setInputs] = useState<{ description: string }>({ description: role.description });
+  const [inputs, setInputs] = useState<{ description: string }>({ description: "" });
   const [updateRole, { data, error, isLoading }] = useUpdateRoleMutation();
 
-  const handleEdit = () => {
+  // Modal state
+  const [open, setOpen] = useState(false);
+  const handleOpenModal = () => setOpen(true);
+  const handleCloseModal = () => setOpen(false);
+  const title = `Editar rol "${role.description}"`
+
+  const handleEdit =  (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     // Verify role is unique
 
     updateRole({ id: role.id, description: inputs.description });
@@ -83,30 +108,46 @@ function EditUserRole({ role }: any) {
     // TO-DO: error and loading pages
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>{error.message}</div>;
+
+    // TO-CHECK: Clean inputs
+    setInputs({ description: "" });
+    handleCloseModal();
   };
 
   return (
-    <FormControl sx={{ my: 2 }}>
-      {formLabels.map((formLabel) => (
-        <TextField
-          key={formLabel.id}
-          autoFocus
-          required
-          autoComplete="off"
-          sx={{ my: 2 }}
-          id={formLabel.id}
-          label={formLabel.label}
-          defaultValue={inputs[formLabel.id as keyof typeof inputs]}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setInputs({ ...inputs, [formLabel.id]: e.target.value })
-          }
-          value={inputs[formLabel.id as keyof typeof inputs]}
-        />
-      ))}
-      <Button type="submit" sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleEdit}>
-        Enviar
+    <Box>
+      <Button variant="outlined" onClick={handleOpenModal} sx={buttonStyle}>
+        <EditIcon className={iconStyle} />
       </Button>
-    </FormControl>
+      <Modal
+        open={open}
+        handleClose={handleCloseModal}
+        title={title}
+        content={
+          <FormControl sx={{ my: 2 }} component="form" onSubmit={handleEdit}>
+            {formLabels.map((formLabel) => (
+              <TextField
+                key={formLabel.id}
+                autoFocus
+                required
+                autoComplete="off"
+                sx={{ my: 2 }}
+                id={formLabel.id}
+                label={formLabel.label}
+                defaultValue={inputs[formLabel.id as keyof typeof inputs]}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setInputs({ ...inputs, [formLabel.id]: e.target.value })
+                }
+                value={inputs[formLabel.id as keyof typeof inputs]}
+              />
+            ))}
+            <Button type="submit" sx={{ mt: 2, backgroundColor: "#e0e7ff" }}>
+              Enviar
+            </Button>
+          </FormControl>
+        }
+      />
+    </Box>
   );
 }
 
@@ -116,6 +157,12 @@ function EditUserRole({ role }: any) {
  * @returns
  */
 function DeleteUserRole({ role }: any) {
+  // Modal state
+  const [open, setOpen] = useState(false);
+  const handleOpenModal = () => setOpen(true);
+  const handleCloseModal = () => setOpen(false);
+  const title = `Eliminar rol "${role.description}"`;
+
   const [deleteRole, { data, error, isLoading }] = useDeleteRoleMutation();
 
   const handleDelete = () => {
@@ -124,22 +171,32 @@ function DeleteUserRole({ role }: any) {
     // TO-DO: error and loading pages
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>{error.message}</div>;
+
+    // Close modal
+    handleCloseModal();
   };
 
   return (
-    <Box sx={{ my: 2 }}>
-      <Box>¿Estás seguro de eliminar el rol "{role.description}"?</Box>
-      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-        <Button type="submit" sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleDelete}>
-          Eliminar
-        </Button>
-      </Box>
+    <Box>
+      <Button variant="outlined" onClick={handleOpenModal} sx={buttonStyle}>
+        <DeleteIcon className={iconStyle} />
+      </Button>
+      <Modal open={open} handleClose={handleCloseModal} title={title} content={
+        <Box sx={{ my: 2 }}>
+          <Box>¿Estás seguro de eliminar el rol "{role.description}"?</Box>
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button type="submit" sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleDelete}>
+              Eliminar
+            </Button>
+          </Box>
+        </Box>
+      } />
     </Box>
   );
 }
 
 /**
- * Actions buttons for each row
+ * Actions buttons with modal forms for each row
  * @param row
  * @returns
  */
@@ -147,10 +204,10 @@ function ActionsPerRole(row: any) {
   return (
     <Grid container direction="row" justifyContent="center" alignItems="center">
       {/* Edit button */}
-      <React.Fragment>{EditButton("Editar rol", <EditUserRole role={row} />)}</React.Fragment>
+      <EditUserRole role={row} />
 
       {/* Delete button */}
-      <React.Fragment>{DeleteButton("Eliminar rol", <DeleteUserRole role={row} />)}</React.Fragment>
+      <DeleteUserRole role={row} />
     </Grid>
   );
 }
@@ -180,7 +237,7 @@ const UserRoles = () => {
       });
       setRows(rowsWithActions);
     }
-  }, [data]);
+  }, [rows, data]);
 
   // If it is loading, display a loading message
   if (isLoading) return <div>Loading...</div>;

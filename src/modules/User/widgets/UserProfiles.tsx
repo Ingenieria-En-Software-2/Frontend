@@ -5,7 +5,8 @@ import { DashboardWrapper } from "modules/Layout/context/dashboardLayout";
 import DataTable from "components/DataTable";
 import { Column } from "components/DataTable";
 import Title from "components/Title";
-import { EditButton, DeleteButton } from "components/Buttons";
+import { Modal, iconStyle, buttonStyle } from "components/Buttons";
+import { AddIcon, EditIcon, DeleteIcon } from "components/ux/Icons";
 
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -13,7 +14,8 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 
-import { 
+
+import {
   useGetUsersQuery,
   useCreateUserMutation,
   useUpdateUserMutation,
@@ -34,10 +36,10 @@ const userTypes = [
 ];
 
 /**
- * Form to insert a new user in the database
- * @returns 
+ * Modal Form to insert a new user in the database
+ * @returns
  */
-function AddUser({roles}: any) {
+function AddUser({ roles }: any) {
   const [inputs, setInputs] = useState<{
     username: string;
     names: string;
@@ -51,10 +53,15 @@ function AddUser({roles}: any) {
     usertype: userTypes[0].description,
     role: roles[0].id,
   });
+  const [open, setOpen] = useState(false);
+  const handleOpenModal = () => setOpen(true);
+  const handleCloseModal = () => setOpen(false);
+  const title = "Agregar usuario";
 
   // Add user to database
-  const [createUser, { dataUser, errorUser, isLoadingUser }] = useCreateUserMutation();
-  const handleAdd = () => {
+  const [createUser, { data, error, isLoading }] = useCreateUserMutation();
+  const handleAdd = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     console.log("agregando...", inputs);
     createUser({
       login: inputs.username,
@@ -64,79 +71,97 @@ function AddUser({roles}: any) {
       user_type: inputs.usertype,
       role_id: inputs.role,
     });
+
+    // TO-DO: error and loading pages
+    if (isLoading) return <div>Loading...</div>;
+    if (error) return <div>{error.message}</div>;
+
+    // Close modal
+    handleCloseModal();
   };
 
   return (
-    <FormControl sx={{ my: 2 }}>
-      <Grid container spacing={2}>
-        {textInputs.map((formLabel) => (
-          <Grid item xs={6}>
-            <TextField 
-              autoFocus 
-              required 
-              autoComplete="off"
-              sx={{ my: 1, width: "100%" }}
-              id={formLabel.id} 
-              label={formLabel.label} 
-              value={inputs[formLabel.id as keyof typeof inputs]}
-              onChange={(
-                  e: React.ChangeEvent<HTMLInputElement>
-                ) => setInputs({ ...inputs, [formLabel.id]: e.target.value }
-              )}
-            />
-          </Grid>
-        ))}
-        {/* User Types */}
-        <Grid item xs={6}>
-          <TextField
-            id="usertype"
-            select
-            label="Tipo de Usuario"
-            sx={{ my: 1, width: "100%" }}
-            SelectProps={{
-              native: true,
-            }}
-            value={inputs.usertype}
-            onChange={(e) => setInputs({ ...inputs, usertype: e.target.value })}
-          >
-            {userTypes.map((option) => ( 
-              <option key={option.id} value={option.description}>
-                {option.description}
-              </option>
-            ))}
-          </TextField>
-          </Grid>
-      </Grid>
-      <TextField
-        id="role"
-        select
-        label="Rol"
-        sx={{ my: 2 }}
-        SelectProps={{
-          native: true,
-        }}
-        value={inputs.role}
-        onChange={(e) => setInputs({ ...inputs, role: e.target.value })}
-      >
-        {roles.map((option) => (
-          <option key={option.id} value={option.id}>
-            {option.description}
-          </option>
-        ))}
-      </TextField>
-      <Button sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleAdd}>
-        Enviar
+    <Box>
+      <Button variant="outlined" onClick={handleOpenModal} sx={buttonStyle}>
+        <AddIcon className={iconStyle} />
       </Button>
-    </FormControl>
+      <Modal
+        open={open}
+        handleClose={handleCloseModal}
+        title={title}
+        content={
+          <FormControl sx={{ my: 2 }} component="form" onSubmit={handleAdd}>
+            <Grid container spacing={2}>
+              {textInputs.map((formLabel) => (
+                <Grid item xs={6}>
+                  <TextField
+                    autoFocus
+                    required
+                    autoComplete="off"
+                    sx={{ my: 1, width: "100%" }}
+                    id={formLabel.id}
+                    label={formLabel.label}
+                    value={inputs[formLabel.id as keyof typeof inputs]}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setInputs({ ...inputs, [formLabel.id]: e.target.value })
+                    }
+                  />
+                </Grid>
+              ))}
+              {/* User Types */}
+              <Grid item xs={6}>
+                <TextField
+                  id="usertype"
+                  select
+                  label="Tipo de Usuario"
+                  sx={{ my: 1, width: "100%" }}
+                  SelectProps={{
+                    native: true,
+                  }}
+                  value={inputs.usertype}
+                  onChange={(e) => setInputs({ ...inputs, usertype: e.target.value })}
+                >
+                  {userTypes.map((option) => (
+                    <option key={option.id} value={option.description}>
+                      {option.description}
+                    </option>
+                  ))}
+                </TextField>
+              </Grid>
+            </Grid>
+            <TextField
+              id="role"
+              select
+              label="Rol"
+              sx={{ my: 2 }}
+              SelectProps={{
+                native: true,
+              }}
+              value={inputs.role}
+              onChange={(e) => setInputs({ ...inputs, role: e.target.value })}
+            >
+              {roles.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.description}
+                </option>
+              ))}
+            </TextField>
+            <Button sx={{ mt: 2, backgroundColor: "#e0e7ff" }} type="submit">
+              Enviar
+            </Button>
+          </FormControl>
+        }
+      />
+    </Box>
   );
 }
 
 /**
- * Form to edit a user profile in the database
- * @param param0 
- * @returns 
+ * Modal Form to edit a user profile in the database
+ * @param param0
+ * @returns
  */
-function EditUser({user, roles}: any) {
+function EditUser({ user, roles }: any) {
   const [inputs, setInputs] = useState<{
     username: string;
     names: string;
@@ -151,9 +176,17 @@ function EditUser({user, roles}: any) {
     role: user.role_id,
   });
 
+  // Modal state
+  const [open, setOpen] = useState(false);
+  const handleOpenModal = () => setOpen(true);
+  const handleCloseModal = () => setOpen(false);
+  const title = `Editar usuario "${user.login}"`;
+
   // Update user in database
   const [updateUser, { data, error, isLoading }] = useUpdateUserMutation();
-  const handleEdit = () => {
+  const handleEdit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    
     console.log("editando...", inputs);
     updateUser({
       id: user.id,
@@ -164,117 +197,150 @@ function EditUser({user, roles}: any) {
       user_type: inputs.usertype,
       role_id: inputs.role,
     });
+
+    handleCloseModal();
   };
 
   return (
-    <FormControl sx={{ my: 2 }}>
-      <Grid container spacing={2}>
-      {textInputs.map((formLabel) => (
-        <Grid item xs={6}> 
-          <TextField
-            key={formLabel.id}
-            autoFocus
-            required
-            autoComplete="off"
-            sx={{ my: 1, width: "100%" }}
-            id={formLabel.id}
-            label={formLabel.label}
-            defaultValue={inputs[formLabel.id as keyof typeof inputs]}
-            onChange={(
-                e: React.ChangeEvent<HTMLInputElement>
-              ) => setInputs({ ...inputs, [formLabel.id]: e.target.value }
-            )}
-          />
-        </Grid>
-      ))}
-      {/* User Types */}
-      <Grid item xs={6}>
-        <TextField
-          id="usertype"
-          select
-          label="Tipo de Usuario"
-          sx={{ my: 1, width: "100%" }}
-          SelectProps={{
-            native: true,
-          }}
-          value={inputs.usertype}
-          onChange={(e) => setInputs({ ...inputs, usertype: e.target.value })}
-        >
-          {userTypes.map((option) => ( 
-            <option key={option.id} value={option.description}>
-              {option.description}
-            </option>
-          ))}
-        </TextField>
-        </Grid>
-    </Grid>
-      <TextField
-        id="role"
-        select
-        label="Rol"
-        sx={{ my: 2 }}
-        SelectProps={{
-          native: true,
-        }}
-        value={inputs.role}
-        onChange={(e) => setInputs({ ...inputs, role: e.target.value })}
-      >
-        {roles.map((option) => (
-          <option key={option.id} value={option.id}>
-            {option.description}
-          </option>
-        ))}
-      </TextField>
-      <Button sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleEdit}>
-        Enviar
+    <Box>
+      <Button variant="outlined" onClick={handleOpenModal} sx={buttonStyle}>
+        <EditIcon className={iconStyle} />
       </Button>
-    </FormControl>
+      <Modal
+        open={open}
+        handleClose={handleCloseModal}
+        title={title}
+        content={
+          <FormControl sx={{ my: 2 }} component="form" onSubmit={handleEdit}>
+            <Grid container spacing={2}>
+              {textInputs.map((formLabel) => (
+                <Grid item xs={6}>
+                  <TextField
+                    key={formLabel.id}
+                    autoFocus
+                    required
+                    autoComplete="off"
+                    sx={{ my: 1, width: "100%" }}
+                    id={formLabel.id}
+                    label={formLabel.label}
+                    defaultValue={inputs[formLabel.id as keyof typeof inputs]}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setInputs({ ...inputs, [formLabel.id]: e.target.value })
+                    }
+                  />
+                </Grid>
+              ))}
+              {/* User Types */}
+              <Grid item xs={6}>
+                <TextField
+                  id="usertype"
+                  select
+                  label="Tipo de Usuario"
+                  sx={{ my: 1, width: "100%" }}
+                  SelectProps={{
+                    native: true,
+                  }}
+                  value={inputs.usertype}
+                  onChange={(e) => setInputs({ ...inputs, usertype: e.target.value })}
+                >
+                  {userTypes.map((option) => (
+                    <option key={option.id} value={option.description}>
+                      {option.description}
+                    </option>
+                  ))}
+                </TextField>
+              </Grid>
+            </Grid>
+            <TextField
+              id="role"
+              select
+              label="Rol"
+              sx={{ my: 2 }}
+              SelectProps={{
+                native: true,
+              }}
+              value={inputs.role}
+              onChange={(e) => setInputs({ ...inputs, role: e.target.value })}
+            >
+              {roles.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.description}
+                </option>
+              ))}
+            </TextField>
+            <Button sx={{ mt: 2, backgroundColor: "#e0e7ff" }} type="submit">
+              Enviar
+            </Button>
+          </FormControl>
+        }
+      />
+    </Box>
   );
 }
 
-
 /**
  * Dialog to confirm the deletion of a user
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
-function DeleteUser({user}: any) {
+function DeleteUser({ user }: any) {
+  // Modal state
+  const [open, setOpen] = useState(false);
+  const handleOpenModal = () => setOpen(true);
+  const handleCloseModal = () => setOpen(false);
+  const title = `Eliminar usuario "${user.login}"`;
+
   const [deleteUser, { data, error, isLoading }] = useDeleteUserMutation();
   const handleDelete = () => {
     deleteUser(user.id);
+
+    // TO-DO: error and loading pages
+    if (isLoading) return <div>Loading...</div>;
+    if (error) return <div>{error.message}</div>;
+
+    // Close modal
+    handleCloseModal();
   };
 
   return (
-    <Box sx={{ my: 2 }}>
-      <Box>¿Estás seguro de eliminar al usuario "{user.login}"?</Box>
-      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-        <Button sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleDelete}>
-          Eliminar
-        </Button>
-      </Box>
+    <Box>
+      <Button variant="outlined" onClick={handleOpenModal} sx={buttonStyle}>
+        <DeleteIcon className={iconStyle} />
+      </Button>
+      <Modal
+        open={open}
+        handleClose={handleCloseModal}
+        title={title}
+        content={
+          <Box sx={{ my: 2 }}>
+            <Box>¿Estás seguro de eliminar al usuario "{user.login}"?</Box>
+            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+              <Button sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleDelete}>
+                Eliminar
+              </Button>
+            </Box>
+          </Box>
+        }
+      />
     </Box>
   );
 }
 
 /**
  * Actions buttons for each row
- * @param row 
- * @returns 
+ * @param row
+ * @returns
  */
 function ActionsPerUserProfile(row: any, roles: any) {
   return (
     <Grid container direction="row" justifyContent="center" alignItems="center">
       {/* Edit button */}
-      <React.Fragment>
-        {EditButton("Editar usuario", <EditUser user={row} roles={roles} />)}
-      </React.Fragment>
-      
+      <EditUser user={row} roles={roles} />
+
       {/* Delete button */}
-      <React.Fragment>
-        {DeleteButton("Eliminar usuario", <DeleteUser user={row} />)}
-      </React.Fragment>
+      <DeleteUser user={row} />
     </Grid>
-  )
+  );
 }
 
 // ------------------ Vista Principal ------------------
@@ -289,12 +355,12 @@ const UserProfiles = () => {
   ];
 
   // Get roles from database
-  const [roles, setRoles] = useState([]); 
-  const { data: dataRoles, error: errorRoles, isLoading: isLoadingRoles } =  useGetRolesQuery();
-    
+  const [roles, setRoles] = useState([]);
+  const { data: dataRoles, error: errorRoles, isLoading: isLoadingRoles } = useGetRolesQuery();
+
   // Get users from database
   const [rows, setRows] = useState([]);
-  const { data, error, isLoading } =  useGetUsersQuery(undefined);
+  const { data, error, isLoading } = useGetUsersQuery(undefined);
 
   useEffect(() => {
     if (dataRoles) {
@@ -330,7 +396,7 @@ const UserProfiles = () => {
         <DashboardLayoutBasic>
           <Box sx={{ width: "100%" }}>
             <Title title="Perfiles de Usuarios" />
-            <DataTable title="Detalles de Usuario" columns={columns} rows={rows} addForm={<AddUser roles={roles}/>} />
+            <DataTable title="Detalles de Usuario" columns={columns} rows={rows} addForm={<AddUser roles={roles} />} />
           </Box>
         </DashboardLayoutBasic>
       </DashboardWrapper>
