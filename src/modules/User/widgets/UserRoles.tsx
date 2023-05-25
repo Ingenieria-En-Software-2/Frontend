@@ -1,10 +1,10 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import DashboardLayoutBasic from "modules/Layout/widgets/containers/DashboardLayoutBasic";
 import { DashboardWrapper } from "modules/Layout/context/dashboardLayout";
 import DataTable from "components/DataTable";
 import { Column } from "components/DataTable";
-import { EditButton, DeleteButton } from "components/Buttons";
+import { EditButton, DeleteButton, ActionsButtons } from "components/Buttons";
 import Title from "components/Title";
 
 import Box from "@mui/material/Box";
@@ -12,25 +12,33 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 
+import { 
+  useGetRolesQuery,
+  useGetRoleByIdQuery,
+  useCreateRoleMutation,
+  useUpdateRoleMutation,
+  useDeleteRoleMutation,
+} from "services/dbApi";
+
 // ------------------ Formularios ------------------
 const formLabels = [{ id: "description", label: "Descripción" }];
 
 function AddUserRole() {
   // Guarda los inputs del formulario
   const [inputs, setInputs] = useState<{ description: string }>({ description: "" });
+  const [createRole, { data, error, isLoading }] = useCreateRoleMutation();
 
-  const handleInputChange = (event: any) => {
-    event.persist();
-    setInputs((inputs) => ({
-      ...inputs,
-      [event.target.id]: event.target.value,
-    }));
-  };
-
-  // Agrega el rol
+  // Add rol to database
   const handleAdd = () => {
+    // TO-DO: Verify inputs
     console.log("agregando...", inputs);
-  };
+    
+    createRole(inputs);
+
+    // TO-DO: error and loading pages
+    if (isLoading) return <div>Loading...</div>;
+    if (error) return <div>{error.message}</div>;
+   };
 
   return (
     <FormControl sx={{ my: 2 }}>
@@ -38,14 +46,18 @@ function AddUserRole() {
         <TextField
           autoFocus
           required
+          autoComplete='off'
+          sx={{ my: 2 }}
           id={formLabel.id}
           label={formLabel.label}
-          sx={{ my: 2 }}
-          onChange={handleInputChange}
           value={inputs[formLabel.id as keyof typeof inputs]}
+          onChange={(
+              e: React.ChangeEvent<HTMLInputElement>
+            ) => setInputs({ ...inputs, [formLabel.id]: e.target.value }
+          )}
         />
       ))}
-      <Button sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleAdd}>
+      <Button type='submit' sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleAdd}>
         Enviar
       </Button>
     </FormControl>
@@ -53,20 +65,18 @@ function AddUserRole() {
 }
 
 function EditUserRole(role: any) {
-  // Guarda los inputs del formulario
-  const [inputs, setInputs] = useState({ description: role.description });
-
-  // Actualiza el estado de los inputs
-  const handleInputChange = (event: any) => {
-    event.persist();
-    setInputs((inputs) => ({
-      ...inputs,
-      [event.target.id]: event.target.value,
-    }));
-  };
+  // const [inputs, setInputs] = useState<{ description: string }>({ description: role.description });
+  // const [updateRole, { data, error, isLoading }] = useUpdateRoleMutation();
 
   const handleEdit = () => {
-    console.log("editando...", inputs);
+    console.log("editando...", role);
+
+    // TO-DO: error and loading pages
+    // if (isLoading) return <div>Loading...</div>;
+    // if (error) return <div>{error.message}</div>;
+
+    // updateRole(inputs);
+
   };
 
   return (
@@ -76,15 +86,16 @@ function EditUserRole(role: any) {
           key={formLabel.id}
           autoFocus
           required
+          autoComplete='off'
+          sx={{ my: 2 }}
           id={formLabel.id}
           label={formLabel.label}
-          defaultValue={inputs[formLabel.id as keyof typeof inputs]}
-          sx={{ my: 2 }}
-          onChange={handleInputChange}
-          value={inputs[formLabel.id as keyof typeof inputs]}
+          // defaultValue={inputs[formLabel.id as keyof typeof inputs]}
+          // onChange={handleInputChange}
+          // value={inputs[formLabel.id as keyof typeof inputs]}
         />
       ))}
-      <Button sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleEdit}>
+      <Button type='submit' sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleEdit}>
         Enviar
       </Button>
     </FormControl>
@@ -92,14 +103,22 @@ function EditUserRole(role: any) {
 }
 
 function DeleteUserRole(role: any) {
+  // const [deleteRole, { data, error, isLoading }] = useDeleteRoleMutation();
+
   const handleDelete = () => {
     console.log("eliminando...", role);
+
+    // TO-DO: error and loading pages
+    // if (isLoading) return <div>Loading...</div>;
+    // if (error) return <div>{error.message}</div>;
+
+    // deleteRole(role.id);
   };
 
   return (
     <Box sx={{ my: 2 }}>
       <Box>¿Estás seguro de eliminar el rol "{role.description}"?</Box>
-      <Button sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleDelete}>
+      <Button type='submit' sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleDelete}>
         Eliminar
       </Button>
     </Box>
@@ -114,34 +133,44 @@ const UserRoles = () => {
     { id: "actions", label: "Acciones", align: "center" },
   ];
 
-  // Lista de acciones con el botón y el formulario
+  // Actions to be displayed in the table
   const actions = [
     {
       id: "1",
-      label: "Editar rol",
+      title: "Editar rol",
       button: EditButton,
       form: EditUserRole,
     },
     {
       id: "2",
-      label: "Eliminar rol",
+      title: "Eliminar rol",
       button: DeleteButton,
       form: DeleteUserRole,
     },
   ];
 
-  function createData(id: string, description: string) {
-    return { id, description, actions };
-  }
+  // Get roles from database
+  const [rows, setRows] = useState([]);
+  const { data, error, isLoading } =  useGetRolesQuery();
 
-  const rows = [
-    createData("1", "Gerente General"),
-    createData("2", "Gerente de Operaciones"),
-    createData("3", "Sub-Gerente de Cuentas"),
-    createData("4", "Analista de Cuentas"),
-    createData("5", "Administrador de Sistemas"),
-    createData("6", "Cuentahabiente"),
-  ];
+  // Add actions to the rows
+  useEffect(() => {
+    if (data) {
+      console.log(data);
+      const rowsWithActions = data.items.map((row: any) => {
+        const rowWithActions = { ...row };
+        rowWithActions.actions = ActionsButtons(row, actions);
+        return rowWithActions;
+      });
+      setRows(rowsWithActions);
+    }
+  }, [data]);
+
+  // If there is an error, display a message
+  if (error) return <div>Error: {error.message}</div>;
+
+  // If it is loading, display a loading message
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <div className="main-container">

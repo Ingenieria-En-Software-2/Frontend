@@ -99,7 +99,7 @@ export default function DataTable({ title = "", columns, rows, addForm }: Props)
         </Box>
 
         {/* Add Button */}
-        {AddButton(addForm)}
+        {AddButton("Agregar", addForm)}
       </Grid>
       <TableContainer
         component={Paper}
@@ -142,7 +142,7 @@ export default function DataTable({ title = "", columns, rows, addForm }: Props)
               // Alternate row color
               <TableRow
                 hover
-                key={row.id ? row.id : Object.values(row).join("")}
+                key={row.id}
                 sx={{
                   "&:last-child td, &:last-child th": { border: 0 },
                   "&:nth-of-type(odd)": { backgroundColor: "#f0f0ff" },
@@ -152,16 +152,7 @@ export default function DataTable({ title = "", columns, rows, addForm }: Props)
                   const value = row[column.id];
                   return (
                     <TableCell key={column.id} align={column.align}>
-                      {/* Actions */}
-                      {typeof value === "object" ? (
-                        <Grid container direction="row" justifyContent="center" alignItems="center">
-                          {value.map((action: any) => (
-                            <React.Fragment key={action.id}>{action.button(action.form(row))}</React.Fragment>
-                          ))}
-                        </Grid>
-                      ) : (
-                        value
-                      )}
+                      {value}
                     </TableCell>
                   );
                 })}
