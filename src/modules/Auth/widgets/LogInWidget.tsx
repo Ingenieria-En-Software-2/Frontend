@@ -1,9 +1,9 @@
-import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
+import React, { useState, useEffect } from "react";
 import banner from "assets/images/banner.jpg";
 
 import type ValidationErrorsDict from "utils/validate/types/ValidationErrorsDict.type";
 import type ValidationError from "utils/validate/types/validationError.type";
-import type LoginRequest from "../types/loginRequest.type";
+// import type LoginRequest from "../types/loginRequest.type";
 import ExceptionHandler from "components/ExceptionHandler";
 
 import { CheckIcon, ErrorIcon, EyeFillIcon } from "components/ux/Icons";
@@ -13,12 +13,6 @@ import SERVER_URLS from "utils/serversUrls";
 import validate from "utils/validate/validate";
 import { useGetUsersQuery } from "services/dbApi";
 import { useNavigate } from "react-router-dom";
-
-type Props = {
-  show: boolean;
-  animateWidgetEnter: boolean;
-  setShow: Dispatch<SetStateAction<boolean>>;
-};
 
 const { URL_HOME } = SERVER_URLS;
 
@@ -32,7 +26,7 @@ const LogInWidget = () => {
   const [formErrors, setFormErrors] = useState<ValidationErrorsDict>({});
   const [showFormErrorWidget, setShowFormErrorWidget] = useState<boolean>(false);
   const [showApiResponseErrorWidget, setShowApiResponseErrorWidget] = useState<boolean>(false);
-  const [showForgotPasswordWidget, setShowForgotPasswordWidget] = useState<boolean>(false);
+  // const [showForgotPasswordWidget, setShowForgotPasswordWidget] = useState<boolean>(false);
   const [listenCheckData, setListenCheckData] = useState<boolean>(false);
   const [listenCheckDataTimer, setListenCheckDataTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
   const [email, setEmail] = useState<string>("");
@@ -41,7 +35,6 @@ const LogInWidget = () => {
   const [hide, setHide] = useState<boolean>(false);
   const [openExceptionHandler, setOpenExceptionHandler] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [formErrorsResponse, setFormErrorsResponse] = useState<ValidationErrorsDict>({});
 
   useEffect(() => {
     if (!hide) return;
@@ -80,11 +73,6 @@ const LogInWidget = () => {
     return () => clearTimeout(timer);
   }, [loginSuccess]);
 
-  useEffect(() => {
-    if (Object.keys(formErrorsResponse).length === 0) return;
-    checkData(formErrorsResponse);
-  }, [formErrorsResponse]);
-
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (errorMessage) setErrorMessage(null);
     setEmail(e.currentTarget.value);
@@ -101,10 +89,10 @@ const LogInWidget = () => {
     };
 
     const emailValidation = validate.email(email);
-    if (emailValidation.hasErrors) emailValidation.errors?.forEach((error, i) => addError(error));
+    if (emailValidation.hasErrors) emailValidation.errors?.forEach((error) => addError(error));
 
     const passwordValidation = validate.password(password);
-    if (passwordValidation.hasErrors) passwordValidation.errors?.forEach((error, i) => addError(error));
+    if (passwordValidation.hasErrors) passwordValidation.errors?.forEach((error) => addError(error));
 
     setFormErrors(formErrors_);
     if (Object.keys(formErrors_).length == 0) {
@@ -129,9 +117,9 @@ const LogInWidget = () => {
 
     if (checkData()) {
       setListenCheckData(false);
-      const requestData: LoginRequest = { email: email, password: password };
+      // const requestData: LoginRequest = { email: email, password: password };
       let responseError = null
-      if (data){
+      if (data && !isLoading){
         const responseData: any = data
         const user = responseData.items.find((user: any) => user.login === email)
         if (!user){
