@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { QueryParamsRole, QueryParamsUser, Role, User } from "./types";
+import { QueryParamsRole, QueryParamsUser, Role, UpdateRoleParams, UpdateUserParams, User } from "./types";
 
 export const dbApi = createApi({
   reducerPath: "dbApi",
@@ -27,7 +27,7 @@ export const dbApi = createApi({
       }),
       invalidatesTags: ["User"],
     }),
-    updateUser: builder.mutation<number, User>({
+    updateUser: builder.mutation<number, UpdateUserParams>({
       query: ({ id, ...body }) => ({
         url: `user/${id}`,
         method: "PUT",
@@ -63,7 +63,7 @@ export const dbApi = createApi({
       }),
       invalidatesTags: ["Role"],
     }),
-    updateRole: builder.mutation<Role, Role>({
+    updateRole: builder.mutation<Role, UpdateRoleParams>({
       query: ({ id, ...body }) => ({
         url: `role/${id}`,
         method: "PUT",

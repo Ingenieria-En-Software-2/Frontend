@@ -28,3 +28,6 @@ export type QueryParamsUser =
   | undefined;
 
 export type QueryParamsRole = (Omit<QueryParams, "sort_by"> & { sort_by?: keyof Role }) | undefined;
+
+export type UpdateRoleParams = Partial<Omit<Role, "id">> & Pick<Role, "id">;
+export type UpdateUserParams = Partial<Omit<User, "id">> & Pick<User, "id">;
