@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import DashboardLayoutBasic from "modules/Layout/widgets/containers/DashboardLayoutBasic";
 import { DashboardWrapper } from "modules/Layout/context/dashboardLayout";
-import { useGetUsersQuery, useCreateRoleMutation, useCreateUserMutation } from "../../../api/dbApi";
+import { useGetUsersQuery, useCreateUserMutation } from "services/dbApi";
 import { useEffect } from "react";
 
 import SERVER_URLS from "utils/serversUrls.ts";
@@ -41,7 +41,7 @@ const CreateUser = () => {
      navigate(URL_HOME);
      }, [creatingUser]);
 
-  function callback_func(object) {
+  function callback_func(object : any) {
 
      if (object.login == username) {
         return true;
@@ -91,13 +91,13 @@ const CreateUser = () => {
             }
         }
     };
-    const handleChangingPassword = (e) => {
+    const handleChangingPassword = (e : any) => {
       setPassword(e.target.value)
       setPasswordError(false)
       setUsernameError(false)
       setUsernameExistsError(false)
     };
-    const handleChangingUsername = (e) => {
+    const handleChangingUsername = (e : any) => {
       setUsername(e.target.value)
       setPasswordError(false)
       setUsernameError(false)
