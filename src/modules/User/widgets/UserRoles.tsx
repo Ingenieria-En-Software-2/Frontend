@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import DashboardLayoutBasic from "modules/Layout/widgets/containers/DashboardLayoutBasic";
 import { DashboardWrapper } from "modules/Layout/context/dashboardLayout";
@@ -17,7 +17,8 @@ const formLabels = [{ id: "description", label: "Descripción" }];
 
 function AddUserRole() {
   // Guarda los inputs del formulario
-  const [inputs, setInputs] = useState({ description: "" });
+  const [inputs, setInputs] = useState<{ description: string }>({ description: "" });
+
   const handleInputChange = (event: any) => {
     event.persist();
     setInputs((inputs) => ({
@@ -41,7 +42,7 @@ function AddUserRole() {
           label={formLabel.label}
           sx={{ my: 2 }}
           onChange={handleInputChange}
-          value={inputs[formLabel.id]}
+          value={inputs[formLabel.id as keyof typeof inputs]}
         />
       ))}
       <Button sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleAdd}>
@@ -77,10 +78,10 @@ function EditUserRole(role: any) {
           required
           id={formLabel.id}
           label={formLabel.label}
-          defaultValue={inputs[formLabel.id]}
+          defaultValue={inputs[formLabel.id as keyof typeof inputs]}
           sx={{ my: 2 }}
           onChange={handleInputChange}
-          value={inputs[formLabel.id]}
+          value={inputs[formLabel.id as keyof typeof inputs]}
         />
       ))}
       <Button sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleEdit}>
