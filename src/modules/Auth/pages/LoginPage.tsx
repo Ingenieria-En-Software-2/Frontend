@@ -1,5 +1,4 @@
 import LogInWidget from "../widgets/LogInWidget";
-import { useState } from "react";
 
 const LoginPage = () => {
   return (

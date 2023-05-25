@@ -10,10 +10,9 @@ type ExceptionHandlerProps = {
   title: string | null;
   description?: React.ReactNode;
   btnText?: string | null;
-  modalState?: boolean;
 };
 
-export default function ExceptionHandler({ open, icon, title, description, btnText, onClose, modalState }: ExceptionHandlerProps) {
+export default function ExceptionHandler({ open, icon, title, description, btnText, onClose }: ExceptionHandlerProps) {
   const [hide, setHide] = React.useState<boolean>(false);
 
   useEffect(() => {
