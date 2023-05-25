@@ -15,12 +15,10 @@ import FormControl from "@mui/material/FormControl";
 
 import { 
   useGetUsersQuery,
-  useGetUserByIdQuery,
   useCreateUserMutation,
   useUpdateUserMutation,
   useDeleteUserMutation,
   useGetRolesQuery,
-  useGetRoleByIdQuery,
 } from "services/dbApi";
 
 // ------------------ Formularios ------------------
@@ -35,7 +33,7 @@ const formLabels: Array<Column> = [
  * Form to insert a new user in the database
  * @returns 
  */
-function AddUser() {
+function AddUser({roles}: any) {
   const [inputs, setInputs] = useState<{
     username: string;
     names: string;
@@ -47,7 +45,7 @@ function AddUser() {
     names: "",
     surnames: "",
     usertype: "",
-    role: 1,
+    role: roles[0].id,
   });
   const [createUser, { dataUser, errorUser, isLoadingUser }] = useCreateUserMutation();
 
@@ -64,12 +62,6 @@ function AddUser() {
     });
   };
 
-  // Get roles from database
-  const { data, error, isLoading } =  useGetRolesQuery();
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>{error.message}</div>;
-  const roles = data.items;
-
   return (
     <FormControl sx={{ my: 2 }}>
       <Grid container>
@@ -78,6 +70,7 @@ function AddUser() {
             <TextField 
               autoFocus 
               required 
+              autoComplete="off"
               sx={{ my: 1 }} 
               id={formLabel.id} 
               label={formLabel.label} 
@@ -119,7 +112,7 @@ function AddUser() {
  * @param param0 
  * @returns 
  */
-function EditUser({user}: any) {
+function EditUser({user, roles}: any) {
   const [inputs, setInputs] = useState<{
     username: string;
     names: string;
@@ -134,16 +127,20 @@ function EditUser({user}: any) {
     role: user.role_id,
   });
 
+  // Update user in database
+  const [updateUser, { data, error, isLoading }] = useUpdateUserMutation();
   const handleEdit = () => {
-    console.log("editando...", user);
-    console.log("inputs", inputs);
+    console.log("editando...", inputs);
+    updateUser({
+      id: user.id,
+      login: inputs.username,
+      password: "test",
+      name: inputs.names,
+      lastname: inputs.surnames,
+      user_type: inputs.usertype,
+      role_id: inputs.role,
+    });
   };
-
-  // Get roles from database
-  const { data, error, isLoading } =  useGetRolesQuery();
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>{error.message}</div>;
-  const roles = data.items;
 
   return (
     <FormControl sx={{ my: 2 }}>
@@ -154,6 +151,7 @@ function EditUser({user}: any) {
             key={formLabel.id}
             autoFocus
             required
+            autoComplete="off"
             sx={{ my: 2 }}
             id={formLabel.id}
             label={formLabel.label}
@@ -205,9 +203,11 @@ function DeleteUser({user}: any) {
   return (
     <Box sx={{ my: 2 }}>
       <Box>¿Estás seguro de eliminar al usuario "{user.login}"?</Box>
-      <Button sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleDelete}>
-        Eliminar
-      </Button>
+      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleDelete}>
+          Eliminar
+        </Button>
+      </Box>
     </Box>
   );
 }
@@ -217,12 +217,12 @@ function DeleteUser({user}: any) {
  * @param row 
  * @returns 
  */
-function ActionsPerUserProfile(row: any) {
+function ActionsPerUserProfile(row: any, roles: any) {
   return (
     <Grid container direction="row" justifyContent="center" alignItems="center">
       {/* Edit button */}
       <React.Fragment>
-        {EditButton("Editar usuario", <EditUser user={row} />)}
+        {EditButton("Editar usuario", <EditUser user={row} roles={roles} />)}
       </React.Fragment>
       
       {/* Delete button */}
@@ -244,21 +244,32 @@ const UserProfiles = () => {
     { id: "actions", label: "Acciones", align: "center" },
   ];
 
-  const [rows, setRows] = useState([]);
-  const { data, error, isLoading } =  useGetUsersQuery(undefined);
+  // Get roles from database
+  const [roles, setRoles] = useState([]); 
+  const { data: dataRoles, error: errorRoles, isLoading: isLoadingRoles } =  useGetRolesQuery();
+  useEffect(() => {
+    if (dataRoles) {
+      setRoles(dataRoles.items);
+      console.log("roles", dataRoles.items);
+    }
+  }, [dataRoles]);
 
   // Add actions to the rows
+  const [rows, setRows] = useState([]);
+  const { data, error, isLoading } =  useGetUsersQuery(undefined);
   useEffect(() => {
-    if (data) {
+    if (data && !isLoadingRoles) {
       const rowsWithActions = data.items.map((row: any) => {
+        const role_description = roles.find((role: any) => role.id === row.role_id)?.description;
         const rowWithActions = {
           id: row.id,
           username: row.login,
           names: row.name,
           surnames: row.lastname,
-          role: row.role_id,
+          role: role_description,
+          role_id: row.role_id,
           usertype: row.user_type,
-          actions: ActionsPerUserProfile(row),
+          actions: ActionsPerUserProfile(row, roles),
         };
         return rowWithActions;
       });
@@ -275,7 +286,7 @@ const UserProfiles = () => {
         <DashboardLayoutBasic>
           <Box sx={{ width: "100%" }}>
             <Title title="Perfiles de Usuarios" />
-            <DataTable title="Detalles de Usuario" columns={columns} rows={rows} addForm={<AddUser />} />
+            <DataTable title="Detalles de Usuario" columns={columns} rows={rows} addForm={<AddUser roles={roles}/>} />
           </Box>
         </DashboardLayoutBasic>
       </DashboardWrapper>
