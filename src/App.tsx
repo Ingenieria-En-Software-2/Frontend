@@ -16,7 +16,7 @@ function App() {
   /* This is an example of how to use the generated API */
 
   /* How to get users by query params */
-  // const { data, error, isLoading } = useGetUsersQuery(undefined); get first 10 users
+  // const { data, error, isLoading } = useGetUsersQuery(undefined); // get first 10 users
   // const { data, error, isLoading } = useGetUsersQuery({
   //   // get users with name "admin"
   //   name: "admin",
@@ -47,20 +47,12 @@ function App() {
 
   // useEffect(() => {
   //   createUser({
-  //     login: "admin",
-  //     password: "admin",
-  //     name: "admin",
-  //     lastname: "admin",
-  //     user_type: "admin",
+  //     login: "test",
+  //     password: "test",
+  //     name: "test",
+  //     lastname: "test",
+  //     user_type: "test",
   //     role_id: 1,
-  //   });
-  //   createUser({
-  //     login: "user",
-  //     password: "user",
-  //     name: "user",
-  //     lastname: "user",
-  //     user_type: "user",
-  //     role_id: 2,
   //   });
   // }, [createUser]);
 
