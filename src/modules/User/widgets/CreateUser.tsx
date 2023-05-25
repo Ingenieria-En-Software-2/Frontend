@@ -53,58 +53,6 @@ const CreateUser = () => {
   const handleSubmit = (event: any) => {
     event.preventDefault();
 
-<<<<<<< HEAD
-        setUsernameError(false)
-        setUsernameExistsError(false)
-        setPasswordError(false)
-                          
-        if (username == '' || username.length < 8 || username.length > 20 || /^[a-zA-Z][a-zA-Z0-9_]+$/.test(username) == false) {
-            setUsernameError(true)
-        }
-        if (password == '' || password.length<8 || password.length > 16 || /[a-zA-Z0-9/+*^%$&#@?_-]+/.test(password) == false) {
-            setPasswordError(true)
-        }
-
-        if (usernameError == true || passwordError == true) {
-            //If there's an error
-            if (usernameError == true && passwordError == true){
-              setUsernameError(true)
-              setPasswordError(true)
-            }
-            if (usernameError == true){
-              setUsernameError(true)
-            }
-            if (passwordError == true){
-              setPasswordError(true)
-            }
-        }
-        else{
-            //If there's not an error anywhere
-            var searched_obj = undefined;
-            if (data2 != undefined){
-              searched_obj = data2.items.find(callback_func);
-            }
-            if (searched_obj == undefined && error2 != undefined){
-              //The username doesnt exist, create it
-              setCreatingUser(true);
-            }
-            else{
-              setUsernameExistsError(true);
-            }
-        }
-    }
-    const handleChangingPassword = (e) => {
-      setPassword(e.target.value)
-      setPasswordError(false)
-      setUsernameError(false)
-      setUsernameExistsError(false)
-    }
-    const handleChangingUsername = (e) => {
-      setUsername(e.target.value)
-      setPasswordError(false)
-      setUsernameError(false)
-      setUsernameExistsError(false)
-=======
     setUsernameError(false);
     setPasswordError(false);
 
@@ -131,7 +79,6 @@ const CreateUser = () => {
     } else {
       //If there's not an error anywhere
       console.log(username);
->>>>>>> 57830494666e1e6b0a338fdc0ded5011f9065488
     }
   };
   const handleChangingPassword = (e: any) => {
@@ -153,51 +100,6 @@ const CreateUser = () => {
               <>
                 <title>Crea una cuenta</title>
 
-<<<<<<< HEAD
-            <div style={{marginTop : '10%'}}>
-            <h1>Crear una cuenta nueva</h1>
-            <div style={{ margin: 25}}/>
-            <form autoComplete="off" onSubmit={handleSubmit}>
-                      <div style={{textAlign : 'center'}}>
-                      <TextField 
-                          label="Nombre de usuario"
-                          required
-                          onChange={e => handleChangingUsername(e)}
-                          variant="outlined"
-                          color="primary"
-                          type="text"
-                          helperText = {usernameError ? 'El nombre de usuario debe comenzar en letra y puede contener letras, números y guión bajo. Puede tener de 8 a 20 caracteres.' :
-                                        usernameAlreadyExistsError ? 'El nombre de usuario introducido ya existe.' : ' '}
-                          value = {username}
-                          sx={{ width: 600}}
-                          error={usernameError || usernameAlreadyExistsError}
-                          id = "username"
-                       />
-                       <div style={{ margin: 10 }}/>
-                       <TextField 
-                          label="Contraseña"
-                          required
-                          onChange={e => handleChangingPassword(e)}
-                          variant="outlined"
-                          color="primary"
-                          type="password"
-                          helperText = {passwordError ? 'La contraseña tiene un tamaño de 8 a 16 caracteres. Puede contener letras, números y caracteres especiales.' : ' '}
-                          value = {password}
-                          sx={{ width: 600}}
-                          error={passwordError}
-                          id = "password"
-                       />
-                       <div style={{ margin: 10 }}/>
-                       <Button variant="contained" color="primary" type="submit">Registrarse</Button>
-                       </div>
-                   
-              </form>
-              </div>
-            </>
-          </DashboardLayoutBasic>
-        </main>
-      </DashboardWrapper>
-=======
                 <div style={{ marginTop: "10%" }}>
                   <h1>Crear una cuenta nueva</h1>
                   <div style={{ margin: 25 }} />
@@ -249,7 +151,6 @@ const CreateUser = () => {
             </DashboardLayoutBasic>
           </main>
         </DashboardWrapper>
->>>>>>> 57830494666e1e6b0a338fdc0ded5011f9065488
       </div>
     </>
   );
