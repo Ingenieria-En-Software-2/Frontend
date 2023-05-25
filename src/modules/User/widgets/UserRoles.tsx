@@ -41,6 +41,9 @@ function AddUserRole() {
     // TO-DO: error and loading pages
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>{error.message}</div>;
+
+    // Reload page
+    window.location.reload();
   };
 
   return (
@@ -76,6 +79,7 @@ function EditUserRole({ role }: any) {
   const [updateRole, { data, error, isLoading }] = useUpdateRoleMutation();
 
   const handleEdit = () => {
+    e.
     // Verify role is unique
 
     updateRole({ id: role.id, description: inputs.description });
@@ -83,6 +87,10 @@ function EditUserRole({ role }: any) {
     // TO-DO: error and loading pages
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>{error.message}</div>;
+
+    // Reload page (TO-CHECK, Si no se agrega esto:
+    // si se cambia el rol de un usuario, no se actualiza bien users
+    window.location.reload(false);
   };
 
   return (

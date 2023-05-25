@@ -22,11 +22,15 @@ import {
 } from "services/dbApi";
 
 // ------------------ Formularios ------------------
-const formLabels: Array<Column> = [
+const textInputs: Array<Column> = [
   { id: "username", label: "Usuario" },
   { id: "names", label: "Nombres" },
   { id: "surnames", label: "Apellidos" },
-  { id: "usertype", label: "Tipo de Usuario" },
+];
+
+const userTypes = [
+  { id: 1, description: "Interno" },
+  { id: 2, description: "Externo" },
 ];
 
 /**
@@ -44,12 +48,12 @@ function AddUser({roles}: any) {
     username: "",
     names: "",
     surnames: "",
-    usertype: "",
+    usertype: userTypes[0].id,
     role: roles[0].id,
   });
-  const [createUser, { dataUser, errorUser, isLoadingUser }] = useCreateUserMutation();
 
   // Add user to database
+  const [createUser, { dataUser, errorUser, isLoadingUser }] = useCreateUserMutation();
   const handleAdd = () => {
     console.log("agregando...", inputs);
     createUser({
@@ -60,18 +64,21 @@ function AddUser({roles}: any) {
       user_type: inputs.usertype,
       role_id: inputs.role,
     });
+
+    // Reload page
+    window.location.reload();
   };
 
   return (
     <FormControl sx={{ my: 2 }}>
-      <Grid container>
-        {formLabels.map((formLabel) => (
-          <Grid item xs={6}> 
+      <Grid container spacing={2}>
+        {textInputs.map((formLabel) => (
+          <Grid item xs={6}>
             <TextField 
               autoFocus 
               required 
               autoComplete="off"
-              sx={{ my: 1 }} 
+              sx={{ my: 1, width: "100%" }}
               id={formLabel.id} 
               label={formLabel.label} 
               value={inputs[formLabel.id as keyof typeof inputs]}
@@ -82,6 +89,26 @@ function AddUser({roles}: any) {
             />
           </Grid>
         ))}
+        {/* User Types */}
+        <Grid item xs={6}>
+          <TextField
+            id="usertype"
+            select
+            label="Tipo de Usuario"
+            sx={{ my: 1, width: "100%" }}
+            SelectProps={{
+              native: true,
+            }}
+            value={inputs.usertype}
+            onChange={(e) => setInputs({ ...inputs, usertype: e.target.value })}
+          >
+            {userTypes.map((option) => ( 
+              <option key={option.id} value={option.id}>
+                {option.description}
+              </option>
+            ))}
+          </TextField>
+          </Grid>
       </Grid>
       <TextField
         id="role"
@@ -140,19 +167,22 @@ function EditUser({user, roles}: any) {
       user_type: inputs.usertype,
       role_id: inputs.role,
     });
+
+    // Reload page
+    window.location.reload();
   };
 
   return (
     <FormControl sx={{ my: 2 }}>
-      <Grid container>
-      {formLabels.map((formLabel) => (
+      <Grid container spacing={2}>
+      {textInputs.map((formLabel) => (
         <Grid item xs={6}> 
           <TextField
             key={formLabel.id}
             autoFocus
             required
             autoComplete="off"
-            sx={{ my: 2 }}
+            sx={{ my: 1, width: "100%" }}
             id={formLabel.id}
             label={formLabel.label}
             defaultValue={inputs[formLabel.id as keyof typeof inputs]}
@@ -163,7 +193,27 @@ function EditUser({user, roles}: any) {
           />
         </Grid>
       ))}
-      </Grid>
+      {/* User Types */}
+      <Grid item xs={6}>
+        <TextField
+          id="usertype"
+          select
+          label="Tipo de Usuario"
+          sx={{ my: 1, width: "100%" }}
+          SelectProps={{
+            native: true,
+          }}
+          value={inputs.usertype}
+          onChange={(e) => setInputs({ ...inputs, usertype: e.target.value })}
+        >
+          {userTypes.map((option) => ( 
+            <option key={option.id} value={option.id}>
+              {option.description}
+            </option>
+          ))}
+        </TextField>
+        </Grid>
+    </Grid>
       <TextField
         id="role"
         select
@@ -247,18 +297,18 @@ const UserProfiles = () => {
   // Get roles from database
   const [roles, setRoles] = useState([]); 
   const { data: dataRoles, error: errorRoles, isLoading: isLoadingRoles } =  useGetRolesQuery();
+    
+  // Get users from database
+  const [rows, setRows] = useState([]);
+  const { data, error, isLoading } =  useGetUsersQuery(undefined);
+
   useEffect(() => {
     if (dataRoles) {
       setRoles(dataRoles.items);
-      console.log("roles", dataRoles.items);
+      console.log("Roles cargados", dataRoles.items);
     }
-  }, [dataRoles]);
 
-  // Add actions to the rows
-  const [rows, setRows] = useState([]);
-  const { data, error, isLoading } =  useGetUsersQuery(undefined);
-  useEffect(() => {
-    if (data && !isLoadingRoles) {
+    if (data) {
       const rowsWithActions = data.items.map((row: any) => {
         const role_description = roles.find((role: any) => role.id === row.role_id)?.description;
         const rowWithActions = {
@@ -275,10 +325,10 @@ const UserProfiles = () => {
       });
       setRows(rowsWithActions);
     }
-  }, [data]);
+  }, [data, dataRoles]);
 
   // If it is loading, display a loading message
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoadingRoles || isLoading) return <div>Loading...</div>;
 
   return (
     <div className="main-container">
