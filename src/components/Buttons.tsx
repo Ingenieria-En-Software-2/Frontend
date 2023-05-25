@@ -1,5 +1,5 @@
 import * as React from "react";
-import Grid from "@mui/material/Grid";
+
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -23,16 +23,6 @@ const buttonStyle = {
 };
 
 const iconStyle = "text-gray-700 hover:text-gray-500";
-
-function ActionsButtons(row: any, actions: any) {
-  return (
-    <Grid container direction="row" justifyContent="center" alignItems="center">
-      {actions.map((action: any) => (
-        <React.Fragment key={action.id}>{action.button(action.title, action.form(row))}</React.Fragment>
-      ))}
-    </Grid>
-  )
-}
 
 function Modal({ open, handleClose, title, content }: any) {
   return (
@@ -96,4 +86,4 @@ function DeleteButton(title: string, content: JSX.Element) {
   return <ModalButton title={title} content={content} icon={<DeleteIcon className={iconStyle} />} />;
 }
 
-export { AddButton, EditButton, DeleteButton, ActionsButtons };
+export { AddButton, EditButton, DeleteButton };

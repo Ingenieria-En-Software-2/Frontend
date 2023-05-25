@@ -4,10 +4,11 @@ import DashboardLayoutBasic from "modules/Layout/widgets/containers/DashboardLay
 import { DashboardWrapper } from "modules/Layout/context/dashboardLayout";
 import DataTable from "components/DataTable";
 import { Column } from "components/DataTable";
-import { EditButton, DeleteButton, ActionsButtons } from "components/Buttons";
+import { EditButton, DeleteButton } from "components/Buttons";
 import Title from "components/Title";
 
 import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
@@ -21,8 +22,12 @@ import {
 } from "services/dbApi";
 
 // ------------------ Formularios ------------------
-const formLabels = [{ id: "description", label: "Descripción" }];
+const formLabels: Array<Column> = [{ id: "description", label: "Descripción" }];
 
+/**
+ * Form to insert a new role in the database
+ * @returns 
+ */
 function AddUserRole() {
   // Guarda los inputs del formulario
   const [inputs, setInputs] = useState<{ description: string }>({ description: "" });
@@ -64,12 +69,19 @@ function AddUserRole() {
   );
 }
 
-function EditUserRole(role: any) {
-  // const [inputs, setInputs] = useState<{ description: string }>({ description: role.description });
-  // const [updateRole, { data, error, isLoading }] = useUpdateRoleMutation();
+/**
+ * Form to edit a role in the database
+ * @param param0 
+ * @returns 
+ */
+function EditUserRole({role}: any) {
+  console.log("role", role);
+  const [inputs, setInputs] = useState<{ description: string }>({ description: role.description });
+  const [updateRole, { data, error, isLoading }] = useUpdateRoleMutation();
 
   const handleEdit = () => {
     console.log("editando...", role);
+    console.log("inputs", inputs);
 
     // TO-DO: error and loading pages
     // if (isLoading) return <div>Loading...</div>;
@@ -90,9 +102,12 @@ function EditUserRole(role: any) {
           sx={{ my: 2 }}
           id={formLabel.id}
           label={formLabel.label}
-          // defaultValue={inputs[formLabel.id as keyof typeof inputs]}
-          // onChange={handleInputChange}
-          // value={inputs[formLabel.id as keyof typeof inputs]}
+          defaultValue={inputs[formLabel.id as keyof typeof inputs]}
+          onChange={(
+              e: React.ChangeEvent<HTMLInputElement>
+            ) => setInputs({ ...inputs, [formLabel.id]: e.target.value }
+          )}
+          value={inputs[formLabel.id as keyof typeof inputs]}
         />
       ))}
       <Button type='submit' sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleEdit}>
@@ -102,17 +117,20 @@ function EditUserRole(role: any) {
   );
 }
 
-function DeleteUserRole(role: any) {
-  // const [deleteRole, { data, error, isLoading }] = useDeleteRoleMutation();
+/**
+ * Dialog to confirm the deletion of a role
+ * @param param0 
+ * @returns 
+ */
+function DeleteUserRole({role}: any) {
+  const [deleteRole, { data, error, isLoading }] = useDeleteRoleMutation();
 
   const handleDelete = () => {
-    console.log("eliminando...", role);
-
     // TO-DO: error and loading pages
     // if (isLoading) return <div>Loading...</div>;
     // if (error) return <div>{error.message}</div>;
 
-    // deleteRole(role.id);
+    deleteRole(role.id);
   };
 
   return (
@@ -125,28 +143,33 @@ function DeleteUserRole(role: any) {
   );
 }
 
+/**
+ * Actions buttons for each row
+ * @param row 
+ * @returns 
+ */
+function ActionsPerRole(row: any) {
+  return (
+    <Grid container direction="row" justifyContent="center" alignItems="center">
+      {/* Edit button */}
+      <React.Fragment>
+        {EditButton("Editar rol", <EditUserRole role={row} />)}
+      </React.Fragment>
+      
+      {/* Delete button */}
+      <React.Fragment>
+        {DeleteButton("Eliminar rol", <DeleteUserRole role={row} />)}
+      </React.Fragment>
+    </Grid>
+  )
+}
+
 // ------------------ Vista Principal ------------------
 const UserRoles = () => {
   const columns: Array<Column> = [
     { id: "id", label: "ID", align: "center" },
     { id: "description", label: "Descripción" },
     { id: "actions", label: "Acciones", align: "center" },
-  ];
-
-  // Actions to be displayed in the table
-  const actions = [
-    {
-      id: "1",
-      title: "Editar rol",
-      button: EditButton,
-      form: EditUserRole,
-    },
-    {
-      id: "2",
-      title: "Eliminar rol",
-      button: DeleteButton,
-      form: DeleteUserRole,
-    },
   ];
 
   // Get roles from database
@@ -159,15 +182,12 @@ const UserRoles = () => {
       console.log(data);
       const rowsWithActions = data.items.map((row: any) => {
         const rowWithActions = { ...row };
-        rowWithActions.actions = ActionsButtons(row, actions);
+        rowWithActions.actions = ActionsPerRole(row);
         return rowWithActions;
       });
       setRows(rowsWithActions);
     }
   }, [data]);
-
-  // If there is an error, display a message
-  if (error) return <div>Error: {error.message}</div>;
 
   // If it is loading, display a loading message
   if (isLoading) return <div>Loading...</div>;
