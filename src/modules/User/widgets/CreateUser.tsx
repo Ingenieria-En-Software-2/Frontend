@@ -103,16 +103,6 @@ const CreateUser = () => {
       setUsernameError(false)
       setUsernameExistsError(false)
   };
-  const handleChangingPassword = (e: any) => {
-    setPassword(e.target.value);
-    setPasswordError(false);
-    setUsernameError(false);
-  };
-  const handleChangingUsername = (e: any) => {
-    setUsername(e.target.value);
-    setPasswordError(false);
-    setUsernameError(false);
-  };
   return (
     <>
       <div className="main-container">
