@@ -16,17 +16,10 @@ const CreateUser = () => {
   const [usernameError, setUsernameError] = useState(false);
   const [usernameAlreadyExistsError, setUsernameExistsError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
-  const [createUser, { data, error, isLoading }] = useCreateUserMutation();
+  const [createUser, {  }] = useCreateUserMutation(); //
   const [creatingUser, setCreatingUser] = useState(false);
-  const [value, setValue] = useState(3);
   const { data: data2, error : error2, isLoading : isLoading2 } = useGetUsersQuery({login: username,});
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (data2) setValue(0);
-    if (error) setValue(1);
-    if (isLoading2) setValue(2);
-  }, [data2, error2, isLoading2]);
 
   useEffect(() => {
      if (!creatingUser) return;
@@ -55,28 +48,33 @@ const CreateUser = () => {
         setUsernameError(false)
         setUsernameExistsError(false)
         setPasswordError(false)
+
+        var pass_e = false;
+        var user_e = false;
                           
         if (username == '' || username.length < 8 || username.length > 20 || /^[a-zA-Z][a-zA-Z0-9_]+$/.test(username) == false) {
             setUsernameError(true)
+            user_e = true;
         }
         if (password == '' || password.length<8 || password.length > 16 || /[a-zA-Z0-9/+*^%$&#@?_-]+/.test(password) == false) {
             setPasswordError(true)
+            pass_e = true;
         }
 
-        if (usernameError == true || passwordError == true) {
+        if (pass_e == true || user_e == true) {
             //If there's an error
-            if (usernameError == true && passwordError == true){
+            if (user_e == true && pass_e == true){
               setUsernameError(true)
               setPasswordError(true)
             }
-            if (usernameError == true){
+            if (user_e == true){
               setUsernameError(true)
             }
-            if (passwordError == true){
+            if (pass_e == true){
               setPasswordError(true)
             }
         }
-        else{
+        if (user_e == false && pass_e == false){
             //If there's not an error anywhere
             var searched_obj = undefined;
             if (data2 != undefined){
