@@ -18,7 +18,7 @@ const CreateUser = () => {
   const [passwordError, setPasswordError] = useState(false);
   const [createUser, {  }] = useCreateUserMutation(); //
   const [creatingUser, setCreatingUser] = useState(false);
-  const { data: data2, error : error2, isLoading : isLoading2 } = useGetUsersQuery({login: username,});
+  const { data: data2, error : error2} = useGetUsersQuery({login: username,});
   const navigate = useNavigate();
 
   useEffect(() => {
