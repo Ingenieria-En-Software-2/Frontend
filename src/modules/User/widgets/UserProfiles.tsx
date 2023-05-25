@@ -48,7 +48,7 @@ function AddUser({roles}: any) {
     username: "",
     names: "",
     surnames: "",
-    usertype: userTypes[0].id,
+    usertype: userTypes[0].description,
     role: roles[0].id,
   });
 
@@ -64,9 +64,6 @@ function AddUser({roles}: any) {
       user_type: inputs.usertype,
       role_id: inputs.role,
     });
-
-    // Reload page
-    window.location.reload();
   };
 
   return (
@@ -103,7 +100,7 @@ function AddUser({roles}: any) {
             onChange={(e) => setInputs({ ...inputs, usertype: e.target.value })}
           >
             {userTypes.map((option) => ( 
-              <option key={option.id} value={option.id}>
+              <option key={option.id} value={option.description}>
                 {option.description}
               </option>
             ))}
@@ -167,9 +164,6 @@ function EditUser({user, roles}: any) {
       user_type: inputs.usertype,
       role_id: inputs.role,
     });
-
-    // Reload page
-    window.location.reload();
   };
 
   return (
@@ -207,7 +201,7 @@ function EditUser({user, roles}: any) {
           onChange={(e) => setInputs({ ...inputs, usertype: e.target.value })}
         >
           {userTypes.map((option) => ( 
-            <option key={option.id} value={option.id}>
+            <option key={option.id} value={option.description}>
               {option.description}
             </option>
           ))}
@@ -308,7 +302,7 @@ const UserProfiles = () => {
       console.log("Roles cargados", dataRoles.items);
     }
 
-    if (data) {
+    if (data && dataRoles) {
       const rowsWithActions = data.items.map((row: any) => {
         const role_description = roles.find((role: any) => role.id === row.role_id)?.description;
         const rowWithActions = {
