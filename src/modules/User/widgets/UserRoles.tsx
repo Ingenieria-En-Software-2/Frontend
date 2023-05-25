@@ -13,9 +13,8 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 
-import { 
+import {
   useGetRolesQuery,
-  useGetRoleByIdQuery,
   useCreateRoleMutation,
   useUpdateRoleMutation,
   useDeleteRoleMutation,
@@ -26,7 +25,7 @@ const formLabels: Array<Column> = [{ id: "description", label: "Descripción" }]
 
 /**
  * Form to insert a new role in the database
- * @returns 
+ * @returns
  */
 function AddUserRole() {
   // Guarda los inputs del formulario
@@ -36,14 +35,13 @@ function AddUserRole() {
   // Add rol to database
   const handleAdd = () => {
     // TO-DO: Verify inputs
-    console.log("agregando...", inputs);
-    
+
     createRole(inputs);
 
     // TO-DO: error and loading pages
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>{error.message}</div>;
-   };
+  };
 
   return (
     <FormControl sx={{ my: 2 }}>
@@ -51,18 +49,17 @@ function AddUserRole() {
         <TextField
           autoFocus
           required
-          autoComplete='off'
+          autoComplete="off"
           sx={{ my: 2 }}
           id={formLabel.id}
           label={formLabel.label}
           value={inputs[formLabel.id as keyof typeof inputs]}
-          onChange={(
-              e: React.ChangeEvent<HTMLInputElement>
-            ) => setInputs({ ...inputs, [formLabel.id]: e.target.value }
-          )}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setInputs({ ...inputs, [formLabel.id]: e.target.value })
+          }
         />
       ))}
-      <Button type='submit' sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleAdd}>
+      <Button type="submit" sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleAdd}>
         Enviar
       </Button>
     </FormControl>
@@ -71,24 +68,21 @@ function AddUserRole() {
 
 /**
  * Form to edit a role in the database
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
-function EditUserRole({role}: any) {
-  console.log("role", role);
+function EditUserRole({ role }: any) {
   const [inputs, setInputs] = useState<{ description: string }>({ description: role.description });
   const [updateRole, { data, error, isLoading }] = useUpdateRoleMutation();
 
   const handleEdit = () => {
-    console.log("editando...", role);
-    console.log("inputs", inputs);
+    // Verify role is unique
+
+    updateRole({ id: role.id, description: inputs.description });
 
     // TO-DO: error and loading pages
-    // if (isLoading) return <div>Loading...</div>;
-    // if (error) return <div>{error.message}</div>;
-
-    // updateRole(inputs);
-
+    if (isLoading) return <div>Loading...</div>;
+    if (error) return <div>{error.message}</div>;
   };
 
   return (
@@ -98,19 +92,18 @@ function EditUserRole({role}: any) {
           key={formLabel.id}
           autoFocus
           required
-          autoComplete='off'
+          autoComplete="off"
           sx={{ my: 2 }}
           id={formLabel.id}
           label={formLabel.label}
           defaultValue={inputs[formLabel.id as keyof typeof inputs]}
-          onChange={(
-              e: React.ChangeEvent<HTMLInputElement>
-            ) => setInputs({ ...inputs, [formLabel.id]: e.target.value }
-          )}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            setInputs({ ...inputs, [formLabel.id]: e.target.value })
+          }
           value={inputs[formLabel.id as keyof typeof inputs]}
         />
       ))}
-      <Button type='submit' sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleEdit}>
+      <Button type="submit" sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleEdit}>
         Enviar
       </Button>
     </FormControl>
@@ -119,49 +112,47 @@ function EditUserRole({role}: any) {
 
 /**
  * Dialog to confirm the deletion of a role
- * @param param0 
- * @returns 
+ * @param param0
+ * @returns
  */
-function DeleteUserRole({role}: any) {
+function DeleteUserRole({ role }: any) {
   const [deleteRole, { data, error, isLoading }] = useDeleteRoleMutation();
 
   const handleDelete = () => {
-    // TO-DO: error and loading pages
-    // if (isLoading) return <div>Loading...</div>;
-    // if (error) return <div>{error.message}</div>;
-
     deleteRole(role.id);
+
+    // TO-DO: error and loading pages
+    if (isLoading) return <div>Loading...</div>;
+    if (error) return <div>{error.message}</div>;
   };
 
   return (
     <Box sx={{ my: 2 }}>
       <Box>¿Estás seguro de eliminar el rol "{role.description}"?</Box>
-      <Button type='submit' sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleDelete}>
-        Eliminar
-      </Button>
+      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+        <Button type="submit" sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleDelete}>
+          Eliminar
+        </Button>
+      </Box>
     </Box>
   );
 }
 
 /**
  * Actions buttons for each row
- * @param row 
- * @returns 
+ * @param row
+ * @returns
  */
 function ActionsPerRole(row: any) {
   return (
     <Grid container direction="row" justifyContent="center" alignItems="center">
       {/* Edit button */}
-      <React.Fragment>
-        {EditButton("Editar rol", <EditUserRole role={row} />)}
-      </React.Fragment>
-      
+      <React.Fragment>{EditButton("Editar rol", <EditUserRole role={row} />)}</React.Fragment>
+
       {/* Delete button */}
-      <React.Fragment>
-        {DeleteButton("Eliminar rol", <DeleteUserRole role={row} />)}
-      </React.Fragment>
+      <React.Fragment>{DeleteButton("Eliminar rol", <DeleteUserRole role={row} />)}</React.Fragment>
     </Grid>
-  )
+  );
 }
 
 // ------------------ Vista Principal ------------------
@@ -174,14 +165,16 @@ const UserRoles = () => {
 
   // Get roles from database
   const [rows, setRows] = useState([]);
-  const { data, error, isLoading } =  useGetRolesQuery();
+  const { data, error, isLoading } = useGetRolesQuery();
 
   // Add actions to the rows
   useEffect(() => {
     if (data) {
-      console.log(data);
+      // ID dummy for the actions column (It's not DB ID)
+      let id = 1;
+
       const rowsWithActions = data.items.map((row: any) => {
-        const rowWithActions = { ...row };
+        const rowWithActions = { ...row, id: id++ };
         rowWithActions.actions = ActionsPerRole(row);
         return rowWithActions;
       });
