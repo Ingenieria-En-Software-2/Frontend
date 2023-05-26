@@ -86,7 +86,7 @@ function AddUserRole({ roles }: AddProps) {
                 autoFocus
                 required
                 autoComplete="off"
-                sx={{ my: 2 }}
+                sx={{ my: 2, width: "100%" }}
                 id={formLabel.id}
                 key={formLabel.id}
                 label={formLabel.label}
@@ -118,7 +118,9 @@ type EditProps = {
  */
 function EditUserRole({ role, roles }: EditProps) {
   const title = `Editar rol "${role.description}"`;
-  const [inputs, setInputs] = useState<{ description: string }>({ description: role.description });
+  // TO-CHECK There's a bug if you don't use the same name for the state and the input
+  // after a edit
+  const [inputs, setInputs] = useState<{ description: string }>({ description: "" });
   const [formErrorMessages, setFormErrorMessages] = useState<Array<React.ReactElement>>([]);
 
   // Modal state
@@ -146,7 +148,6 @@ function EditUserRole({ role, roles }: EditProps) {
     if (error) return <div>{"message" in error && error.message}</div>;
 
     // Update inputs
-    setInputs({ description: inputs.description });
     handleCloseModal();
   };
 
@@ -171,7 +172,7 @@ function EditUserRole({ role, roles }: EditProps) {
                 autoFocus
                 required
                 autoComplete="off"
-                sx={{ my: 2 }}
+                sx={{ my: 2, width: "100%" }}
                 id={formLabel.id}
                 label={formLabel.label}
                 defaultValue={inputs[formLabel.id as keyof typeof inputs]}
@@ -297,7 +298,7 @@ const UserRoles = () => {
       });
       setRows(rowsWithActions);
     }
-  }, [rows, data]);
+  }, [data]);
 
   // If it is loading, display a loading message
   if (isLoading) return <div>Loading...</div>;
