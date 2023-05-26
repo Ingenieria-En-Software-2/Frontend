@@ -50,7 +50,7 @@ function AddUser({ roles }: any) {
     names: "",
     surnames: "",
     usertype: userTypes[0].description,
-    role: roles.length > 0 ? roles[0].id : 0,
+    role: roles.length > 0 ? roles[0].id : -1,
   });
   const [open, setOpen] = useState(false);
   const handleOpenModal = () => setOpen(true);
