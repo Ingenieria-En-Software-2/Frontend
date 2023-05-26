@@ -7,6 +7,8 @@ import { Column } from "components/DataTable";
 import Title from "components/Title";
 import { Modal, iconStyle, buttonStyle } from "components/Buttons";
 import { AddIcon, EditIcon, DeleteIcon } from "components/ux/Icons";
+import { InfoAlert } from "components/Alerts";
+
 import { Role } from "services/types";
 
 import Box from "@mui/material/Box";
@@ -20,24 +22,39 @@ import { useGetRolesQuery, useCreateRoleMutation, useUpdateRoleMutation, useDele
 // ------------------ Formularios ------------------
 const formLabels: Array<Column> = [{ id: "description", label: "Descripción" }];
 
+type AddProps = {
+  roles: Array<Role>;
+};
+
 /**
  * Modal Form to insert a new role in the database
  * @returns
  */
-function AddUserRole() {
-  // Guarda los inputs del formulario
+function AddUserRole({ roles }: AddProps) {
+  const title = "Agregar rol";
   const [inputs, setInputs] = useState<{ description: string }>({ description: "" });
-  const [createRole, { error, isLoading }] = useCreateRoleMutation();
+  const [formErrorMessages, setFormErrorMessages] = useState<Array<React.ReactElement>>([]);
+
+  // Modal state
   const [open, setOpen] = useState(false);
   const handleOpenModal = () => setOpen(true);
-  const handleCloseModal = () => setOpen(false);
-  const title = "Agregar rol";
+  const handleCloseModal = () => {
+    setOpen(false);
+
+    // Clean inputs and error messages
+    setInputs({ description: "" });
+    setFormErrorMessages([]);
+  };
 
   // Add rol to database
+  const [createRole, { error, isLoading }] = useCreateRoleMutation();
   const handleAdd = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    // TO-DO: Verify inputs
+    // Verify if role is unique
+    if (roles.some((role) => role.description === inputs.description)) {
+      setFormErrorMessages([<InfoAlert message="El rol con esa descripción ya existe" />]);
+      return;
+    }
 
     createRole(inputs);
 
@@ -60,6 +77,10 @@ function AddUserRole() {
         title={title}
         content={
           <FormControl sx={{ my: 2 }} component="form" onSubmit={handleAdd}>
+            {/* Error Messages */}
+            {formErrorMessages.map((message) => (
+              <Box>{message}</Box>
+            ))}
             {formLabels.map((formLabel) => (
               <TextField
                 autoFocus
@@ -85,8 +106,9 @@ function AddUserRole() {
   );
 }
 
-type Props = {
+type EditProps = {
   role: Role;
+  roles: Array<Role>;
 };
 
 /**
@@ -94,20 +116,28 @@ type Props = {
  * @param param0
  * @returns
  */
-function EditUserRole({ role }: Props) {
-  const [inputs, setInputs] = useState<{ description: string }>({ description: "" });
-  const [updateRole, { error, isLoading }] = useUpdateRoleMutation();
+function EditUserRole({ role, roles }: EditProps) {
+  const title = `Editar rol "${role.description}"`;
+  const [inputs, setInputs] = useState<{ description: string }>({ description: role.description });
+  const [formErrorMessages, setFormErrorMessages] = useState<Array<React.ReactElement>>([]);
 
   // Modal state
   const [open, setOpen] = useState(false);
   const handleOpenModal = () => setOpen(true);
-  const handleCloseModal = () => setOpen(false);
-  const title = `Editar rol "${role.description}"`;
+  const handleCloseModal = () => {
+    setOpen(false);
+    setFormErrorMessages([]);
+  };
 
+  const [updateRole, { error, isLoading }] = useUpdateRoleMutation();
   const handleEdit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Verify role is unique
+    // Verify if role is unique
+    if (roles.some((role) => role.description === inputs.description)) {
+      setFormErrorMessages([<InfoAlert message="El rol con esa descripción ya existe" />]);
+      return;
+    }
 
     updateRole({ id: role.id, description: inputs.description });
 
@@ -115,8 +145,8 @@ function EditUserRole({ role }: Props) {
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>{"message" in error && error.message}</div>;
 
-    // TO-CHECK: Clean inputs
-    setInputs({ description: "" });
+    // Update inputs
+    setInputs({ description: inputs.description });
     handleCloseModal();
   };
 
@@ -131,6 +161,10 @@ function EditUserRole({ role }: Props) {
         title={title}
         content={
           <FormControl sx={{ my: 2 }} component="form" onSubmit={handleEdit}>
+            {/* Error Messages */}
+            {formErrorMessages.map((message) => (
+              <Box sx={{ color: "red" }}>{message}</Box>
+            ))}
             {formLabels.map((formLabel) => (
               <TextField
                 key={formLabel.id}
@@ -156,6 +190,10 @@ function EditUserRole({ role }: Props) {
     </Box>
   );
 }
+
+type Props = {
+  role: Role;
+};
 
 /**
  * Dialog to confirm the deletion of a role
@@ -221,11 +259,11 @@ type Row = {
  * @param row
  * @returns
  */
-function ActionsPerRole(row: Row) {
+function ActionsPerRole(row: Row, roles: Role[]) {
   return (
     <Grid container direction="row" justifyContent="center" alignItems="center">
       {/* Edit button */}
-      <EditUserRole role={row} />
+      <EditUserRole role={row} roles={roles} />
 
       {/* Delete button */}
       <DeleteUserRole role={row} />
@@ -244,16 +282,17 @@ const UserRoles = () => {
   // Get roles from database
   const [rows, setRows]: any = useState([]);
   const { data, error, isLoading } = useGetRolesQuery(undefined);
+  const [roles, setRoles]: any = useState([]);
 
   // Add actions to the rows
   useEffect(() => {
     if (data) {
+      setRoles(data.items);
       // ID dummy for the actions column (It's not DB ID)
       let id = 1;
-
       const rowsWithActions = data.items.map((row: any) => {
         const rowWithActions = { ...row, id: id++ };
-        rowWithActions.actions = ActionsPerRole(row);
+        rowWithActions.actions = ActionsPerRole(row, roles);
         return rowWithActions;
       });
       setRows(rowsWithActions);
@@ -271,7 +310,7 @@ const UserRoles = () => {
         <DashboardLayoutBasic>
           <Box sx={{ width: "100%" }}>
             <Title title="Roles de Usuarios" />
-            <DataTable columns={columns} rows={rows} addForm={<AddUserRole />} error={errorMessage} />
+            <DataTable columns={columns} rows={rows} addForm={<AddUserRole roles={roles} />} error={errorMessage} />
           </Box>
         </DashboardLayoutBasic>
       </DashboardWrapper>

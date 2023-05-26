@@ -7,6 +7,7 @@ import { Column } from "components/DataTable";
 import Title from "components/Title";
 import { Modal, iconStyle, buttonStyle } from "components/Buttons";
 import { AddIcon, EditIcon, DeleteIcon } from "components/ux/Icons";
+import { InfoAlert } from "components/Alerts";
 
 import { Role, User } from "services/types";
 
@@ -38,13 +39,15 @@ const userTypes = [
 
 type AddProps = {
   roles: Array<Role>;
+  users: Array<User>;
 };
 
 /**
  * Modal Form to insert a new user in the database
  * @returns
  */
-function AddUser({ roles }: AddProps) {
+function AddUser({ roles, users }: AddProps) {
+  const title = "Agregar usuario";
   const [inputs, setInputs] = useState<{
     username: string;
     names: string;
@@ -58,15 +61,36 @@ function AddUser({ roles }: AddProps) {
     usertype: userTypes[0].description,
     role: roles.length > 0 ? roles[0].id : -1,
   });
+  const [formErrorMessages, setFormErrorMessages] = useState<Array<React.ReactElement>>([]);
+
+  // Modal state
   const [open, setOpen] = useState(false);
   const handleOpenModal = () => setOpen(true);
-  const handleCloseModal = () => setOpen(false);
-  const title = "Agregar usuario";
+  const handleCloseModal = () => {
+    setOpen(false);
+
+    // Clean inputs and error messages
+    setInputs({
+      username: "",
+      names: "",
+      surnames: "",
+      usertype: userTypes[0].description,
+      role: roles.length > 0 ? roles[0].id : -1,
+    });
+
+    setFormErrorMessages([]);
+  };
 
   // Add user to database
   const [createUser, { error, isLoading }] = useCreateUserMutation();
   const handleAdd = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // Verify if username is unique
+    if (users.some((user) => user.login === inputs.username)) {
+      setFormErrorMessages([<InfoAlert message="El nombre de usuario ya existe" />]);
+      return;
+    }
 
     createUser({
       login: inputs.username,
@@ -96,6 +120,10 @@ function AddUser({ roles }: AddProps) {
         title={title}
         content={
           <FormControl sx={{ my: 2 }} component="form" onSubmit={handleAdd}>
+            {/* Error Messages */}
+            {formErrorMessages.map((message) => (
+              <Box>{message}</Box>
+            ))}
             <Grid container spacing={2}>
               {textInputs.map((formLabel) => (
                 <Grid item xs={6} key={formLabel.id}>
@@ -164,6 +192,7 @@ function AddUser({ roles }: AddProps) {
 type EditProps = {
   user: User;
   roles: Array<Role>;
+  users: Array<User>;
 };
 
 /**
@@ -171,7 +200,8 @@ type EditProps = {
  * @param param0
  * @returns
  */
-function EditUser({ user, roles }: EditProps) {
+function EditUser({ user, roles, users }: EditProps) {
+  const title = `Editar usuario "${user.login}"`;
   const [inputs, setInputs] = useState<{
     username: string;
     names: string;
@@ -185,17 +215,26 @@ function EditUser({ user, roles }: EditProps) {
     usertype: user.user_type,
     role: user.role_id,
   });
+  const [formErrorMessages, setFormErrorMessages] = useState<Array<React.ReactElement>>([]);
 
   // Modal state
   const [open, setOpen] = useState(false);
   const handleOpenModal = () => setOpen(true);
-  const handleCloseModal = () => setOpen(false);
-  const title = `Editar usuario "${user.login}"`;
+  const handleCloseModal = () => {
+    setOpen(false);
+    setFormErrorMessages([]);
+  };
 
   // Update user in database
   const [updateUser] = useUpdateUserMutation();
   const handleEdit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // Verify if username is unique
+    if (users.some((user) => user.login === inputs.username)) {
+      setFormErrorMessages([<InfoAlert message="El nombre de usuario ya existe" />]);
+      return;
+    }
 
     updateUser({
       id: user.id,
@@ -205,6 +244,15 @@ function EditUser({ user, roles }: EditProps) {
       lastname: inputs.surnames,
       user_type: inputs.usertype,
       role_id: inputs.role,
+    });
+
+    // Update inputs
+    setInputs({
+      username: inputs.username,
+      names: inputs.names,
+      surnames: inputs.surnames,
+      usertype: inputs.usertype,
+      role: inputs.role,
     });
 
     handleCloseModal();
@@ -221,6 +269,10 @@ function EditUser({ user, roles }: EditProps) {
         title={title}
         content={
           <FormControl sx={{ my: 2 }} component="form" onSubmit={handleEdit}>
+            {/* Error Messages */}
+            {formErrorMessages.map((message) => (
+              <Box>{message}</Box>
+            ))}
             <Grid container spacing={2}>
               {textInputs.map((formLabel) => (
                 <Grid item xs={6} key={formLabel.id}>
@@ -344,11 +396,11 @@ function DeleteUser({ user }: DeleteProps) {
  * @param row
  * @returns
  */
-function ActionsPerUserProfile(row: any, roles: Array<Role>) {
+function ActionsPerUserProfile(row: any, roles: Array<Role>, users: Array<User>) {
   return (
     <Grid container direction="row" justifyContent="center" alignItems="center">
       {/* Edit button */}
-      <EditUser user={row} roles={roles} />
+      <EditUser user={row} roles={roles} users={users} />
 
       {/* Delete button */}
       <DeleteUser user={row} />
@@ -373,12 +425,14 @@ const UserProfiles = () => {
 
   // Get users from database
   const [rows, setRows]: any = useState([]);
+  const [users, setUsers]: any = useState([]);
   const { data, error, isLoading } = useGetUsersQuery(undefined);
 
   useEffect(() => {
     if (dataRoles) setRoles(dataRoles.items);
 
     if (data && dataRoles) {
+      setUsers(data.items);
       const rowsWithActions = data.items.map((row: any) => {
         const role_description = roles.find((role: any) => role.id === row.role_id)?.description;
         const rowWithActions = {
@@ -389,7 +443,7 @@ const UserProfiles = () => {
           role: role_description,
           role_id: row.role_id,
           usertype: row.user_type,
-          actions: ActionsPerUserProfile(row, roles),
+          actions: ActionsPerUserProfile(row, roles, users),
         };
         return rowWithActions;
       });
@@ -408,7 +462,13 @@ const UserProfiles = () => {
         <DashboardLayoutBasic>
           <Box sx={{ width: "100%" }}>
             <Title title="Perfiles de Usuarios" />
-            <DataTable title="Detalles de Usuario" columns={columns} rows={rows} addForm={<AddUser roles={roles} />} error={errorMessage} />
+            <DataTable
+              title="Detalles de Usuario"
+              columns={columns}
+              rows={rows}
+              addForm={<AddUser roles={roles} users={users} />}
+              error={errorMessage}
+            />
           </Box>
         </DashboardLayoutBasic>
       </DashboardWrapper>
