@@ -22,7 +22,7 @@ type Props = {
 };
 
 export default function AsideNavigation({ collapse, collapseLayout }: Props) {
-  let location = useLocation();
+  const location = useLocation();
 
   const [expanded, setExpanded] = React.useState<string | false>(false);
 

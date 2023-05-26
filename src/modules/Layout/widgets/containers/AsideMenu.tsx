@@ -6,9 +6,9 @@ import AsideNavigation from "../AsideNavigation/AsideNavigation";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { MenuIcon, ArrowLeftLineIcon } from "components/ux/Icons";
 
-type Props = {};
+type Props = Record<string, never>;
 
-export default function AsideMenu({}: Props) {
+export default function AsideMenu(_: Props) {
   const { state, dispatch } = useDashboardLayoutContext();
   const lg = useMediaQuery("(max-width:1279px)");
 
