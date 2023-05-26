@@ -93,7 +93,7 @@ function AddUser({ roles }: any) {
           <FormControl sx={{ my: 2 }} component="form" onSubmit={handleAdd}>
             <Grid container spacing={2}>
               {textInputs.map((formLabel) => (
-                <Grid item xs={6}>
+                <Grid item xs={6} key={formLabel.id}>
                   <TextField
                     autoFocus
                     required
@@ -214,7 +214,7 @@ function EditUser({ user, roles }: any) {
           <FormControl sx={{ my: 2 }} component="form" onSubmit={handleEdit}>
             <Grid container spacing={2}>
               {textInputs.map((formLabel) => (
-                <Grid item xs={6}>
+                <Grid item xs={6} key={formLabel.id}>
                   <TextField
                     key={formLabel.id}
                     autoFocus

@@ -66,6 +66,7 @@ function AddUserRole() {
                 autoComplete="off"
                 sx={{ my: 2 }}
                 id={formLabel.id}
+                key={formLabel.id}
                 label={formLabel.label}
                 value={inputs[formLabel.id as keyof typeof inputs]}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
