@@ -7,6 +7,7 @@ import { Column } from "components/DataTable";
 import Title from "components/Title";
 import { Modal, iconStyle, buttonStyle } from "components/Buttons";
 import { AddIcon, EditIcon, DeleteIcon } from "components/ux/Icons";
+import { Role } from "services/types";
 
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -84,12 +85,16 @@ function AddUserRole() {
   );
 }
 
+type Props = {
+  role: Role;
+};
+
 /**
  * Modal Form to edit a role in the database
  * @param param0
  * @returns
  */
-function EditUserRole({ role }: any) {
+function EditUserRole({ role }: Props) {
   const [inputs, setInputs] = useState<{ description: string }>({ description: "" });
   const [updateRole, { error, isLoading }] = useUpdateRoleMutation();
 
@@ -157,7 +162,7 @@ function EditUserRole({ role }: any) {
  * @param param0
  * @returns
  */
-function DeleteUserRole({ role }: any) {
+function DeleteUserRole({ role }: Props) {
   // Modal state
   const [open, setOpen] = useState(false);
   const handleOpenModal = () => setOpen(true);
@@ -201,12 +206,22 @@ function DeleteUserRole({ role }: any) {
   );
 }
 
+type Actions = {
+  actions: JSX.Element;
+};
+
+type Row = {
+  id: number;
+  description: string;
+  actions: Actions;
+};
+
 /**
  * Actions buttons with modal forms for each row
  * @param row
  * @returns
  */
-function ActionsPerRole(row: any) {
+function ActionsPerRole(row: Row) {
   return (
     <Grid container direction="row" justifyContent="center" alignItems="center">
       {/* Edit button */}

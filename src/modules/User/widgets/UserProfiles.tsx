@@ -14,7 +14,6 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import FormControl from "@mui/material/FormControl";
 
-
 import {
   useGetUsersQuery,
   useCreateUserMutation,
@@ -62,7 +61,7 @@ function AddUser({ roles }: any) {
   const [createUser, { error, isLoading }] = useCreateUserMutation();
   const handleAdd = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("agregando...", inputs);
+
     createUser({
       login: inputs.username,
       password: "test",
@@ -183,11 +182,10 @@ function EditUser({ user, roles }: any) {
   const title = `Editar usuario "${user.login}"`;
 
   // Update user in database
-  const [updateUser, ] = useUpdateUserMutation();
+  const [updateUser] = useUpdateUserMutation();
   const handleEdit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
-    console.log("editando...", inputs);
+
     updateUser({
       id: user.id,
       login: inputs.username,
@@ -363,12 +361,7 @@ const UserProfiles = () => {
   const { data, isLoading } = useGetUsersQuery(undefined);
 
   useEffect(() => {
-    if (dataRoles) {
-      setRoles(dataRoles.items);
-
-      console.log("Roles cargados", dataRoles.items);
-      console.log("dataRoles: ", dataRoles);
-    }
+    if (dataRoles) setRoles(dataRoles.items);
 
     if (data && dataRoles) {
       const rowsWithActions = data.items.map((row: any) => {
