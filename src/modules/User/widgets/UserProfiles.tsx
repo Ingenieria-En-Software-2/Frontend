@@ -8,6 +8,8 @@ import Title from "components/Title";
 import { Modal, iconStyle, buttonStyle } from "components/Buttons";
 import { AddIcon, EditIcon, DeleteIcon } from "components/ux/Icons";
 
+import { Role, User } from "services/types";
+
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
@@ -34,11 +36,15 @@ const userTypes = [
   { id: 2, description: "Externo" },
 ];
 
+type AddProps = {
+  roles: Array<Role>;
+};
+
 /**
  * Modal Form to insert a new user in the database
  * @returns
  */
-function AddUser({ roles }: any) {
+function AddUser({ roles }: AddProps) {
   const [inputs, setInputs] = useState<{
     username: string;
     names: string;
@@ -155,12 +161,17 @@ function AddUser({ roles }: any) {
   );
 }
 
+type EditProps = {
+  user: User;
+  roles: Array<Role>;
+};
+
 /**
  * Modal Form to edit a user profile in the database
  * @param param0
  * @returns
  */
-function EditUser({ user, roles }: any) {
+function EditUser({ user, roles }: EditProps) {
   const [inputs, setInputs] = useState<{
     username: string;
     names: string;
@@ -276,12 +287,16 @@ function EditUser({ user, roles }: any) {
   );
 }
 
+type DeleteProps = {
+  user: User;
+};
+
 /**
  * Dialog to confirm the deletion of a user
  * @param param0
  * @returns
  */
-function DeleteUser({ user }: any) {
+function DeleteUser({ user }: DeleteProps) {
   // Modal state
   const [open, setOpen] = useState(false);
   const handleOpenModal = () => setOpen(true);
@@ -329,7 +344,7 @@ function DeleteUser({ user }: any) {
  * @param row
  * @returns
  */
-function ActionsPerUserProfile(row: any, roles: any) {
+function ActionsPerUserProfile(row: any, roles: Array<Role>) {
   return (
     <Grid container direction="row" justifyContent="center" alignItems="center">
       {/* Edit button */}
@@ -358,7 +373,7 @@ const UserProfiles = () => {
 
   // Get users from database
   const [rows, setRows]: any = useState([]);
-  const { data, isLoading } = useGetUsersQuery(undefined);
+  const { data, error, isLoading } = useGetUsersQuery(undefined);
 
   useEffect(() => {
     if (dataRoles) setRoles(dataRoles.items);
@@ -385,13 +400,15 @@ const UserProfiles = () => {
   // If it is loading, display a loading message
   if (isLoadingRoles || isLoading) return <div>Loading...</div>;
 
+  const errorMessage = error ? "No existen usuarios" : "";
+
   return (
     <div className="main-container">
       <DashboardWrapper /* className="main-container" */>
         <DashboardLayoutBasic>
           <Box sx={{ width: "100%" }}>
             <Title title="Perfiles de Usuarios" />
-            <DataTable title="Detalles de Usuario" columns={columns} rows={rows} addForm={<AddUser roles={roles} />} />
+            <DataTable title="Detalles de Usuario" columns={columns} rows={rows} addForm={<AddUser roles={roles} />} error={errorMessage} />
           </Box>
         </DashboardLayoutBasic>
       </DashboardWrapper>

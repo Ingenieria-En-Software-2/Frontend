@@ -243,7 +243,7 @@ const UserRoles = () => {
 
   // Get roles from database
   const [rows, setRows]: any = useState([]);
-  const { data, isLoading } = useGetRolesQuery(undefined);
+  const { data, error, isLoading } = useGetRolesQuery(undefined);
 
   // Add actions to the rows
   useEffect(() => {
@@ -263,13 +263,15 @@ const UserRoles = () => {
   // If it is loading, display a loading message
   if (isLoading) return <div>Loading...</div>;
 
+  const errorMessage = error ? "No existen roles de usuarios" : "";
+
   return (
     <div className="main-container">
       <DashboardWrapper>
         <DashboardLayoutBasic>
           <Box sx={{ width: "100%" }}>
             <Title title="Roles de Usuarios" />
-            <DataTable columns={columns} rows={rows} addForm={<AddUserRole />} />
+            <DataTable columns={columns} rows={rows} addForm={<AddUserRole />} error={errorMessage} />
           </Box>
         </DashboardLayoutBasic>
       </DashboardWrapper>

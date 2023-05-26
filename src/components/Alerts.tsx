@@ -1,6 +1,10 @@
 import Alert from "@mui/material/Alert";
 
-function SuccessAlert(message: string) {
+type Props = {
+  message: string;
+};
+
+function SuccessAlert({ message }: Props) {
   return (
     <Alert variant="outlined" severity="success">
       {message}
@@ -8,15 +12,15 @@ function SuccessAlert(message: string) {
   );
 }
 
-function InfoAlert(message: string) {
+function InfoAlert({ message }: Props) {
   return (
-    <Alert variant="outlined" severity="info">
+    <Alert variant="outlined" severity="info" sx={{ my: 2 }}>
       {message}
     </Alert>
   );
 }
 
-function WarningAlert(message: string) {
+function WarningAlert({ message }: Props) {
   return (
     <Alert variant="outlined" severity="warning">
       {message}
@@ -24,7 +28,7 @@ function WarningAlert(message: string) {
   );
 }
 
-function ErrorAlert(message: string) {
+function ErrorAlert({ message }: Props) {
   return (
     <Alert variant="outlined" severity="error">
       {message}
