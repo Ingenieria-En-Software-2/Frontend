@@ -16,7 +16,7 @@ const CreateUser = () => {
   const [usernameError, setUsernameError] = useState(false);
   const [usernameAlreadyExistsError, setUsernameExistsError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
-  const [createUser, {  }] = useCreateUserMutation(); //
+  const [createUser, { }] = useCreateUserMutation(); //
   const [creatingUser, setCreatingUser] = useState(false);
   const { data: data2, error : error2} = useGetUsersQuery({login: username,});
   const navigate = useNavigate();
@@ -56,7 +56,7 @@ const CreateUser = () => {
             setUsernameError(true)
             user_e = true;
         }
-        if (password == '' || password.length<8 || password.length > 16 || /[a-zA-Z0-9/+*^%$&#@?_-]+/.test(password) == false) {
+        if (password == '' || password.length<8 || password.length > 16 || /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-_]).{8,16}/.test(password) == false) {
             setPasswordError(true)
             pass_e = true;
         }
