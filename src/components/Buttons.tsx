@@ -24,7 +24,14 @@ const buttonStyle = {
 
 const iconStyle = "text-gray-700 hover:text-gray-500";
 
-function Modal({ open, handleClose, title, content }: any) {
+type ModalProps = {
+  open: boolean;
+  handleClose: () => void;
+  title: string;
+  content: JSX.Element;
+};
+
+function Modal({ open, handleClose, title, content }: ModalProps) {
   return (
     <Dialog
       open={open}
@@ -53,7 +60,13 @@ function Modal({ open, handleClose, title, content }: any) {
   );
 }
 
-function ModalButton({ title, content, icon }: any) {
+type ModalButtonProps = {
+  title: string;
+  content: JSX.Element;
+  icon: JSX.Element;
+};
+
+function ModalButton({ title, content, icon }: ModalButtonProps) {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {

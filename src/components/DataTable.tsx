@@ -24,7 +24,7 @@ export interface Column {
 interface Props {
   title?: string;
   columns: ReadonlyArray<Column>;
-  rows: ReadonlyArray<any>;
+  rows: ReadonlyArray<React.ReactNode>;
   addForm: JSX.Element;
 }
 
