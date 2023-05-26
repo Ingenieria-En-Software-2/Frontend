@@ -26,7 +26,7 @@ const formLabels: Array<Column> = [{ id: "description", label: "Descripción" }]
 function AddUserRole() {
   // Guarda los inputs del formulario
   const [inputs, setInputs] = useState<{ description: string }>({ description: "" });
-  const [createRole, { data, error, isLoading }] = useCreateRoleMutation();
+  const [createRole, { error, isLoading }] = useCreateRoleMutation();
   const [open, setOpen] = useState(false);
   const handleOpenModal = () => setOpen(true);
   const handleCloseModal = () => setOpen(false);
@@ -42,7 +42,7 @@ function AddUserRole() {
 
     // TO-DO: error and loading pages
     if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>{error.message}</div>;
+    if (error) return <div>{"message" in error && error.message}</div>;
 
     // Close modal
     handleCloseModal();
@@ -90,15 +90,15 @@ function AddUserRole() {
  */
 function EditUserRole({ role }: any) {
   const [inputs, setInputs] = useState<{ description: string }>({ description: "" });
-  const [updateRole, { data, error, isLoading }] = useUpdateRoleMutation();
+  const [updateRole, { error, isLoading }] = useUpdateRoleMutation();
 
   // Modal state
   const [open, setOpen] = useState(false);
   const handleOpenModal = () => setOpen(true);
   const handleCloseModal = () => setOpen(false);
-  const title = `Editar rol "${role.description}"`
+  const title = `Editar rol "${role.description}"`;
 
-  const handleEdit =  (e: React.FormEvent<HTMLFormElement>) => {
+  const handleEdit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // Verify role is unique
@@ -107,7 +107,7 @@ function EditUserRole({ role }: any) {
 
     // TO-DO: error and loading pages
     if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>{error.message}</div>;
+    if (error) return <div>{"message" in error && error.message}</div>;
 
     // TO-CHECK: Clean inputs
     setInputs({ description: "" });
@@ -163,14 +163,14 @@ function DeleteUserRole({ role }: any) {
   const handleCloseModal = () => setOpen(false);
   const title = `Eliminar rol "${role.description}"`;
 
-  const [deleteRole, { data, error, isLoading }] = useDeleteRoleMutation();
+  const [deleteRole, { error, isLoading }] = useDeleteRoleMutation();
 
   const handleDelete = () => {
     deleteRole(role.id);
 
     // TO-DO: error and loading pages
     if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>{error.message}</div>;
+    if (error) return <div>{"message" in error && error.message}</div>;
 
     // Close modal
     handleCloseModal();
@@ -181,16 +181,21 @@ function DeleteUserRole({ role }: any) {
       <Button variant="outlined" onClick={handleOpenModal} sx={buttonStyle}>
         <DeleteIcon className={iconStyle} />
       </Button>
-      <Modal open={open} handleClose={handleCloseModal} title={title} content={
-        <Box sx={{ my: 2 }}>
-          <Box>¿Estás seguro de eliminar el rol "{role.description}"?</Box>
-          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button type="submit" sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleDelete}>
-              Eliminar
-            </Button>
+      <Modal
+        open={open}
+        handleClose={handleCloseModal}
+        title={title}
+        content={
+          <Box sx={{ my: 2 }}>
+            <Box>¿Estás seguro de eliminar el rol "{role.description}"?</Box>
+            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+              <Button type="submit" sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleDelete}>
+                Eliminar
+              </Button>
+            </Box>
           </Box>
-        </Box>
-      } />
+        }
+      />
     </Box>
   );
 }
@@ -221,8 +226,8 @@ const UserRoles = () => {
   ];
 
   // Get roles from database
-  const [rows, setRows] = useState([]);
-  const { data, error, isLoading } = useGetRolesQuery();
+  const [rows, setRows]: any = useState([]);
+  const { data, isLoading } = useGetRolesQuery(undefined);
 
   // Add actions to the rows
   useEffect(() => {

@@ -12,7 +12,6 @@ import { Grid, Box } from "@mui/material";
 import TextField from "@mui/material/TextField";
 
 import { SearchIcon } from "components/ux/Icons";
-import { AddButton } from "components/Buttons";
 
 export interface Column {
   id: string;

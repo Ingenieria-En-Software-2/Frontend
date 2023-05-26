@@ -59,7 +59,7 @@ function AddUser({ roles }: any) {
   const title = "Agregar usuario";
 
   // Add user to database
-  const [createUser, { data, error, isLoading }] = useCreateUserMutation();
+  const [createUser, { error, isLoading }] = useCreateUserMutation();
   const handleAdd = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log("agregando...", inputs);
@@ -74,7 +74,7 @@ function AddUser({ roles }: any) {
 
     // TO-DO: error and loading pages
     if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>{error.message}</div>;
+    if (error) return <div>{"message" in error && error.message}</div>;
 
     // Close modal
     handleCloseModal();
@@ -138,9 +138,9 @@ function AddUser({ roles }: any) {
                 native: true,
               }}
               value={inputs.role}
-              onChange={(e) => setInputs({ ...inputs, role: e.target.value })}
+              onChange={(e) => setInputs({ ...inputs, role: e.target.value as unknown as number })}
             >
-              {roles.map((option) => (
+              {roles.map((option: any) => (
                 <option key={option.id} value={option.id}>
                   {option.description}
                 </option>
@@ -183,7 +183,7 @@ function EditUser({ user, roles }: any) {
   const title = `Editar usuario "${user.login}"`;
 
   // Update user in database
-  const [updateUser, { data, error, isLoading }] = useUpdateUserMutation();
+  const [updateUser, ] = useUpdateUserMutation();
   const handleEdit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
@@ -260,9 +260,9 @@ function EditUser({ user, roles }: any) {
                 native: true,
               }}
               value={inputs.role}
-              onChange={(e) => setInputs({ ...inputs, role: e.target.value })}
+              onChange={(e) => setInputs({ ...inputs, role: e.target.value as unknown as number })}
             >
-              {roles.map((option) => (
+              {roles.map((option: any) => (
                 <option key={option.id} value={option.id}>
                   {option.description}
                 </option>
@@ -290,13 +290,13 @@ function DeleteUser({ user }: any) {
   const handleCloseModal = () => setOpen(false);
   const title = `Eliminar usuario "${user.login}"`;
 
-  const [deleteUser, { data, error, isLoading }] = useDeleteUserMutation();
+  const [deleteUser, { error, isLoading }] = useDeleteUserMutation();
   const handleDelete = () => {
     deleteUser(user.id);
 
     // TO-DO: error and loading pages
     if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>{error.message}</div>;
+    if (error) return <div>{"message" in error && error.message}</div>;
 
     // Close modal
     handleCloseModal();
@@ -355,17 +355,19 @@ const UserProfiles = () => {
   ];
 
   // Get roles from database
-  const [roles, setRoles] = useState([]);
-  const { data: dataRoles, error: errorRoles, isLoading: isLoadingRoles } = useGetRolesQuery();
+  const [roles, setRoles]: any = useState([]);
+  const { data: dataRoles, isLoading: isLoadingRoles } = useGetRolesQuery(undefined);
 
   // Get users from database
-  const [rows, setRows] = useState([]);
-  const { data, error, isLoading } = useGetUsersQuery(undefined);
+  const [rows, setRows]: any = useState([]);
+  const { data, isLoading } = useGetUsersQuery(undefined);
 
   useEffect(() => {
     if (dataRoles) {
       setRoles(dataRoles.items);
+
       console.log("Roles cargados", dataRoles.items);
+      console.log("dataRoles: ", dataRoles);
     }
 
     if (data && dataRoles) {
@@ -385,7 +387,7 @@ const UserProfiles = () => {
       });
       setRows(rowsWithActions);
     }
-  }, [data, dataRoles]);
+  }, [data, dataRoles, roles]);
 
   // If it is loading, display a loading message
   if (isLoadingRoles || isLoading) return <div>Loading...</div>;
