@@ -1,4 +1,5 @@
 import * as React from "react";
+
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -23,7 +24,14 @@ const buttonStyle = {
 
 const iconStyle = "text-gray-700 hover:text-gray-500";
 
-function Modal({ open, handleClose, title, content }: any) {
+type ModalProps = {
+  open: boolean;
+  handleClose: () => void;
+  title: string;
+  content: JSX.Element;
+};
+
+function Modal({ open, handleClose, title, content }: ModalProps) {
   return (
     <Dialog
       open={open}
@@ -52,7 +60,13 @@ function Modal({ open, handleClose, title, content }: any) {
   );
 }
 
-function ModalButton({ title, content, icon }: any) {
+type ModalButtonProps = {
+  title: string;
+  content: JSX.Element;
+  icon: JSX.Element;
+};
+
+function ModalButton({ title, content, icon }: ModalButtonProps) {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -73,16 +87,16 @@ function ModalButton({ title, content, icon }: any) {
   );
 }
 
-function AddButton(content: JSX.Element) {
-  return <ModalButton title="Agregar" content={content} icon={<AddIcon className={iconStyle} />} />;
+function AddButton(title: string, content: JSX.Element) {
+  return <ModalButton title={title} content={content} icon={<AddIcon className={iconStyle} />} />;
 }
 
-function EditButton(content: JSX.Element) {
-  return <ModalButton title="Editar" content={content} icon={<EditIcon className={iconStyle} />} />;
+function EditButton(title: string, content: JSX.Element) {
+  return <ModalButton title={title} content={content} icon={<EditIcon className={iconStyle} />} />;
 }
 
-function DeleteButton(content: JSX.Element) {
-  return <ModalButton title="Eliminar" content={content} icon={<DeleteIcon className={iconStyle} />} />;
+function DeleteButton(title: string, content: JSX.Element) {
+  return <ModalButton title={title} content={content} icon={<DeleteIcon className={iconStyle} />} />;
 }
 
-export { AddButton, EditButton, DeleteButton };
+export { AddButton, EditButton, DeleteButton, Modal, buttonStyle, iconStyle };
