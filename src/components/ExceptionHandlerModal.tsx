@@ -13,7 +13,14 @@ type ExceptionHandlerProps = {
   btnText?: string | null;
 };
 
-export default function ExceptionHandlerModal({ open, icon, title, description, btnText, onClose }: ExceptionHandlerProps) {
+export default function ExceptionHandlerModal({
+  open,
+  icon,
+  title,
+  description,
+  btnText,
+  onClose,
+}: ExceptionHandlerProps) {
   const [hide, setHide] = React.useState<boolean>(false);
 
   useEffect(() => {

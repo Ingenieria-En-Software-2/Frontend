@@ -2,19 +2,17 @@ import type Validation from "../types/validation.type";
 import type ValidationError from "../types/validationError.type";
 import isEmail from "validator/lib/isEmail";
 
-export default function email(email: string, defineValidation?: { required?: boolean; invalid?: boolean}): Validation {
-
+export default function email(email: string, defineValidation?: { required?: boolean; invalid?: boolean }): Validation {
   const validations: { [key: string]: any } = {
     required: defineValidation?.required != undefined ? defineValidation?.required : true,
     invalid: defineValidation?.invalid != undefined ? defineValidation?.invalid : true,
   };
-  
-  
+
   const validationErrorCodes: { [key: string]: string } = {
     REQUIRED_EMAIL: "required_email",
     INVALID_EMAIL: "invalid_email",
   };
-  
+
   const validationErrorsObject: { [key: string]: ValidationError } = {
     required: {
       code: validationErrorCodes.REQUIRED_EMAIL,

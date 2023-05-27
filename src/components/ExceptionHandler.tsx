@@ -25,7 +25,11 @@ export default function ExceptionHandler({ open, icon, title, description, btnTe
   }, [hide]);
 
   return open ? (
-    <div className={`${"absolute top-0 left-0 w-full h-full bg-white rounded-2xl z-[9999] animate-sweetAppear"} ${hide ? "pointer-events-none	animate-sweetDisappear" : ""}`}>
+    <div
+      className={`${"absolute top-0 left-0 w-full h-full bg-white rounded-2xl z-[9999] animate-sweetAppear"} ${
+        hide ? "pointer-events-none	animate-sweetDisappear" : ""
+      }`}
+    >
       <div className={`${"absolute w-full h-full flex flex-col items-center justify-center"}`}>
         <ExceptionContent icon={icon} title={title} setHide={setHide} description={description} btnText={btnText} />
       </div>
