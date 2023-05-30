@@ -179,7 +179,7 @@ function AddUser({ roles, users }: AddProps) {
                 </option>
               ))}
             </TextField>
-            <Button sx={{ mt: 2, backgroundColor: "#e0e7ff" }} type="submit">
+            <Button sx={{ mt: 2, backgroundColor: "#e0f2fe" }} type="submit">
               Enviar
             </Button>
           </FormControl>
@@ -225,13 +225,13 @@ function EditUser({ user, roles, users }: EditProps) {
     setFormErrorMessages([]);
   };
 
-  // Update user in database
+  // Update user in database (not same id)
   const [updateUser] = useUpdateUserMutation();
   const handleEdit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Verify if username is unique
-    if (users.some((user) => user.login === inputs.username)) {
+    // Verify if username is unique 
+    if (users.some((u) => u.login === inputs.username && user.login !== inputs.username)) {
       setFormErrorMessages([<InfoAlert message="El nombre de usuario ya existe" />]);
       return;
     }
@@ -329,7 +329,7 @@ function EditUser({ user, roles, users }: EditProps) {
                 </option>
               ))}
             </TextField>
-            <Button sx={{ mt: 2, backgroundColor: "#e0e7ff" }} type="submit">
+            <Button sx={{ mt: 2, backgroundColor: "#e0f2fe" }} type="submit">
               Enviar
             </Button>
           </FormControl>
@@ -380,7 +380,7 @@ function DeleteUser({ user }: DeleteProps) {
           <Box sx={{ my: 2 }}>
             <Box>¿Estás seguro de eliminar al usuario "{user.login}"?</Box>
             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-              <Button sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleDelete}>
+              <Button sx={{ mt: 2, backgroundColor: "#e0f2fe" }} onClick={handleDelete}>
                 Eliminar
               </Button>
             </Box>

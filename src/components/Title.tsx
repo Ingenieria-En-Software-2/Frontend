@@ -14,12 +14,13 @@ export default function Title({ title }: { title: string }) {
       justifyContent="center"
       alignItems="center"
       sx={{
+        mt: 3,
         mb: 1,
         height: "50px",
         borderRadius: "5px",
         fontWeight: "bold",
-        fontSize: "1.5rem",
-        backgroundColor: "#3f51b5",
+        fontSize: "1.6rem",
+        backgroundColor: "#0e7490",
         color: "#fff",
       }}
     >

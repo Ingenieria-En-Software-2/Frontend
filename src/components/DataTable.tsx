@@ -58,8 +58,9 @@ export default function DataTable({ title = "", columns, rows, addForm, error }:
   };
 
   const headerStyle = {
-    backgroundColor: "#3f51b5",
+    backgroundColor: "#0e7490",
     color: "#fff",
+    fontSize: "1.2rem",
   };
 
   const begin = page * rowsPerPage;
@@ -91,7 +92,8 @@ export default function DataTable({ title = "", columns, rows, addForm, error }:
           <TextField
             variant="outlined"
             size="small"
-            sx={{ width: "auto", height: "auto", backgroundColor: "#e0e7ff" }}
+            autoComplete="off"
+            sx={{ width: "auto", height: "auto", backgroundColor: "#e0f2fe" }}
             placeholder="Filtrar"
             type="search"
             onInput={(e) => requestSearch((e.target as HTMLInputElement).value)}
@@ -114,10 +116,10 @@ export default function DataTable({ title = "", columns, rows, addForm, error }:
                 width: 5,
               },
               "&::-webkit-scrollbar-track": {
-                backgroundColor: "#f0f0ff",
+                backgroundColor: "#f0f9ff",
               },
               "&::-webkit-scrollbar-thumb": {
-                backgroundColor: "#3f51b5",
+                backgroundColor: "#0e7490",
                 borderRadius: 5,
               },
             }}
@@ -150,13 +152,13 @@ export default function DataTable({ title = "", columns, rows, addForm, error }:
                     key={row.id}
                     sx={{
                       "&:last-child td, &:last-child th": { border: 0 },
-                      "&:nth-of-type(odd)": { backgroundColor: "#f0f0ff" },
+                      "&:nth-of-type(odd)": { backgroundColor: "#f0f9ff" },
                     }}
                   >
                     {columns.map((column) => {
                       const value = row[column.id];
                       return (
-                        <TableCell key={column.id} align={column.align}>
+                        <TableCell key={column.id} align={column.align} sx={{ fontSize: "1.1rem" }}>
                           {value}
                         </TableCell>
                       );

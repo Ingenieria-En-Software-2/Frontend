@@ -96,7 +96,7 @@ function AddUserRole({ roles }: AddProps) {
                 }
               />
             ))}
-            <Button type="submit" sx={{ mt: 2, backgroundColor: "#e0e7ff" }}>
+            <Button type="submit" sx={{ mt: 2, backgroundColor: "#e0f2fe" }}>
               Enviar
             </Button>
           </FormControl>
@@ -182,7 +182,7 @@ function EditUserRole({ role, roles }: EditProps) {
                 value={inputs[formLabel.id as keyof typeof inputs]}
               />
             ))}
-            <Button type="submit" sx={{ mt: 2, backgroundColor: "#e0e7ff" }}>
+            <Button type="submit" sx={{ mt: 2, backgroundColor: "#e0f2fe" }}>
               Enviar
             </Button>
           </FormControl>
@@ -234,7 +234,7 @@ function DeleteUserRole({ role }: Props) {
           <Box sx={{ my: 2 }}>
             <Box>¿Estás seguro de eliminar el rol "{role.description}"?</Box>
             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-              <Button type="submit" sx={{ mt: 2, backgroundColor: "#e0e7ff" }} onClick={handleDelete}>
+              <Button type="submit" sx={{ mt: 2, backgroundColor: "#e0f2fe" }} onClick={handleDelete}>
                 Eliminar
               </Button>
             </Box>

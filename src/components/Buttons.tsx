@@ -18,8 +18,8 @@ const buttonStyle = {
   height: "40px",
   maxWidth: "40px",
   minWidth: "40px",
-  backgroundColor: "#e0e7ff",
-  "&:hover": { border: "1px solid #a5b4fc", backgroundColor: "#a5b4fc" },
+  backgroundColor: "#e0f2fe",
+  "&:hover": { border: "1px solid #93c5fd", backgroundColor: "#93c5fd" },
 };
 
 const iconStyle = "text-gray-700 hover:text-gray-500";
