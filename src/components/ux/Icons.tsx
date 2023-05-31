@@ -1,4 +1,24 @@
-import { faAngleDown, faAngleUp, faArrowDown, faArrowLeft, faArrowRight, faBars, faCircle, faHome, faTimes } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAngleDown,
+  faAngleUp,
+  faArrowDown,
+  faArrowLeft,
+  faArrowRight,
+  faBars,
+  faCircle,
+  faHome,
+  faTimes,
+  faPlus,
+  faMagnifyingGlass,
+  faPenToSquare,
+  faXmark,
+  faUsers,
+  faUsersGear,
+  faEye,
+  faSpinner,
+  faCheckCircle,
+  faTimesCircle,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 type IconProps = {
@@ -40,4 +60,44 @@ export function CircleIcon({ className }: ComponentProps) {
 }
 export function MenuIcon({ className }: ComponentProps) {
   return <FontAwesomeIcon className={className} icon={faBars} />;
+}
+
+export function SearchIcon({ className }: ComponentProps) {
+  return <FontAwesomeIcon className={className} icon={faMagnifyingGlass} />;
+}
+
+export function AddIcon({ className }: ComponentProps) {
+  return <FontAwesomeIcon className={className} icon={faPlus} />;
+}
+
+export function EditIcon({ className }: ComponentProps) {
+  return <FontAwesomeIcon className={className} icon={faPenToSquare} />;
+}
+
+export function DeleteIcon({ className }: ComponentProps) {
+  return <FontAwesomeIcon className={className} icon={faXmark} />;
+}
+
+export function UsersIcon({ className }: ComponentProps) {
+  return <FontAwesomeIcon className={className} icon={faUsers} />;
+}
+
+export function RolesIcon({ className }: ComponentProps) {
+  return <FontAwesomeIcon className={className} icon={faUsersGear} />;
+}
+
+export function EyeFillIcon({ className }: ComponentProps) {
+  return <FontAwesomeIcon className={className} icon={faEye} />;
+}
+
+export function SpinnerIcon({ className }: ComponentProps) {
+  return <FontAwesomeIcon className={className} icon={faSpinner} />;
+}
+
+export function CheckIcon({ className }: ComponentProps) {
+  return <FontAwesomeIcon className={className} icon={faCheckCircle} />;
+}
+
+export function ErrorIcon({ className }: ComponentProps) {
+  return <FontAwesomeIcon className={className} icon={faTimesCircle} />;
 }

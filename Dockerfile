@@ -1,10 +1,8 @@
-FROM node:16-alpine AS build
+FROM node:18.14.0
 WORKDIR /app
-RUN npm install -g @angular/cli
-COPY package*.json ./
+COPY package.json .
 RUN npm install
 COPY . .
+EXPOSE 5173
 RUN npm run build
-EXPOSE 4200
-#CMD ["npm", "start"]
-CMD ["ng", "serve", "--host", "0.0.0.0"]
+CMD ["npm", "run", "preview"]
