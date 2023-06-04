@@ -1,8 +1,6 @@
-import React from 'react'
+type Props = Record<string, never>;
 
-type Props = {}
-
-export default function ForbidenRoute({}: Props) {
+export default function ForbidenRoute(_: Props) {
   return (
     <div>forbidenRoute</div>
   )
