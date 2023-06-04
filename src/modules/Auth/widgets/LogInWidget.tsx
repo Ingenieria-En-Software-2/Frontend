@@ -126,14 +126,32 @@ const LogInWidget = () => {
           responseError = { data: { field: "email", message: "No existe un user con ese email" } };
         }
 
-        if (user && user.password !== password) {
+        /* if (user && user.password !== password) {
           responseError = { data: { field: "password", message: "Contraseña incorrecta" } };
-        }
+        } */
       }
 
       if (responseError) {
         setErrorMessage(responseError.data.message);
       } else {
+        const opts = {
+          method: 'POST',
+          headers: {
+            "Content-Type": 'application/json'
+          },
+          body: JSON.stringify({
+            "login": email,
+            "password": password
+          })
+        }
+        fetch("http://localhost:9010/auth/login", opts)
+          .then(resp => {
+            if (resp.status === 200) return resp.json();
+          })
+          .then(data => {
+            localStorage.setItem("token", data.auth_token);
+            navigate(URL_HOME);
+          })
         setLoginSuccess(true);
       }
 
