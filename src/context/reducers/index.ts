@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import { Action, AuthInterface, UserInterface } from "types/appContext.type";
+import { Action, /*AuthInterface, UserInterface*/ } from "types/appContext.type";
 import initialState from "./initialState";
 import { dbApi } from "services/dbApi";
 
@@ -29,7 +29,7 @@ export const userReducer = (state = initialState.user, action: Action) => {
 const rootReducer = combineReducers({
   user: userReducer,
   auth: authenticateReducer,
-  [dbApi.reducerPath]: dbApi.reducer
+  [dbApi.reducerPath]: dbApi.reducer,
 });
 
 export default rootReducer;
