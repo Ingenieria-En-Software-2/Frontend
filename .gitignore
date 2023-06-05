@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 
 .env
+
+# Test
+unittest/__pycache__/
