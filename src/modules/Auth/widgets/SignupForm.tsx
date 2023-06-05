@@ -1,6 +1,11 @@
 // import banner from "assets/images/banner.jpg";
-import { Button, Link, Stack, TextField } from "@mui/material";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { Button, Link, MenuItem, Stack, TextField } from "@mui/material";
 import { useState } from "react";
+import { countries } from "../utils/countries";
+import Title from "components/Title";
 
 const SignupForm = () => {
   const [firstName, setFirstName] = useState("");
@@ -8,22 +13,25 @@ const SignupForm = () => {
   const [email, setEmail] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [password, setPassword] = useState("");
+  const [age, setAge] = useState("");
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     console.log(firstName, lastName, email, dateOfBirth, password);
-  }
+  };
 
   return (
     <>
       <h2>Register Form</h2>
-      <form onSubmit={handleSubmit} action={"" /* Login page */}>
+      <form onSubmit={handleSubmit} action={"" /* Login endpoint */}>
+        {/* Sección 1: Información general */}
+        <Title title="Información general" />
         <Stack spacing={2} direction="row" sx={{ marginBottom: 4 }}>
           <TextField
             type="text"
             variant="outlined"
-            color="secondary"
-            label="First Name"
+            color="primary"
+            label="Nombres"
             onChange={(e) => setFirstName(e.target.value)}
             value={firstName}
             fullWidth
@@ -32,8 +40,8 @@ const SignupForm = () => {
           <TextField
             type="text"
             variant="outlined"
-            color="secondary"
-            label="Last Name"
+            color="primary"
+            label="Apellidos"
             onChange={(e) => setLastName(e.target.value)}
             value={lastName}
             fullWidth
@@ -43,8 +51,8 @@ const SignupForm = () => {
         <TextField
           type="email"
           variant="outlined"
-          color="secondary"
-          label="Email"
+          color="primary"
+          label="Correo electrónico"
           onChange={(e) => setEmail(e.target.value)}
           value={email}
           fullWidth
@@ -54,7 +62,7 @@ const SignupForm = () => {
         <TextField
           type="password"
           variant="outlined"
-          color="secondary"
+          color="primary"
           label="Password"
           onChange={(e) => setPassword(e.target.value)}
           value={password}
@@ -62,17 +70,60 @@ const SignupForm = () => {
           fullWidth
           sx={{ mb: 4 }}
         />
-        <TextField
-          type="date"
-          variant="outlined"
-          color="secondary"
-          label="Date of Birth"
-          onChange={(e) => setDateOfBirth(e.target.value)}
-          value={dateOfBirth}
-          fullWidth
-          required
-          sx={{ mb: 4 }}
-        />
+        <Stack spacing={2} direction="row" sx={{ marginBottom: 4 }}>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label="Fecha de nacimiento"
+              onChange={(newValue: string | null) => {
+                if (newValue) setDateOfBirth(newValue);
+              }}
+            />
+          </LocalizationProvider>
+
+          {/* Género */}
+          <TextField select variant="outlined" color="primary" label="Género" fullWidth required sx={{ mb: 4 }}>
+            <MenuItem value="M">Masculino</MenuItem>
+            <MenuItem value="F">Femenino</MenuItem>
+            <MenuItem value="O">Otro</MenuItem>
+          </TextField>
+        </Stack>
+
+        <Stack spacing={2} direction="row" sx={{ marginBottom: 4 }}>
+          {/* Nacionalidad */}
+          <TextField select variant="outlined" color="primary" label="Nacionalidad" fullWidth required sx={{ mb: 4 }}>
+            {countries.map((country: { code: string; name: string }) => (
+              <MenuItem key={country.code} value={country.code}>
+                {country.name}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          {/* Documento de identidad */}
+          <TextField
+            type="text"
+            variant="outlined"
+            color="primary"
+            label="Documento de identidad"
+            fullWidth
+            required
+            sx={{ mb: 4 }}
+          />
+
+          {/* Teléfono de contacto */}
+          <TextField
+            type="text"
+            variant="outlined"
+            color="primary"
+            label="Teléfono de contacto"
+            fullWidth
+            required
+            sx={{ mb: 4 }}
+          />
+        </Stack>
+
+        <Title title="Información de residencia" />
+        {/* Dirección */}
+
         <Button variant="outlined" color="primary" type="submit" fullWidth>
           Register
         </Button>
