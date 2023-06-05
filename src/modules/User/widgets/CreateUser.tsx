@@ -4,7 +4,7 @@ import TextField from "@mui/material/TextField";
 import DashboardLayoutBasic from "modules/Layout/widgets/containers/DashboardLayoutBasic";
 import { DashboardWrapper } from "modules/Layout/context/dashboardLayout";
 import axios from 'axios';
-// import { useGetUsersQuery, useCreateRoleMutation, useCreateUserMutation } from "../../../api/dbApi";
+import { useGetUsersQuery, useCreateRoleMutation, useCreateUserMutation } from "../../../api/dbApi";
 import { useEffect } from "react";
 
 import SERVER_URLS from "utils/serversUrls.ts";
@@ -17,10 +17,10 @@ const CreateUser = () => {
   const [usernameError, setUsernameError] = useState(false);
   const [usernameAlreadyExistsError, setUsernameExistsError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
-  // const [createUser, { data, error, isLoading }] = useCreateUserMutation();
+  const [createUser, { data, error, isLoading }] = useCreateUserMutation();
   const [creatingUser, setCreatingUser] = useState(false);
   const [value, setValue] = useState(3);
-  // const { data: data2, error : error2, isLoading : isLoading2 } = useGetUsersQuery({login: username,});
+  const { data: data2, error : error2, isLoading : isLoading2 } = useGetUsersQuery({login: username,});
   const navigate = useNavigate();
 
   useEffect(() => {
