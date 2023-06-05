@@ -1,5 +1,5 @@
 {
-  "name": "CaribbeanWallet",
+  "name": "Caribbean Wallet",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -27,6 +27,7 @@
     "@reduxjs/toolkit": "^1.9.5",
     "axios": "^1.4.0",
     "npm-run-all": "^4.1.5",
+    "js-cookie": "^3.0.5",
     "path": "^0.12.7",
     "prettier": "^2.8.8",
     "react": "^18.2.0",
@@ -36,6 +37,7 @@
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.11.2",
     "save-dev": "^0.0.1-security",
+    "redux": "^4.2.1",
     "validator": "^13.9.0",
     "vite-tsconfig-paths": "^4.2.0"
   },
