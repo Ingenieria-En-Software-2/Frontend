@@ -22,7 +22,7 @@ type Props = {
 };
 
 export default function AsideNavigation({ collapse, collapseLayout }: Props) {
-  let location = useLocation();
+  const location = useLocation();
 
   const [expanded, setExpanded] = React.useState<string | false>(false);
 
@@ -47,13 +47,13 @@ export default function AsideNavigation({ collapse, collapseLayout }: Props) {
                   <ListItemIcon>
                     <menuItem.leftIcon
                       className={`${
-                        `/${location.pathname.split("/", 2)[1]}` === menuItem.href ? "text-blue-600" : "text-slate-500"
+                        `/${location.pathname.split("/", 2)[1]}` === menuItem.href ? "text-cyan-600" : "text-slate-500"
                       } text-left`}
                     />
                   </ListItemIcon>
                   <ListItemText
                     className={`${
-                      `/${location.pathname.split("/", 2)[1]}` === menuItem.href ? "text-blue-600" : "text-slate-500"
+                      `/${location.pathname.split("/", 2)[1]}` === menuItem.href ? "text-cyan-600" : "text-slate-500"
                     } text-left`}
                   >
                     {menuItem.text}
@@ -78,14 +78,14 @@ export default function AsideNavigation({ collapse, collapseLayout }: Props) {
                       <menuItem.leftIcon
                         className={`${
                           `/${location.pathname.split("/", 2)[1]}` === menuItem.href
-                            ? "text-blue-600"
+                            ? "text-cyan-600"
                             : "text-slate-500"
                         } text-left`}
                       />
                     </ListItemIcon>
                     <ListItemText
                       className={`${
-                        `/${location.pathname.split("/", 2)[1]}` === menuItem.href ? "text-blue-600" : "text-slate-500"
+                        `/${location.pathname.split("/", 2)[1]}` === menuItem.href ? "text-cyan-600" : "text-slate-500"
                       } text-left`}
                     >
                       {menuItem.text}
@@ -100,7 +100,7 @@ export default function AsideNavigation({ collapse, collapseLayout }: Props) {
                           <ListItemText
                             className={`${
                               `/${location.pathname.split("/", 2)[1]}` === menuItem.href
-                                ? "text-blue-600"
+                                ? "text-cyan-600"
                                 : "text-slate-500"
                             } text-left`}
                           >

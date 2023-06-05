@@ -10,7 +10,7 @@ export default function MainSection({ children }: Props) {
   const { state } = useDashboardLayoutContext();
 
   // To avoid the warning: 'state' is declared but its value is never read.
-  state.asideMenu.collapse; 
+  state.asideMenu.collapse;
 
   return <section className={`${"w-full flex pl-72 justify-center"}`}>{children}</section>;
 }

@@ -8,78 +8,26 @@ import SERVER_URLS from "utils/serversUrls.ts";
 import UserProfiles from "modules/User/widgets/UserProfiles.tsx";
 import UserRoles from "modules/User/widgets/UserRoles";
 import LoginPage from "modules/Auth/pages/LoginPage";
-// import { useGetUsersQuery, useCreateRoleMutation, useCreateUserMutation } from "services/dbApi";
-// import { useEffect } from "react";
+import { Provider } from "react-redux";
+import getStore from "context/store/createStore";
+import Gate from "modules/Auth/components/Gate";
 
 const { URL_CREATE_USER, URL_HOME, URL_USER_PROFILES, URL_USER_ROLES, URL_LOGIN } = SERVER_URLS;
 
 function App() {
-  /* This is an example of how to use the generated API */
-
-  /* How to get users by query params */
-  // const { data, error, isLoading } = useGetUsersQuery(undefined); get first 10 users
-  // const { data, error, isLoading } = useGetUsersQuery({
-  //   // get users with name "admin"
-  //   name: "admin",
-  // });
-
-  // useEffect(() => {
-  //   if (data) console.log(data);
-  //   if (error) console.log(error);
-  //   if (isLoading) console.log(isLoading);
-  // }, [data, error, isLoading]);
-
-  /* How to create a role */
-  // const [createRole, { data, error, isLoading }] = useCreateRoleMutation();
-
-  // useEffect(() => {
-  //   createRole({ description: "Admin" });
-  //   createRole({ description: "User" });
-  // }, [createRole]);
-
-  // useEffect(() => {
-  //   if (data) console.log(data);
-  //   if (error) console.log(error);
-  //   if (isLoading) console.log(isLoading);
-  // }, [data, error, isLoading]);
-
-  /* How to create a user */
-  // const [createUser, { data, error, isLoading }] = useCreateUserMutation();
-
-  // useEffect(() => {
-  //   createUser({
-  //     login: "admin",
-  //     password: "admin",
-  //     name: "admin",
-  //     lastname: "admin",
-  //     user_type: "admin",
-  //     role_id: 1,
-  //   });
-  //   createUser({
-  //     login: "user",
-  //     password: "user",
-  //     name: "user",
-  //     lastname: "user",
-  //     user_type: "user",
-  //     role_id: 2,
-  //   });
-  // }, [createUser]);
-
-  // useEffect(() => {
-  //   if (data) console.log(data);
-  //   if (error) console.log(error);
-  //   if (isLoading) console.log(isLoading);
-  // }, [data, error, isLoading]);
-
   return (
     <>
-      <Routes>
-        <Route path={URL_LOGIN} element={<LoginPage />} />
-        <Route path={URL_HOME} element={<Home />} />
-        <Route path={URL_CREATE_USER} element={<CreateUser />} />
-        <Route path={URL_USER_PROFILES} element={<UserProfiles />} />
-        <Route path={URL_USER_ROLES} element={<UserRoles />} />
-      </Routes>
+      <Provider store={getStore()}>
+        <Gate>
+          <Routes>
+            <Route path={URL_LOGIN} element={<LoginPage />} />
+            <Route path={URL_HOME} element={<Home />} />
+            <Route path={URL_CREATE_USER} element={<CreateUser />} />
+            <Route path={URL_USER_PROFILES} element={<UserProfiles />} />
+            <Route path={URL_USER_ROLES} element={<UserRoles />} />{" "}
+          </Routes>
+        </Gate>
+      </Provider>
     </>
   );
 }

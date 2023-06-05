@@ -21,7 +21,6 @@ const LogInWidget = () => {
 
   const navigate = useNavigate();
 
-
   const [loginSuccess, setLoginSuccess] = useState<boolean>(false);
   const [formErrors, setFormErrors] = useState<ValidationErrorsDict>({});
   const [showFormErrorWidget, setShowFormErrorWidget] = useState<boolean>(false);
@@ -104,7 +103,7 @@ const LogInWidget = () => {
   };
 
   const handleCloseExceptionHandler = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    console.log(event)
+    console.log(event);
     if (reason === "clickaway") {
       return;
     }
@@ -119,18 +118,17 @@ const LogInWidget = () => {
     if (checkData()) {
       setListenCheckData(false);
       // const requestData: LoginRequest = { email: email, password: password };
-      let responseError = null
-      if (data && !isLoading){
-        const responseData: any = data
-        const user = responseData.items.find((user: any) => user.login === email)
-        if (!user){
-          responseError = {data: {field: "email", message: "No existe un user con ese email" }}
+      let responseError = null;
+      if (data && !isLoading) {
+        const responseData: any = data;
+        const user = responseData.items.find((user: any) => user.login === email);
+        if (!user) {
+          responseError = { data: { field: "email", message: "No existe un user con ese email" } };
         }
 
-        if (user && user.password !== password){
-          responseError = {data: {field: "password", message: "Contraseña incorrecta" }}
+        if (user && user.password !== password) {
+          responseError = { data: { field: "password", message: "Contraseña incorrecta" } };
         }
-
       }
 
       if (responseError) {
@@ -138,11 +136,10 @@ const LogInWidget = () => {
       } else {
         setLoginSuccess(true);
       }
-      
+
       if (error) {
         setOpenExceptionHandler(true);
       }
-
     } else {
       setShowFormErrorWidget(true);
     }
@@ -220,14 +217,14 @@ const LogInWidget = () => {
         </div>
         <ExceptionHandler
           open={loginSuccess}
-          icon={<CheckIcon className={"mb-14 text-[5em] text-blue-600"}/>}
+          icon={<CheckIcon className={"mb-14 text-[5em] text-blue-600"} />}
           title={"Inicio de sesión exitoso"}
           description={"Espere a ser redirigido"}
         />
         <ExceptionHandler
           open={openExceptionHandler}
           onClose={handleCloseExceptionHandler}
-          icon={<ErrorIcon className={"mb-14 text-[5em] text-red-700"}/>}
+          icon={<ErrorIcon className={"mb-14 text-[5em] text-red-700"} />}
           title={"Ups! Algo falló"}
           description={"Parece que algo fue mal iniciando sesión. Revise su data."}
           btnText={"Reintentar"}
