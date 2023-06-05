@@ -14,7 +14,7 @@ import validate from "utils/validate/validate";
 import { useGetUsersQuery } from "services/dbApi";
 import { useNavigate } from "react-router-dom";
 
-const { URL_HOME } = SERVER_URLS;
+const { URL_HOME, URL_SIGNUP } = SERVER_URLS;
 
 const LogInWidget = () => {
   const { data, error, isLoading } = useGetUsersQuery(undefined);
@@ -38,7 +38,7 @@ const LogInWidget = () => {
   useEffect(() => {
     if (!hide) return;
 
-    let timer = setTimeout(() => {
+    const timer = setTimeout(() => {
       setListenCheckData(false);
       setHide(false);
     }, 250);
@@ -48,7 +48,7 @@ const LogInWidget = () => {
   useEffect(() => {
     if (!listenCheckData) return;
     listenCheckDataTimer ? clearTimeout(listenCheckDataTimer) : null;
-    let timer = setTimeout(() => {
+    const timer = setTimeout(() => {
       checkData();
     }, 500);
     setListenCheckDataTimer(timer);
@@ -66,11 +66,11 @@ const LogInWidget = () => {
   }, [showFormErrorWidget]);
   useEffect(() => {
     if (!loginSuccess) return;
-    let timer = setTimeout(() => {
+    const timer = setTimeout(() => {
       navigate(URL_HOME);
     }, 1000);
     return () => clearTimeout(timer);
-  }, [loginSuccess]);
+  }, [loginSuccess, navigate]);
 
   const handleChangeEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (errorMessage) setErrorMessage(null);
@@ -211,6 +211,13 @@ const LogInWidget = () => {
                 <Button className={"w-full rounded-xl h-[3em]"} type="submit">
                   Iniciar sesión
                 </Button>
+                {/* Botón para registrarse */}
+                <div className={"w-full flex flex-row items-center justify-center mt-[1.5em]"}>
+                  <p className={"text-sm text-gray-600"}>¿No tienes cuenta?</p>
+                  <Button href={URL_SIGNUP} className={"ml-[0.5em] text-sm text-blue-600"}>
+                    <a className={"ml-[0.5em] text-sm text-blue-600"}>Regístrate</a>
+                  </Button>
+                </div>
               </form>
             </>
           )}
