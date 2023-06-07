@@ -4,8 +4,23 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Button, Link, MenuItem, Stack, TextField } from "@mui/material";
 import { useState } from "react";
-import { countries } from "../utils/countries";
+import _countries from "utils/countries+states+cities.json";
 import Title from "components/Title";
+
+type Country = {
+  name: string;
+  iso2: string;
+  states: {
+    name: string;
+    state_code: string;
+    cities: {
+      name: string;
+      id: number;
+    }[];
+  }[];
+};
+
+const countries = _countries as Country[];
 
 const SignupForm = () => {
   const [firstName, setFirstName] = useState("");
@@ -22,11 +37,11 @@ const SignupForm = () => {
 
   return (
     <>
-      <h2>Register Form</h2>
       <form onSubmit={handleSubmit} action={"" /* Login endpoint */}>
         {/* Sección 1: Información general */}
         <Title title="Información general" />
         <Stack spacing={2} direction="row" sx={{ marginBottom: 4 }}>
+          {/* Nombres */}
           <TextField
             type="text"
             variant="outlined"
@@ -37,6 +52,8 @@ const SignupForm = () => {
             fullWidth
             required
           />
+
+          {/* Apellidos */}
           <TextField
             type="text"
             variant="outlined"
@@ -48,6 +65,8 @@ const SignupForm = () => {
             required
           />
         </Stack>
+        p
+        {/* Correo electrónico */}
         <TextField
           type="email"
           variant="outlined"
@@ -59,6 +78,8 @@ const SignupForm = () => {
           required
           sx={{ mb: 4 }}
         />
+
+        {/* Contraseña */}
         <TextField
           type="password"
           variant="outlined"
@@ -71,6 +92,7 @@ const SignupForm = () => {
           sx={{ mb: 4 }}
         />
         <Stack spacing={2} direction="row" sx={{ marginBottom: 4 }}>
+          {/* F Nacimiento */}
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               label="Fecha de nacimiento"
@@ -91,11 +113,12 @@ const SignupForm = () => {
         <Stack spacing={2} direction="row" sx={{ marginBottom: 4 }}>
           {/* Nacionalidad */}
           <TextField select variant="outlined" color="primary" label="Nacionalidad" fullWidth required sx={{ mb: 4 }}>
-            {countries.map((country: { code: string; name: string }) => (
-              <MenuItem key={country.code} value={country.code}>
+            {/* No usar */}
+            {/* {countries.map((country: Country) => (
+              <MenuItem key={country.iso2} value={country.iso2}>
                 {country.name}
               </MenuItem>
-            ))}
+            ))} */}
           </TextField>
 
           {/* Documento de identidad */}
@@ -121,8 +144,40 @@ const SignupForm = () => {
           />
         </Stack>
 
+        {/* Sección 2: Información de residencia */}
         <Title title="Información de residencia" />
-        {/* Dirección */}
+
+        {/* País */}
+        <TextField select variant="outlined" color="primary" label="País" fullWidth required sx={{ mb: 4 }}>
+          {countries.map((country: { code: string; name: string }) => (
+            <MenuItem key={country.code} value={country.code}>
+              {country.name}
+            </MenuItem>
+          ))}
+        </TextField>
+
+        {/* Estado o Provincia */}
+        <TextField
+          type="text"
+          variant="outlined"
+          color="primary"
+          label="Estado o Provincia"
+          fullWidth
+          required
+          sx={{ mb: 4 }}
+        />
+
+        {/* Municipio o Condado */}
+        <TextField
+          type="text"
+          variant="outlined"
+          color="primary"
+          label="Municipio o Condado"
+          fullWidth
+          required
+          sx={{ mb: 4 }}
+        />
+
 
         <Button variant="outlined" color="primary" type="submit" fullWidth>
           Register
