@@ -27,3 +27,4 @@ dist-ssr
 
 # Test
 unittest/__pycache__/
+Frontend.code-workspace
