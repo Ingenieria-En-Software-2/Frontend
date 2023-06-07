@@ -5,16 +5,16 @@ export type SignupFormInputs = {
     email: string;
     password: string;
     dateOfBirth: string;
-    genre: string;
+    gender: string;
     nationality: string;
     idDocument: string;
     phone: string;
   };
   residenceInfo: {
-    county: string;
+    country: string;
     state: string;
     city: string;
-    city2: string;
+    subregion: string;
     sector: string;
     street: string;
     building: string;

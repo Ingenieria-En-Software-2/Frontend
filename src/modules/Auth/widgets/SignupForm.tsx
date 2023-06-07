@@ -6,7 +6,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Button, Link, MenuItem, Stack, Tab, Tabs, TextField } from "@mui/material";
 import { Country, State, City, ICountry, IState, ICity } from "country-state-city";
 import Title from "components/Title";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { SignupFormInputs } from "../types/signup";
 
 interface TabPanelProps {
@@ -42,11 +42,11 @@ const SignupForm = () => {
   // -------------------- Form states --------------------
 
   const {
-    register,
+    control,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<SignupFormInputs>();
+
   const onSubmit: SubmitHandler<SignupFormInputs> = (data) => console.log(data);
 
   // -------------------- Form tabs --------------------
@@ -95,270 +95,453 @@ const SignupForm = () => {
           <Title title="Información general" />
           <Stack spacing={2} direction="row" sx={{ mb: 4 }}>
             {/* Names */}
-            <TextField type="text" variant="outlined" color="primary" label="Nombres" fullWidth required />
+            <Controller
+              name="generalInfo.names"
+              control={control}
+              defaultValue=""
+              rules={{ required: true, maxLength: 80, minLength: 3, pattern: /^[A-Za-z\s]+$/i }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  type="text"
+                  variant="outlined"
+                  color="primary"
+                  label="Nombres"
+                  fullWidth
+                  required
+                />
+              )}
+            />
 
             {/* Surnames */}
-            <TextField
-              type="text"
-              variant="outlined"
-              color="primary"
-              label="Apellidos"
-              fullWidth
-              required
+            <Controller
+              name="generalInfo.surnames"
+              control={control}
+              defaultValue=""
+              rules={{ required: true, maxLength: 80, minLength: 3, pattern: /^[A-Za-z\s]+$/i }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  type="text"
+                  variant="outlined"
+                  color="primary"
+                  label="Apellidos"
+                  fullWidth
+                  required
+                />
+              )}
             />
           </Stack>
 
           {/* Email */}
-          <TextField
-            type="email"
-            variant="outlined"
-            color="primary"
-            label="Correo electrónico"
-            fullWidth
-            required
-            sx={{ mb: 4 }}
+          <Controller
+            name="generalInfo.email"
+            control={control}
+            defaultValue=""
+            rules={{ required: true, maxLength: 80, minLength: 3, pattern: /* email regex */ /^[A-Za-z\s]+$/i }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                type="email"
+                variant="outlined"
+                color="primary"
+                label="Correo electrónico"
+                fullWidth
+                required
+                sx={{ mb: 4 }}
+              />
+            )}
           />
 
           {/* Password */}
-          <TextField
-            type="password"
-            variant="outlined"
-            color="primary"
-            label="Contraseña"
-            required
-            fullWidth
-            sx={{ mb: 4 }}
+          <Controller
+            name="generalInfo.password"
+            control={control}
+            defaultValue=""
+            rules={{ required: true, maxLength: 80, minLength: 3, pattern: /* password regex */ /^[A-Za-z\s]+$/i }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                type="password"
+                variant="outlined"
+                color="primary"
+                label="Contraseña"
+                fullWidth
+                required
+                sx={{ mb: 4 }}
+              />
+            )}
           />
+
           <Stack spacing={2} direction="row" sx={{ mb: 4 }}>
             {/* Birthdate */}
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Fecha de nacimiento"
-                slotProps={{
-                  textField: {
-                    helperText: "MM/DD/AAAA",
-                    required: true,
-                  },
-                }}
-              />
-            </LocalizationProvider>
+            <Controller
+              name="generalInfo.dateOfBirth"
+              control={control}
+              defaultValue=""
+              rules={{ required: true }}
+              render={({ field }) => (
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    {...field}
+                    label="Fecha de nacimiento"
+                    slotProps={{
+                      textField: {
+                        helperText: "MM/DD/AAAA",
+                        required: true,
+                      },
+                    }}
+                  />
+                </LocalizationProvider>
+              )}
+            />
 
             {/* Gender */}
-            <TextField
-              select
-              variant="outlined"
-              color="primary"
-              label="Género"
-              fullWidth
-              required
-              sx={{ width: "60%" }}
-            >
-              <MenuItem value="M">Masculino</MenuItem>
-              <MenuItem value="F">Femenino</MenuItem>
-              <MenuItem value="O">Otro</MenuItem>
-            </TextField>
+            <Controller
+              name="generalInfo.gender"
+              control={control}
+              defaultValue=""
+              rules={{ required: true }}
+              render={({ field }) => (
+                <TextField
+                  select
+                  variant="outlined"
+                  color="primary"
+                  label="Género"
+                  fullWidth
+                  required
+                  sx={{ width: "60%" }}
+                >
+                  <MenuItem value="M">Masculino</MenuItem>
+                  <MenuItem value="F">Femenino</MenuItem>
+                  <MenuItem value="O">Otro</MenuItem>
+                </TextField>
+              )}
+            />
           </Stack>
 
           <Stack spacing={2} direction="row" sx={{ mb: 4 }}>
             {/* Nationality */}
-            <TextField select variant="outlined" color="primary" label="Nacionalidad" fullWidth required>
-              {countries.map((country: ICountry) => (
-                <MenuItem key={country.name} value={country.name}>
-                  {country.flag} {country.name}
-                </MenuItem>
-              ))}
-            </TextField>
+            <Controller
+              name="generalInfo.nationality"
+              control={control}
+              defaultValue=""
+              rules={{ required: true }}
+              render={({ field }) => (
+                <TextField {...field} select variant="outlined" color="primary" label="Nacionalidad" fullWidth required>
+                  {countries.map((country: ICountry) => (
+                    <MenuItem key={country.name} value={country.name}>
+                      {country.flag} {country.name}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              )}
+            />
 
             {/* Identification document */}
-            <TextField
-              type="text"
-              variant="outlined"
-              color="primary"
-              label="Documento de identidad"
-              fullWidth
-              required
-              sx={{ mb: 4 }}
+            <Controller
+              name="generalInfo.idDocument"
+              control={control}
+              defaultValue=""
+              rules={{ required: true, maxLength: 80, minLength: 3, pattern: /^[A-Za-z\s]+$/i }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  type="text"
+                  variant="outlined"
+                  color="primary"
+                  label="Documento de identificación"
+                  fullWidth
+                  required
+                />
+              )}
             />
 
             {/* Phone number */}
-            <TextField
-              type="text"
-              variant="outlined"
-              color="primary"
-              label="Teléfono de contacto"
-              fullWidth
-              required
-              sx={{ mb: 4 }}
+            <Controller
+              name="generalInfo.phone"
+              control={control}
+              defaultValue=""
+              rules={{ required: true, maxLength: 80, minLength: 3, pattern: /^[A-Za-z\s]+$/i }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  type="text"
+                  variant="outlined"
+                  color="primary"
+                  label="Teléfono de contacto"
+                  fullWidth
+                  required
+                />
+              )}
             />
           </Stack>
         </TabPanel>
 
         <TabPanel value={value} index={1}>
           {/* Tab 2: Residence info */}
-
           <Title title="Información de residencia" />
 
           <Stack spacing={3} direction="row" sx={{ mb: 4 }}>
             {/* Country */}
-            <TextField
-              select
-              variant="outlined"
-              color="primary"
-              label="País"
-              fullWidth
-              required
-              onChange={handleCountryChange}
-            >
-              {countries.map((country: ICountry) => (
-                <MenuItem key={country.name} value={country.name}>
-                  {country.flag} {country.name}
-                </MenuItem>
-              ))}
-            </TextField>
+            <Controller
+              name="residenceInfo.country"
+              control={control}
+              defaultValue=""
+              rules={{ required: true }}
+              render={({ field }) => (
+                <TextField {...field} select variant="outlined" color="primary" label="País" fullWidth required>
+                  {countries.map((country: ICountry) => (
+                    <MenuItem key={country.name} value={country.name}>
+                      {country.flag} {country.name}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              )}
+            />
 
             {/* Province or state */}
-            <TextField
-              select
-              variant="outlined"
-              color="primary"
-              label="Estado o Provincia"
-              fullWidth
-              onChange={handleStateChange}
-            >
-              {states.map((state: IState) => (
-                <MenuItem key={state.name} value={state.name}>
-                  {state.name}
-                </MenuItem>
-              ))}
-            </TextField>
+            <Controller
+              name="residenceInfo.state"
+              control={control}
+              defaultValue=""
+              rules={{ required: true }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  select
+                  variant="outlined"
+                  color="primary"
+                  label="Provincia o estado"
+                  fullWidth
+                  required
+                >
+                  {states.map((state: IState) => (
+                    <MenuItem key={state.name} value={state.name}>
+                      {state.name}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              )}
+            />
 
             {/* City */}
-            <TextField select variant="outlined" color="primary" label="Ciudad" fullWidth>
-              {cities.map((city: ICity) => (
-                <MenuItem key={city.name} value={city.name}>
-                  {city.name}
-                </MenuItem>
-              ))}
-            </TextField>
+            <Controller
+              name="residenceInfo.city"
+              control={control}
+              defaultValue=""
+              rules={{ required: true }}
+              render={({ field }) => (
+                <TextField {...field} select variant="outlined" color="primary" label="Ciudad" fullWidth required>
+                  {cities.map((city: ICity) => (
+                    <MenuItem key={city.name} value={city.name}>
+                      {city.name}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              )}
+            />
           </Stack>
 
           <Stack spacing={2} direction="row" sx={{ mb: 4 }}>
             {/* County or municipality */}
-            <TextField type="text" variant="outlined" color="primary" label="Municipio o condado" fullWidth required />
+            <Controller
+              name="residenceInfo.subregion"
+              control={control}
+              defaultValue=""
+              rules={{ required: true }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  type="text"
+                  variant="outlined"
+                  color="primary"
+                  label="Municipio o condado"
+                  fullWidth
+                  required
+                />
+              )}
+            />
 
             {/* Sector */}
-            <TextField type="text" variant="outlined" color="primary" label="Sector" fullWidth required />
+            <Controller
+              name="residenceInfo.sector"
+              control={control}
+              defaultValue=""
+              rules={{ required: true }}
+              render={({ field }) => (
+                <TextField {...field} type="text" variant="outlined" color="primary" label="Sector" fullWidth required />
+              )}
+            />
           </Stack>
 
           {/* Street */}
-          <TextField
-            type="text"
-            variant="outlined"
-            color="primary"
-            label="Calle o Avenida"
-            fullWidth
-            required
-            sx={{ mb: 4 }}
+          <Controller
+            name="residenceInfo.street"
+            control={control}
+            defaultValue=""
+            rules={{ required: true }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                type="text"
+                variant="outlined"
+                color="primary"
+                label="Calle o Avenida"
+                fullWidth
+                required
+                sx={{ mb: 4 }}
+              />
+            )}
           />
 
           {/* Building */}
-          <TextField
-            type="text"
-            variant="outlined"
-            color="primary"
-            label="Habitación"
-            fullWidth
-            required
-            multiline
-            rows={4}
-            sx={{ mb: 4 }}
+          <Controller
+            name="residenceInfo.building"
+            control={control}
+            defaultValue=""
+            rules={{ required: true }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                type="text"
+                variant="outlined"
+                color="primary"
+                label="Edificio"
+                fullWidth
+                required
+                sx={{ mb: 4 }}
+              />
+            )}
           />
+
         </TabPanel>
         <TabPanel value={value} index={2}>
           {/* Tab 3: Work info */}
-          <Title title="Datos de la Empresa donde trabaja" />
+          <Title title="Datos de la empresa donde trabaja" />
 
           {/* Company name */}
-          <TextField
-            type="text"
-            variant="outlined"
-            color="primary"
-            label="Nombre de la empresa"
-            fullWidth
-            required
-            sx={{ mb: 4 }}
+          <Controller
+            name="workInfo.company"
+            control={control}
+            defaultValue=""
+            rules={{ required: true }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                type="text"
+                variant="outlined"
+                color="primary"
+                label="Nombre de la empresa"
+                fullWidth
+                required
+                sx={{ mb: 4 }}
+              />
+            )}
           />
 
           <Stack spacing={2} direction="row">
             {/* RIF: J-XXXX...X-X */}
-            <TextField
-              type="text"
-              variant="outlined"
-              color="primary"
-              label="RIF"
-              fullWidth
-              required
-              sx={{ mb: 4 }}
-              inputProps={{ pattern: "J-[0-9]*-[0-9]{1}" }}
+            <Controller
+              name="workInfo.rif"
+              control={control}
+              defaultValue=""
+              rules={{ required: true }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  type="text"
+                  variant="outlined"
+                  color="primary"
+                  label="RIF"
+                  fullWidth
+                  required
+                  sx={{ mb: 4 }}
+                />
+              )}
             />
 
             {/* Company phone number: 0XXX-XXX-XXXX */}
-            <TextField
-              type="text"
-              variant="outlined"
-              color="primary"
-              label="Telefono de la empresa"
-              fullWidth
-              required
-              sx={{ mb: 4 }}
-              inputProps={{ pattern: "0[0-9]*-[0-9]*" }}
+            <Controller
+              name="workInfo.phone"
+              control={control}
+              defaultValue=""
+              rules={{ required: true }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  type="text"
+                  variant="outlined"
+                  color="primary"
+                  label="Telefono de la empresa"
+                  fullWidth
+                  required
+                  sx={{ mb: 4 }}
+                  inputProps={{ pattern: "0[0-9]*-[0-9]*" }}
+                />
+              )}
             />
           </Stack>
 
-          <Stack spacing={3} direction="row">
+          <Stack spacing={3} direction="row" sx={{ mb: 4 }}>
             {/* Country */}
-            <TextField
-              select
-              variant="outlined"
-              color="primary"
-              label="País"
-              fullWidth
-              required
-              sx={{ mb: 4 }}
-              onChange={handleCountryChange}
-            >
-              {countries.map((country: ICountry) => (
-                <MenuItem key={country.name} value={country.name}>
-                  {country.flag} {country.name}
-                </MenuItem>
-              ))}
-            </TextField>
+            <Controller
+              name="residenceInfo.country"
+              control={control}
+              defaultValue=""
+              rules={{ required: true }}
+              render={({ field }) => (
+                <TextField {...field} select variant="outlined" color="primary" label="País" fullWidth required>
+                  {countries.map((country: ICountry) => (
+                    <MenuItem key={country.name} value={country.name}>
+                      {country.flag} {country.name}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              )}
+            />
 
             {/* Province or state */}
-            <TextField
-              select
-              variant="outlined"
-              color="primary"
-              label="Estado o Provincia"
-              fullWidth
-              sx={{ mb: 4 }}
-              onChange={handleStateChange}
-            >
-              {states.map((state: IState) => (
-                <MenuItem key={state.name} value={state.name}>
-                  {state.name}
-                </MenuItem>
-              ))}
-            </TextField>
+            <Controller
+              name="residenceInfo.state"
+              control={control}
+              defaultValue=""
+              rules={{ required: true }}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  select
+                  variant="outlined"
+                  color="primary"
+                  label="Provincia o estado"
+                  fullWidth
+                  required
+                >
+                  {states.map((state: IState) => (
+                    <MenuItem key={state.name} value={state.name}>
+                      {state.name}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              )}
+            />
 
             {/* City */}
-            <TextField select variant="outlined" color="primary" label="Ciudad" fullWidth sx={{ mb: 4 }}>
-              {cities.map((city: ICity) => (
-                <MenuItem key={city.name} value={city.name}>
-                  {city.name}
-                </MenuItem>
-              ))}
-            </TextField>
+            <Controller
+              name="residenceInfo.city"
+              control={control}
+              defaultValue=""
+              rules={{ required: true }}
+              render={({ field }) => (
+                <TextField {...field} select variant="outlined" color="primary" label="Ciudad" fullWidth required>
+                  {cities.map((city: ICity) => (
+                    <MenuItem key={city.name} value={city.name}>
+                      {city.name}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              )}
+            />
           </Stack>
         </TabPanel>
 
