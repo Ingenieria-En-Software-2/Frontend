@@ -68,7 +68,7 @@ const SignupForm = () => {
       <FormControl onSubmit={handleSubmit} action={"" /* Login endpoint */}>
         {/* Sección 1: Información general */}
         <Title title="Información general" />
-        <Stack spacing={2} direction="row" sx={{ marginBottom: 4 }}>
+        <Stack spacing={2} direction="row" sx={{ mb: 4 }}>
           {/* Nombres */}
           <TextField
             type="text"
@@ -119,7 +119,7 @@ const SignupForm = () => {
           fullWidth
           sx={{ mb: 4 }}
         />
-        <Stack spacing={2} direction="row" sx={{ marginBottom: 4 }}>
+        <Stack spacing={2} direction="row" sx={{ mb: 4 }}>
           {/* F Nacimiento */}
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
@@ -138,7 +138,7 @@ const SignupForm = () => {
           </TextField>
         </Stack>
 
-        <Stack spacing={2} direction="row" sx={{ marginBottom: 4 }}>
+        <Stack spacing={2} direction="row">
           {/* Nacionalidad */}
           <TextField select variant="outlined" color="primary" label="Nacionalidad" fullWidth required sx={{ mb: 4 }}>
             {countries.map((country: Country) => (
@@ -174,66 +174,185 @@ const SignupForm = () => {
         {/* Sección 2: Información de residencia */}
         <Title title="Información de residencia" />
 
-        {/* País */}
+        {/* Habitación: texttarea */}
         <TextField
-          select
+          type="text"
           variant="outlined"
           color="primary"
-          label="País"
+          label="Habitación"
+          fullWidth
+          required
+          multiline
+          rows={4}
+          sx={{ mb: 4 }}
+        />
+
+        {/* Calle o Avenida*/}
+        <TextField
+          type="text"
+          variant="outlined"
+          color="primary"
+          label="Calle o Avenida"
           fullWidth
           required
           sx={{ mb: 4 }}
-          onChange={handleCountryChange}
-        >
-          {countries.map((country: Country) => (
-            <MenuItem key={country.name} value={country.name}>
-              {country.name}
-            </MenuItem>
-          ))}
-        </TextField>
+        />
 
-        {/* Estado o Provincia */}
+        <Stack spacing={2} direction="row">
+          {/* Sector */}
+          <TextField type="text" variant="outlined" color="primary" label="Sector" fullWidth required sx={{ mb: 4 }} />
+
+          {/* Ciudad */}
+          <TextField type="text" variant="outlined" color="primary" label="Ciudad" fullWidth required sx={{ mb: 4 }} />
+        </Stack>
+
+        <Stack spacing={3} direction="row" sx={{ mb: 4 }}>
+          {/* País */}
+          <TextField
+            select
+            variant="outlined"
+            color="primary"
+            label="País"
+            fullWidth
+            required
+            onChange={handleCountryChange}
+          >
+            {countries.map((country: Country) => (
+              <MenuItem key={country.name} value={country.name}>
+                {country.name}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          {/* Estado o Provincia */}
+          <TextField
+            select
+            variant="outlined"
+            color="primary"
+            label="Estado o Provincia"
+            fullWidth
+            onChange={handleStateChange}
+          >
+            {states.map((state: State) => (
+              <MenuItem key={state.name} value={state.name}>
+                {state.name}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          {/* Municipio o Condado */}
+          <TextField select variant="outlined" color="primary" label="Municipio o Condado" fullWidth>
+            {cities.map((city: City) => (
+              <MenuItem key={city.name} value={city.name}>
+                {city.name}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Stack>
+
+        {/* Sección 3: Datos de la Empresa donde trabaja */}
+        <Title title="Datos de la Empresa donde trabaja" />
+
+        {/* Nombre de la empresa */}
         <TextField
-          select
+          type="text"
           variant="outlined"
           color="primary"
-          label="Estado o Provincia"
+          label="Nombre de la empresa"
           fullWidth
+          required
           sx={{ mb: 4 }}
-          onChange={handleStateChange}
-        >
-          {states.map((state: State) => (
-            <MenuItem key={state.name} value={state.name}>
-              {state.name}
-            </MenuItem>
-          ))}
-        </TextField>
+        />
 
-        {/* Municipio o Condado */}
-        <TextField
-          select
-          variant="outlined"
-          color="primary"
-          label="Municipio o Condado"
-          fullWidth
-          sx={{ mb: 4 }}
-        >
-          {cities.map((city: City) => (
-            <MenuItem key={city.name} value={city.name}>
-              {city.name}
-            </MenuItem>
-          ))}
-        </TextField>
+        <Stack spacing={2} direction="row">
+          {/* RIF: J-XXXX...X-X */}
+          <TextField
+            type="text"
+            variant="outlined"
+            color="primary"
+            label="RIF"
+            fullWidth
+            required
+            sx={{ mb: 4 }}
+            inputProps={{ pattern: "J-[0-9]*-[0-9]{1}" }}
+          />
 
+          {/* Telefono de la empresa: 0X...X-XXXXXXX...X */}
+          <TextField
+            type="text"
+            variant="outlined"
+            color="primary"
+            label="Telefono de la empresa"
+            fullWidth
+            required
+            sx={{ mb: 4 }}
+            inputProps={{ pattern: "0[0-9]*-[0-9]*" }}
+          />
+        </Stack>
+
+        <Stack spacing={3} direction="row">
+          {/* País */}
+          <TextField
+            select
+            variant="outlined"
+            color="primary"
+            label="País"
+            fullWidth
+            required
+            sx={{ mb: 4 }}
+            onChange={handleCountryChange}
+          >
+            {countries.map((country: Country) => (
+              <MenuItem key={country.name} value={country.name}>
+                {country.name}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          {/* Estado o Provincia */}
+          <TextField
+            select
+            variant="outlined"
+            color="primary"
+            label="Estado o Provincia"
+            fullWidth
+            sx={{ mb: 4 }}
+            onChange={handleStateChange}
+          >
+            {states.map((state: State) => (
+              <MenuItem key={state.name} value={state.name}>
+                {state.name}
+              </MenuItem>
+            ))}
+          </TextField>
+
+          {/* Municipio o Condado */}
+          <TextField select variant="outlined" color="primary" label="Municipio o Condado" fullWidth sx={{ mb: 4 }}>
+            {cities.map((city: City) => (
+              <MenuItem key={city.name} value={city.name}>
+                {city.name}
+              </MenuItem>
+            ))}
+          </TextField>
+        </Stack>
+
+        {/* Captcha */}
+
+        {/* Botón de borrar */}
+        {/* <Button variant="outlined" color="primary" fullWidth>
+          Borrar
+        </Button> */}
+
+        {/* Botón de envío */}
         <Button variant="outlined" color="primary" type="submit" fullWidth>
-          Register
+          Enviar
         </Button>
       </FormControl>
-      <small>
-        Already have an account?
+      <small className="mt-3">
+        ¿Ya tienes una cuenta?
         <Link href="/login" underline="hover">
           {" "}
-          Login
+          Inicia sesión
         </Link>
       </small>
     </>
