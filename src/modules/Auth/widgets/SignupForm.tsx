@@ -303,7 +303,7 @@ const SignupForm = () => {
                   fullWidth
                   required
                   onChange={handlersHome.state}
-                  disabled={selectedAddressHome.country === ""}
+                  disabled={optionsHome.states.length === 0}
                   value={selectedAddressHome.state}
                 >
                   {optionsHome.states.map((state: IState) => (
@@ -330,7 +330,7 @@ const SignupForm = () => {
                   label="Ciudad"
                   fullWidth
                   required
-                  disabled={selectedAddressHome.state === ""}
+                  disabled={optionsHome.cities.length === 0}
                   value={selectedAddressHome.city}
                   onChange={handlersHome.city}
                 >
@@ -535,7 +535,7 @@ const SignupForm = () => {
                   fullWidth
                   required
                   onChange={handlersWork.state}
-                  disabled={selectedAddressWork.country === ""}
+                  disabled={optionsWork.states.length === 0}
                   value={selectedAddressWork.state}
                 >
                   {optionsWork.states.map((state: IState) => (
@@ -562,7 +562,7 @@ const SignupForm = () => {
                   label="Ciudad"
                   fullWidth
                   required
-                  disabled={selectedAddressWork.state === ""}
+                  disabled={optionsWork.cities.length === 0}
                   value={selectedAddressWork.city}
                   onChange={handlersWork.city}
                 >

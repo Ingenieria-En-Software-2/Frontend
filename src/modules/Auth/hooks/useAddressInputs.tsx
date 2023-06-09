@@ -38,59 +38,30 @@ export const useAddressInputs = () => {
   });
 
   const handleChangeCountry = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (State.getStatesOfCountry(event.target.value).length === 0) {
-      // If selected country has no states, reset state and city
-      setOptions({
-        ...options,
-        states: [],
-        cities: [],
-      });
+    setOptions({
+      ...options,
+      states: State.getStatesOfCountry(event.target.value),
+      cities: [],
+    });
 
-      setSelected({
-        country: "",
-        state: "",
-        city: "",
-      });
-    } else {
-      setOptions({
-        ...options,
-        states: State.getStatesOfCountry(event.target.value),
-        cities: [],
-      });
-
-      setSelected({
-        country: event.target.value,
-        state: "",
-        city: "",
-      });
-    }
+    setSelected({
+      country: event.target.value,
+      state: "",
+      city: "",
+    });
   };
 
   const handleChangeState = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (City.getCitiesOfState(selected.country, event.target.value).length === 0) {
-      // If selected state has no cities, reset city
-      setOptions({
-        ...options,
-        cities: [],
-      });
+    setOptions({
+      ...options,
+      cities: City.getCitiesOfState(selected.country, event.target.value),
+    });
 
-      setSelected({
-        ...selected,
-        state: "",
-        city: "",
-      });
-    } else {
-      setOptions({
-        ...options,
-        cities: City.getCitiesOfState(selected.country, event.target.value),
-      });
-
-      setSelected({
-        ...selected,
-        state: event.target.value,
-        city: "",
-      });
-    }
+    setSelected({
+      ...selected,
+      state: event.target.value,
+      city: "",
+    });
   };
 
   const handleChangeCity = (event: React.ChangeEvent<HTMLInputElement>) => {
