@@ -14,7 +14,7 @@ type Props = {
 };
 
 const Gate = ({ children }: Props) => {
-  const [forbiden, setForbiden] = useState<boolean | undefined>(undefined);
+  const [forbidden, setForbidden] = useState<boolean | undefined>(undefined);
   const router = useLocation();
   const navigate = useNavigate();
 
@@ -22,7 +22,7 @@ const Gate = ({ children }: Props) => {
   const appState = getStore().getState();
 
   useEffect(() => {
-    console.log(appState)
+    console.log(appState);
     const routeConfig = getRouteConfig(router.pathname);
     const developRouteConfig = getDevelopRouteConfig(router.pathname);
     const authFromCookie = getAuthFromCookie();
@@ -36,21 +36,21 @@ const Gate = ({ children }: Props) => {
       } else if (routeConfig.isPrivate) {
         //Fully Authenticated and tryig to view private resource: Let me check your credentials.
         const isAllowed = isAllowedRoute(appState.user, routeConfig);
-        setForbiden(!isAllowed);
+        setForbidden(!isAllowed);
       } else if (developRouteConfig.isPrivate) {
         const isDeveloper = isDeveloperRoute(appState.user, developRouteConfig);
-        setForbiden(!isDeveloper);
+        setForbidden(!isDeveloper);
       } else if (router.pathname == URL_LOGIN) {
         //Fully Authenticated and trying to view login page? C'mon, get in
         navigate(URL_HOME);
-      } else setForbiden(false); //Fully Authenticated and trying to view public resource. Please, come in.
+      } else setForbidden(false); //Fully Authenticated and trying to view public resource. Please, come in.
     } else if (routeConfig.isPrivate || developRouteConfig.isPrivate) {
       //Unauthenticated and tryig to view private resource. Go to Login, please.
       navigate(URL_LOGIN);
-    } else setForbiden(false); //Unauthenticated and trying to view public resource. Please, come in.
-  }, [appState, router.pathname]);
+    } else setForbidden(false); //Unauthenticated and trying to view public resource. Please, come in.
+  }, [appState, router.pathname, dispatch, navigate]);
 
-  return <>{forbiden === undefined ? null : forbiden ? <ForbidenRoute /> : children}</>;
+  return <>{forbidden === undefined ? null : forbidden ? <ForbidenRoute /> : children}</>;
 };
 
 export default Gate;

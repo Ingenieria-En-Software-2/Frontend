@@ -15,7 +15,7 @@ export default function Title({ title }: { title: string }) {
       alignItems="center"
       sx={{
         mt: 3,
-        mb: 1,
+        mb: 2,
         height: "50px",
         borderRadius: "5px",
         fontWeight: "bold",
