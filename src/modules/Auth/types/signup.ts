@@ -17,7 +17,7 @@ export type SignupFormInputs = {
     subregion: string;
     sector: string;
     street: string;
-    building: string;
+    room: string;
   };
   workInfo: {
     company: string;

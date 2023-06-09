@@ -3,7 +3,7 @@ import { useState } from "react";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { Button, Link, MenuItem, Stack, Tab, Tabs, TextField } from "@mui/material";
+import { Box, Button, Link, MenuItem, Stack, Tab, Tabs, TextField, Typography } from "@mui/material";
 import { ICountry, IState, ICity } from "country-state-city";
 import Title from "components/Title";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
@@ -44,7 +44,7 @@ const SignupForm = () => {
   const {
     control,
     handleSubmit,
-    // formState: { errors },
+    formState: { errors },
   } = useForm<SignupFormInputs>();
 
   const onSubmit: SubmitHandler<SignupFormInputs> = (data) => console.log(data);
@@ -65,7 +65,17 @@ const SignupForm = () => {
         <Tab label="Dirección" {...allyProps(1)} />
         <Tab label="Datos de contacto" {...allyProps(2)} />
       </Tabs>
-      <form onSubmit={handleSubmit(onSubmit)} action={"" /* Login endpoint */}>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Box sx={{ mt: 2 }}>
+          {errors.generalInfo && (
+            <Typography color="error">General info error: {errors.generalInfo.type}</Typography>
+          )}
+          {errors.residenceInfo && (
+            <Typography color="error">Residence info error: {errors.residenceInfo.type}</Typography>
+          )}
+          {errors.workInfo && <Typography color="error">Work info error: {errors.workInfo.type}</Typography>}
+        </Box>
+
         <TabPanel value={value} index={0}>
           {/* Tab 1: General info */}
           <Title title="Información general" />
@@ -75,7 +85,7 @@ const SignupForm = () => {
               name="generalInfo.names"
               control={control}
               defaultValue=""
-              rules={{ required: true, maxLength: 80, minLength: 3, pattern: /^[A-Za-z\s]+$/i }}
+              // rules={{ required: true, maxLength: 80, minLength: 3, pattern: /^[A-Za-z\s]+$/i }}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -94,7 +104,7 @@ const SignupForm = () => {
               name="generalInfo.surnames"
               control={control}
               defaultValue=""
-              rules={{ required: true, maxLength: 80, minLength: 3, pattern: /^[A-Za-z\s]+$/i }}
+              // rules={{ required: true, maxLength: 80, minLength: 3, pattern: /^[A-Za-z\s]+$/i }}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -114,7 +124,7 @@ const SignupForm = () => {
             name="generalInfo.email"
             control={control}
             defaultValue=""
-            rules={{ required: true, maxLength: 80, minLength: 3, pattern: /* email regex */ /^[A-Za-z\s]+$/i }}
+            // rules={{ required: true, maxLength: 80, minLength: 3, pattern: /* email regex */ /^[A-Za-z\s]+$/i }}
             render={({ field }) => (
               <TextField
                 {...field}
@@ -134,7 +144,7 @@ const SignupForm = () => {
             name="generalInfo.password"
             control={control}
             defaultValue=""
-            rules={{ required: true, maxLength: 80, minLength: 3, pattern: /* password regex */ /^[A-Za-z\s]+$/i }}
+            // rules={{ required: true, maxLength: 80, minLength: 3, pattern: /* password regex */ /^[A-Za-z\s]+$/i }}
             render={({ field }) => (
               <TextField
                 {...field}
@@ -155,7 +165,7 @@ const SignupForm = () => {
               name="generalInfo.dateOfBirth"
               control={control}
               defaultValue=""
-              rules={{ required: true }}
+              // rules={{ required: true }}
               render={({ field }) => (
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
@@ -177,7 +187,7 @@ const SignupForm = () => {
               name="generalInfo.gender"
               control={control}
               defaultValue=""
-              rules={{ required: true }}
+              // rules={{ required: true }}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -203,7 +213,7 @@ const SignupForm = () => {
               name="generalInfo.nationality"
               control={control}
               defaultValue=""
-              rules={{ required: true }}
+              // rules={{ required: true }}
               render={({ field }) => (
                 <TextField {...field} select variant="outlined" color="primary" label="Nacionalidad" fullWidth required>
                   {optionsHome.countries.map((country: ICountry) => (
@@ -220,7 +230,7 @@ const SignupForm = () => {
               name="generalInfo.idDocument"
               control={control}
               defaultValue=""
-              rules={{ required: true, maxLength: 80, minLength: 3, pattern: /^[A-Za-z\s]+$/i }}
+              // rules={{ required: true, maxLength: 80, minLength: 3, pattern: /^[A-Za-z\s]+$/i }}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -239,7 +249,7 @@ const SignupForm = () => {
               name="generalInfo.phone"
               control={control}
               defaultValue=""
-              rules={{ required: true, maxLength: 80, minLength: 3, pattern: /^[A-Za-z\s]+$/i }}
+              // rules={{ required: true, maxLength: 80, minLength: 3, pattern: /^[A-Za-z\s]+$/i }}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -264,8 +274,7 @@ const SignupForm = () => {
             <Controller
               name="residenceInfo.country"
               control={control}
-              defaultValue=""
-              rules={{ required: true }}
+              // rules={{ required: true }}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -292,7 +301,7 @@ const SignupForm = () => {
               name="residenceInfo.state"
               control={control}
               defaultValue=""
-              rules={{ required: true }}
+              // rules={{ required: true }}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -320,7 +329,7 @@ const SignupForm = () => {
               name="residenceInfo.city"
               control={control}
               defaultValue=""
-              rules={{ required: true }}
+              // rules={{ required: true }}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -350,7 +359,7 @@ const SignupForm = () => {
               name="residenceInfo.subregion"
               control={control}
               defaultValue=""
-              rules={{ required: true }}
+              // rules={{ required: true }}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -369,7 +378,7 @@ const SignupForm = () => {
               name="residenceInfo.sector"
               control={control}
               defaultValue=""
-              rules={{ required: true }}
+              // rules={{ required: true }}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -389,7 +398,7 @@ const SignupForm = () => {
             name="residenceInfo.street"
             control={control}
             defaultValue=""
-            rules={{ required: true }}
+            // rules={{ required: true }}
             render={({ field }) => (
               <TextField
                 {...field}
@@ -404,19 +413,21 @@ const SignupForm = () => {
             )}
           />
 
-          {/* Building */}
+          {/* Room or apartment */}
           <Controller
-            name="residenceInfo.building"
+            name="residenceInfo.room"
             control={control}
             defaultValue=""
-            rules={{ required: true }}
+            // rules={{ required: true }}
             render={({ field }) => (
               <TextField
                 {...field}
+                multiline
+                rows={4}
                 type="text"
                 variant="outlined"
                 color="primary"
-                label="Edificio"
+                label="Habitación o apartamento"
                 fullWidth
                 required
                 sx={{ mb: 4 }}
@@ -433,7 +444,7 @@ const SignupForm = () => {
             name="workInfo.company"
             control={control}
             defaultValue=""
-            rules={{ required: true }}
+            // rules={{ required: true }}
             render={({ field }) => (
               <TextField
                 {...field}
@@ -454,7 +465,7 @@ const SignupForm = () => {
               name="workInfo.rif"
               control={control}
               defaultValue=""
-              rules={{ required: true }}
+              // rules={{ required: true }}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -474,7 +485,7 @@ const SignupForm = () => {
               name="workInfo.phone"
               control={control}
               defaultValue=""
-              rules={{ required: true }}
+              // rules={{ required: true }}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -494,10 +505,10 @@ const SignupForm = () => {
           <Stack spacing={3} direction="row" sx={{ mb: 4 }}>
             {/* Country */}
             <Controller
-              name="residenceInfo.country"
+              name="workInfo.country"
               control={control}
               defaultValue=""
-              rules={{ required: true }}
+              // rules={{ required: true }}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -521,10 +532,10 @@ const SignupForm = () => {
 
             {/* Province or state */}
             <Controller
-              name="residenceInfo.state"
+              name="workInfo.state"
               control={control}
               defaultValue=""
-              rules={{ required: true }}
+              // rules={{ required: true }}
               render={({ field }) => (
                 <TextField
                   {...field}
@@ -549,10 +560,10 @@ const SignupForm = () => {
 
             {/* City */}
             <Controller
-              name="residenceInfo.city"
+              name="workInfo.city"
               control={control}
               defaultValue=""
-              rules={{ required: true }}
+              // rules={{ required: true }}
               render={({ field }) => (
                 <TextField
                   {...field}
