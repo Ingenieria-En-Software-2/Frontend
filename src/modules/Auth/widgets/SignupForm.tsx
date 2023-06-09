@@ -4,10 +4,11 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Button, Link, MenuItem, Stack, Tab, Tabs, TextField } from "@mui/material";
-import { Country, State, City, ICountry, IState, ICity } from "country-state-city";
+import { ICountry, IState, ICity } from "country-state-city";
 import Title from "components/Title";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { SignupFormInputs } from "../types/signup";
+import { useAddressInputs } from "../hooks/useAddressInputs";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -38,8 +39,6 @@ function allyProps(index: number) {
   };
 }
 
-const allCountries = Country.getAllCountries();
-
 const SignupForm = () => {
   // -------------------- Form states --------------------
   const {
@@ -50,69 +49,9 @@ const SignupForm = () => {
 
   const onSubmit: SubmitHandler<SignupFormInputs> = (data) => console.log(data);
 
-  // ----------- Country, state and city states: Home -----------
-  const [countryHome, setCountryHome] = useState("");
-  const [stateHome, setStateHome] = useState("");
-  const [cityHome, setCityHome] = useState("");
-
-  const handleChangeCountryHome = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (State.getStatesOfCountry(event.target.value).length === 0) {
-      setCountryHome("");
-    } else {
-      setCountryHome(event.target.value);
-    }
-
-    // Reset state and city
-    setStateHome("");
-    setCityHome("");
-  };
-
-  const handleChangeStateHome = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (City.getCitiesOfState(countryHome, event.target.value).length === 0) {
-      setStateHome("");
-    } else {
-      setStateHome(event.target.value);
-    }
-
-    // Reset city
-    setCityHome("");
-  };
-
-  const handleChangeCityHome = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCityHome(event.target.value);
-  }
-
-  // ----------- Country, state and city states: Work -----------
-  const [countryWork, setCountryWork] = useState("");
-  const [stateWork, setStateWork] = useState("");
-  const [cityWork, setCityWork] = useState("");
-
-  const handleChangeCountryWork = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (State.getStatesOfCountry(event.target.value).length === 0) {
-      setCountryWork("");
-    } else {
-      setCountryWork(event.target.value);
-    }
-
-    // Reset state and city
-    setStateWork("");
-    setCityWork("");
-  };
-
-  const handleChangeStateWork = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (City.getCitiesOfState(countryWork, event.target.value).length === 0) {
-      setStateWork("");
-    } else {
-      setStateWork(event.target.value);
-    }
-
-    // Reset city
-    setCityWork("");
-  };
-
-  const handleChangeCityWork = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCityWork(event.target.value);
-  }
+  // -------------------- Address inputs --------------------
+  const { selected: selectedAddressHome, options: optionsHome, handlers: handlersHome } = useAddressInputs();
+  const { selected: selectedAddressWork, options: optionsWork, handlers: handlersWork } = useAddressInputs();
 
   // -------------------- Form tabs --------------------
   const [value, setValue] = useState(0);
@@ -267,7 +206,7 @@ const SignupForm = () => {
               rules={{ required: true }}
               render={({ field }) => (
                 <TextField {...field} select variant="outlined" color="primary" label="Nacionalidad" fullWidth required>
-                  {allCountries.map((country: ICountry) => (
+                  {optionsHome.countries.map((country: ICountry) => (
                     <MenuItem key={country.name} value={country.name}>
                       {country.flag} {country.name}
                     </MenuItem>
@@ -336,10 +275,10 @@ const SignupForm = () => {
                   label="País"
                   fullWidth
                   required
-                  onChange={handleChangeCountryHome}
-                  value={countryHome}
+                  onChange={handlersHome.country}
+                  value={selectedAddressHome.country}
                 >
-                  {allCountries.map((country: ICountry) => (
+                  {optionsHome.countries.map((country: ICountry) => (
                     <MenuItem key={country.name} value={country.isoCode}>
                       {country.flag} {country.name}
                     </MenuItem>
@@ -363,11 +302,11 @@ const SignupForm = () => {
                   label="Provincia o estado"
                   fullWidth
                   required
-                  onChange={handleChangeStateHome}
-                  disabled={countryHome === ""}
-                  value={stateHome}
+                  onChange={handlersHome.state}
+                  disabled={selectedAddressHome.country === ""}
+                  value={selectedAddressHome.state}
                 >
-                  {State.getStatesOfCountry(countryHome).map((state: IState) => (
+                  {optionsHome.states.map((state: IState) => (
                     <MenuItem key={state.name} value={state.isoCode}>
                       {state.name}
                     </MenuItem>
@@ -391,11 +330,11 @@ const SignupForm = () => {
                   label="Ciudad"
                   fullWidth
                   required
-                  disabled={stateHome === ""}
-                  value={cityHome}
-                  onChange={handleChangeCityHome}
+                  disabled={selectedAddressHome.state === ""}
+                  value={selectedAddressHome.city}
+                  onChange={handlersHome.city}
                 >
-                  {City.getCitiesOfState(countryHome, stateHome).map((city: ICity) => (
+                  {optionsHome.cities.map((city: ICity) => (
                     <MenuItem key={city.name} value={city.name}>
                       {city.name}
                     </MenuItem>
@@ -568,10 +507,10 @@ const SignupForm = () => {
                   label="País"
                   fullWidth
                   required
-                  onChange={handleChangeCountryWork}
-                  value={countryWork}
+                  onChange={handlersWork.country}
+                  value={selectedAddressWork.country}
                 >
-                  {allCountries.map((country: ICountry) => (
+                  {optionsWork.countries.map((country: ICountry) => (
                     <MenuItem key={country.name} value={country.isoCode}>
                       {country.flag} {country.name}
                     </MenuItem>
@@ -595,11 +534,11 @@ const SignupForm = () => {
                   label="Provincia o estado"
                   fullWidth
                   required
-                  onChange={handleChangeStateWork}
-                  disabled={countryWork === ""}
-                  value={stateWork}
+                  onChange={handlersWork.state}
+                  disabled={selectedAddressWork.country === ""}
+                  value={selectedAddressWork.state}
                 >
-                  {State.getStatesOfCountry(countryWork).map((state: IState) => (
+                  {optionsWork.states.map((state: IState) => (
                     <MenuItem key={state.name} value={state.isoCode}>
                       {state.name}
                     </MenuItem>
@@ -623,11 +562,11 @@ const SignupForm = () => {
                   label="Ciudad"
                   fullWidth
                   required
-                  disabled={stateWork === ""}
-                  value={cityWork}
-                  onChange={handleChangeCityWork}
+                  disabled={selectedAddressWork.state === ""}
+                  value={selectedAddressWork.city}
+                  onChange={handlersWork.city}
                 >
-                  {City.getCitiesOfState(countryWork, stateWork).map((city: ICity) => (
+                  {optionsWork.cities.map((city: ICity) => (
                     <MenuItem key={city.name} value={city.name}>
                       {city.name}
                     </MenuItem>
