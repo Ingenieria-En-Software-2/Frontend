@@ -1,4 +1,3 @@
-import React from "react";
 import SignupForm from "../widgets/SignupForm";
 
 const SignupPage = () => {

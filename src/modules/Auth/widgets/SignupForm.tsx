@@ -38,48 +38,85 @@ function allyProps(index: number) {
   };
 }
 
+const allCountries = Country.getAllCountries();
+
 const SignupForm = () => {
   // -------------------- Form states --------------------
-
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    // formState: { errors },
   } = useForm<SignupFormInputs>();
 
   const onSubmit: SubmitHandler<SignupFormInputs> = (data) => console.log(data);
 
+  // ----------- Country, state and city states: Home -----------
+  const [countryHome, setCountryHome] = useState("");
+  const [stateHome, setStateHome] = useState("");
+  const [cityHome, setCityHome] = useState("");
+
+  const handleChangeCountryHome = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (State.getStatesOfCountry(event.target.value).length === 0) {
+      setCountryHome("");
+    } else {
+      setCountryHome(event.target.value);
+    }
+
+    // Reset state and city
+    setStateHome("");
+    setCityHome("");
+  };
+
+  const handleChangeStateHome = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (City.getCitiesOfState(countryHome, event.target.value).length === 0) {
+      setStateHome("");
+    } else {
+      setStateHome(event.target.value);
+    }
+
+    // Reset city
+    setCityHome("");
+  };
+
+  const handleChangeCityHome = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCityHome(event.target.value);
+  }
+
+  // ----------- Country, state and city states: Work -----------
+  const [countryWork, setCountryWork] = useState("");
+  const [stateWork, setStateWork] = useState("");
+  const [cityWork, setCityWork] = useState("");
+
+  const handleChangeCountryWork = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (State.getStatesOfCountry(event.target.value).length === 0) {
+      setCountryWork("");
+    } else {
+      setCountryWork(event.target.value);
+    }
+
+    // Reset state and city
+    setStateWork("");
+    setCityWork("");
+  };
+
+  const handleChangeStateWork = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (City.getCitiesOfState(countryWork, event.target.value).length === 0) {
+      setStateWork("");
+    } else {
+      setStateWork(event.target.value);
+    }
+
+    // Reset city
+    setCityWork("");
+  };
+
+  const handleChangeCityWork = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCityWork(event.target.value);
+  }
+
   // -------------------- Form tabs --------------------
   const [value, setValue] = useState(0);
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => setValue(newValue);
-
-  // -------------------- Countries, states and cities --------------------
-  // There are some countries that are not supported by the library
-  const countries: ICountry[] = Country.getAllCountries();
-  const [countryCode, setCountryCode] = useState("VEN");
-
-  // Update states when country changes
-  const [states, setStates] = useState<IState[]>([]);
-  const handleCountryChange = (e: React.ChangeEvent<{ value: unknown }>) => {
-    // Search iso code
-    const country = countries.find((country: ICountry) => country.name === e.target.value);
-    if (country) {
-      setCountryCode(country.isoCode);
-      const states = State.getStatesOfCountry(country.isoCode);
-      setStates(states);
-    }
-  };
-
-  // Update cities when state changes
-  const [cities, setCities] = useState<ICity[]>([]);
-  const handleStateChange = (e: React.ChangeEvent<{ value: unknown }>) => {
-    // Search state code
-    const state = states.find((state: IState) => state.name === e.target.value);
-    if (state) {
-      const cities = City.getCitiesOfState(countryCode, state.isoCode);
-      setCities(cities);
-    }
-  };
+  const handleChange = (_event: React.SyntheticEvent, newValue: number) => setValue(newValue);
 
   return (
     <>
@@ -204,6 +241,7 @@ const SignupForm = () => {
               rules={{ required: true }}
               render={({ field }) => (
                 <TextField
+                  {...field}
                   select
                   variant="outlined"
                   color="primary"
@@ -229,7 +267,7 @@ const SignupForm = () => {
               rules={{ required: true }}
               render={({ field }) => (
                 <TextField {...field} select variant="outlined" color="primary" label="Nacionalidad" fullWidth required>
-                  {countries.map((country: ICountry) => (
+                  {allCountries.map((country: ICountry) => (
                     <MenuItem key={country.name} value={country.name}>
                       {country.flag} {country.name}
                     </MenuItem>
@@ -290,9 +328,19 @@ const SignupForm = () => {
               defaultValue=""
               rules={{ required: true }}
               render={({ field }) => (
-                <TextField {...field} select variant="outlined" color="primary" label="País" fullWidth required>
-                  {countries.map((country: ICountry) => (
-                    <MenuItem key={country.name} value={country.name}>
+                <TextField
+                  {...field}
+                  select
+                  variant="outlined"
+                  color="primary"
+                  label="País"
+                  fullWidth
+                  required
+                  onChange={handleChangeCountryHome}
+                  value={countryHome}
+                >
+                  {allCountries.map((country: ICountry) => (
+                    <MenuItem key={country.name} value={country.isoCode}>
                       {country.flag} {country.name}
                     </MenuItem>
                   ))}
@@ -315,9 +363,12 @@ const SignupForm = () => {
                   label="Provincia o estado"
                   fullWidth
                   required
+                  onChange={handleChangeStateHome}
+                  disabled={countryHome === ""}
+                  value={stateHome}
                 >
-                  {states.map((state: IState) => (
-                    <MenuItem key={state.name} value={state.name}>
+                  {State.getStatesOfCountry(countryHome).map((state: IState) => (
+                    <MenuItem key={state.name} value={state.isoCode}>
                       {state.name}
                     </MenuItem>
                   ))}
@@ -332,8 +383,19 @@ const SignupForm = () => {
               defaultValue=""
               rules={{ required: true }}
               render={({ field }) => (
-                <TextField {...field} select variant="outlined" color="primary" label="Ciudad" fullWidth required>
-                  {cities.map((city: ICity) => (
+                <TextField
+                  {...field}
+                  select
+                  variant="outlined"
+                  color="primary"
+                  label="Ciudad"
+                  fullWidth
+                  required
+                  disabled={stateHome === ""}
+                  value={cityHome}
+                  onChange={handleChangeCityHome}
+                >
+                  {City.getCitiesOfState(countryHome, stateHome).map((city: ICity) => (
                     <MenuItem key={city.name} value={city.name}>
                       {city.name}
                     </MenuItem>
@@ -370,7 +432,15 @@ const SignupForm = () => {
               defaultValue=""
               rules={{ required: true }}
               render={({ field }) => (
-                <TextField {...field} type="text" variant="outlined" color="primary" label="Sector" fullWidth required />
+                <TextField
+                  {...field}
+                  type="text"
+                  variant="outlined"
+                  color="primary"
+                  label="Sector"
+                  fullWidth
+                  required
+                />
               )}
             />
           </Stack>
@@ -414,7 +484,6 @@ const SignupForm = () => {
               />
             )}
           />
-
         </TabPanel>
         <TabPanel value={value} index={2}>
           {/* Tab 3: Work info */}
@@ -491,9 +560,19 @@ const SignupForm = () => {
               defaultValue=""
               rules={{ required: true }}
               render={({ field }) => (
-                <TextField {...field} select variant="outlined" color="primary" label="País" fullWidth required>
-                  {countries.map((country: ICountry) => (
-                    <MenuItem key={country.name} value={country.name}>
+                <TextField
+                  {...field}
+                  select
+                  variant="outlined"
+                  color="primary"
+                  label="País"
+                  fullWidth
+                  required
+                  onChange={handleChangeCountryWork}
+                  value={countryWork}
+                >
+                  {allCountries.map((country: ICountry) => (
+                    <MenuItem key={country.name} value={country.isoCode}>
                       {country.flag} {country.name}
                     </MenuItem>
                   ))}
@@ -516,9 +595,12 @@ const SignupForm = () => {
                   label="Provincia o estado"
                   fullWidth
                   required
+                  onChange={handleChangeStateWork}
+                  disabled={countryWork === ""}
+                  value={stateWork}
                 >
-                  {states.map((state: IState) => (
-                    <MenuItem key={state.name} value={state.name}>
+                  {State.getStatesOfCountry(countryWork).map((state: IState) => (
+                    <MenuItem key={state.name} value={state.isoCode}>
                       {state.name}
                     </MenuItem>
                   ))}
@@ -533,8 +615,19 @@ const SignupForm = () => {
               defaultValue=""
               rules={{ required: true }}
               render={({ field }) => (
-                <TextField {...field} select variant="outlined" color="primary" label="Ciudad" fullWidth required>
-                  {cities.map((city: ICity) => (
+                <TextField
+                  {...field}
+                  select
+                  variant="outlined"
+                  color="primary"
+                  label="Ciudad"
+                  fullWidth
+                  required
+                  disabled={stateWork === ""}
+                  value={cityWork}
+                  onChange={handleChangeCityWork}
+                >
+                  {City.getCitiesOfState(countryWork, stateWork).map((city: ICity) => (
                     <MenuItem key={city.name} value={city.name}>
                       {city.name}
                     </MenuItem>
@@ -554,7 +647,7 @@ const SignupForm = () => {
 
         {/* Botón de envío */}
         <Button variant="outlined" color="primary" type="submit" fullWidth>
-          Enviar
+          Registrarse
         </Button>
       </form>
       <small className="mt-3">
