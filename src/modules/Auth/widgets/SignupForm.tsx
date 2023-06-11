@@ -86,15 +86,9 @@ const SignupForm = () => {
       }));
     };
 
-  const handleDateOfBirthChange = (date: Date | null) => {
-    const formattedDate = date?.toLocaleDateString("es-ES", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-    
-      console.log(formattedDate); // "dd-mm-aaaa"
-    };
+  const handleDateOfBirthChange = (date) => {
+    console.log(date); // "dd-mm-aaaa"
+  };
     // if (date) {
     //   setFormInputs((prevState) => ({
     //     ...prevState,
