@@ -14,11 +14,16 @@ import validate from "utils/validate/validate";
 import { useGetUsersQuery } from "services/dbApi";
 import { useNavigate } from "react-router-dom";
 
-const { URL_HOME, URL_SIGNUP } = SERVER_URLS;
+const { URL_USER_PROFILES, URL_SIGNUP } = SERVER_URLS;
+
+
+import { useDispatch } from "react-redux";
+import {setAppContextAuth } from "../utils/auth";
+
+import Cookies from 'js-cookie'
+
 
 const LogInWidget = () => {
-  const { data, error, isLoading } = useGetUsersQuery(undefined);
-
   const navigate = useNavigate();
 
   const [loginSuccess, setLoginSuccess] = useState<boolean>(false);
@@ -34,6 +39,11 @@ const LogInWidget = () => {
   const [hide, setHide] = useState<boolean>(false);
   const [openExceptionHandler, setOpenExceptionHandler] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const { data, error, isLoading } = useGetUsersQuery({ login: email });
+
+  const dispatch = useDispatch();
+
 
   useEffect(() => {
     if (!hide) return;
@@ -67,7 +77,7 @@ const LogInWidget = () => {
   useEffect(() => {
     if (!loginSuccess) return;
     const timer = setTimeout(() => {
-      navigate(URL_HOME);
+      navigate(URL_USER_PROFILES);
     }, 1000);
     return () => clearTimeout(timer);
   }, [loginSuccess, navigate]);
@@ -144,13 +154,21 @@ const LogInWidget = () => {
             "password": password
           })
         }
+        console.log("before fetching");
+
         fetch("http://localhost:9010/auth/login", opts)
           .then(resp => {
-            if (resp.status === 200) return resp.json();
+            console.log(resp);
+            if (resp.status === 200){ 
+              return resp.json();
+            }
           })
           .then(data => {
-            localStorage.setItem("token", data.auth_token);
-            navigate(URL_HOME);
+            //localStorage.setItem("auth.auth_token", data.auth_token);
+            //localStorage.setItem("auth.refresh_token", data.refresh_token);
+            //Cookies.set('auth.auth_token', data.auth_token);
+            //Cookies.set('auth.refresh_token', data.refresh_token);
+            setAppContextAuth(data, dispatch);
           })
         setLoginSuccess(true);
       }
