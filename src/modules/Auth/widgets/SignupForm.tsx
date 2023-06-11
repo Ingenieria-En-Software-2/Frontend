@@ -56,10 +56,6 @@ const SignupForm = () => {
     workInfo: { company: "", rif: "", phone: "", country: "", state: "", city: "" },
   });
 
-  // Para que pase el build, eliminar luego
-  console.log(formInputs);
-  setFormInputs({ ...formInputs });
-
   // -------------------- Address inputs --------------------
   const { selected: selectedAddressHome, options: optionsHome, handlers: handlersHome } = useAddressInputs();
   const { selected: selectedAddressWork, options: optionsWork, handlers: handlersWork } = useAddressInputs();
@@ -82,7 +78,15 @@ const SignupForm = () => {
           <Title title="Información general" />
           <Stack spacing={2} direction="row" sx={{ mb: 4 }}>
             {/* Names */}
-            <TextField type="text" variant="outlined" color="primary" label="Nombres" fullWidth required />
+            <TextField
+              type="text"
+              variant="outlined"
+              color="primary"
+              label="Nombres"
+              fullWidth
+              required
+              inputProps={{ maxLength: 20 }}
+            />
 
             {/* Surnames */}
             <TextField type="text" variant="outlined" color="primary" label="Apellidos" fullWidth required />
@@ -355,16 +359,15 @@ const SignupForm = () => {
 
         {/* Botón de borrar */}
         <Stack direction="row" spacing={2} sx={{ mb: 4 }}>
+          <Button variant="outlined" color="secondary" fullWidth type="reset">
+            Reiniciar
+          </Button>
 
-        <Button variant="outlined" color="secondary" fullWidth type="reset">
-          Reiniciar
-        </Button>
-
-        {/* Botón de envío */}
-        <Button variant="outlined" color="primary" type="submit" fullWidth>
-          Registrarse
-        </Button>
-      </Stack>
+          {/* Botón de envío */}
+          <Button variant="outlined" color="primary" type="submit" fullWidth>
+            Registrarse
+          </Button>
+        </Stack>
       </form>
       {/* Blue font */}
       <small className="mt-3 text-blue-500">
