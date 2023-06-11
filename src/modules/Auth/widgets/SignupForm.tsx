@@ -1,9 +1,9 @@
 // import banner from "assets/images/banner.jpg";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { Button, Link, MenuItem, Stack, Tab, Tabs, TextField } from "@mui/material";
+import { Button, Link, MenuItem, Stack, Tab, Tabs, TextField, Typography } from "@mui/material";
 import { ICountry, IState, ICity } from "country-state-city";
 import Title from "components/Title";
 import { SignupFormInputs } from "../types/signup";
@@ -45,7 +45,7 @@ function allyProps(index: number) {
  * @param pattern The pattern to validate the value
  * @param setError Function to set the error state
  */
-const validateInput = (value: string | null, pattern: RegExp, errorSetter: (error: boolean) => void) => {
+const validateInput = (value: string | null, pattern: RegExp, errorSetter: (value: boolean) => void) => {
   if (!value) errorSetter(true);
   else errorSetter(!pattern.test(value));
 };
@@ -86,27 +86,68 @@ const SignupForm = () => {
       }));
     };
 
-  const handleDateOfBirthChange = (date: string | null) => {
-    if (date) {
-      setFormInputs((prevState) => ({
-        ...prevState,
-        ["generalInfo"]: {
-          ...prevState["generalInfo"],
-          ["dateOfBirth"]: new Date(date).toLocaleDateString("en-GB").replace(/\//g, "-").replace(/\./g, "-"),
-        },
-      }));
-    }
-  };
+  const handleDateOfBirthChange = (date: Date | null) => {
+    const formattedDate = date?.toLocaleDateString("es-ES", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+    
+      console.log(formattedDate); // "dd-mm-aaaa"
+    };
+    // if (date) {
+    //   setFormInputs((prevState) => ({
+    //     ...prevState,
+    //     ["generalInfo"]: {
+    //       ...prevState["generalInfo"],
+    //       ["dateOfBirth"]: new Date(date).toLocaleDateString("en-GB").replace(/\//g, "-").replace(/\./g, "-"),
+    //     },
+    //   }));
+    // }
+
+  // };
 
   // -------------------- Address inputs --------------------
   const { selected: selectedAddressHome, options: optionsHome, handlers: handlersHome } = useAddressInputs();
   const { selected: selectedAddressWork, options: optionsWork, handlers: handlersWork } = useAddressInputs();
 
-  // -------------------- Validations --------------------
-  const [IdDocumentError, setIdDocumentError] = useState(false);
-  const [phoneNumberError, setPhoneNumberError] = useState(false);
-  const [rifError, setRifError] = useState(false);
-  const [companyPhoneNumberError, setCompanyPhoneNumberError] = useState(false);
+  // -------------------- Error states --------------------
+  const [errors, setErrors] = useState({
+    general: false,
+    idDocument: false,
+    phone: false,
+    rif: false,
+    companyPhone: false,
+  });
+
+  // -------------------- Form submit --------------------
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log(formInputs);
+
+    // Validates each input left to validate
+    validateInput(formInputs.generalInfo.idDocument, /^[VEJGC]-\d{7,8}$/, (value: boolean) =>
+      setErrors({ ...errors, idDocument: value })
+    );
+    validateInput(formInputs.generalInfo.phone, /^(?:\+)?[0-9]{0,4} ?[0-9]{10}$/, (value: boolean) =>
+      setErrors({ ...errors, phone: value })
+    );
+    validateInput(formInputs.workInfo.rif, /^[VEJPGvejpg]-\d{7,8}-\d$/, (value: boolean) =>
+      setErrors({ ...errors, rif: value })
+    );
+    validateInput(formInputs.workInfo.phone, /^(?:\+)?[0-9]{0,4} ?[0-9]{10}$/, (value: boolean) =>
+      setErrors({ ...errors, companyPhone: value })
+    );
+
+    // If there is any error or any field is empty, set the general error
+    if (Object.values(errors).some((error) => error)) {
+      setErrors({ ...errors, general: true });
+      return;
+    } else {
+      setErrors({ ...errors, general: false });
+    }
+
+  };
 
   return (
     <>
@@ -116,7 +157,12 @@ const SignupForm = () => {
         <Tab label="Dirección" {...allyProps(1)} />
         <Tab label="Datos de contacto" {...allyProps(2)} />
       </Tabs>
-      <form onSubmit={() => null}>
+      {errors.general && (
+        <Typography variant="body2" color="error" sx={{ mb: 2 }}>
+          Ha ocurrido un error. Por favor, intente de nuevo.
+        </Typography>
+      )}
+      <form onSubmit={handleSubmit}>
         <TabPanel value={tabValue} index={0}>
           {/* Tab 1: General info */}
           <Title title="Información general" />
@@ -182,7 +228,6 @@ const SignupForm = () => {
             {/* Birthdate */}
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
-                value={formInputs.generalInfo.dateOfBirth || null}
                 label="Fecha de nacimiento"
                 slotProps={{
                   textField: {
@@ -190,6 +235,8 @@ const SignupForm = () => {
                     required: true,
                   },
                 }}
+                minDate={new Date("1920-01-01")}
+                maxDate={new Date("2006-01-01")}
                 onChange={(date) => handleDateOfBirthChange(date)}
               />
             </LocalizationProvider>
@@ -242,13 +289,10 @@ const SignupForm = () => {
               label="Documento de identificación"
               fullWidth
               required
-              error={IdDocumentError}
-              helperText={IdDocumentError ? "El documento de identidad no es válido" : ""}
+              error={errors.idDocument}
+              helperText={errors.idDocument && "El documento de identificación no es válido"}
               inputProps={{ maxLength: 10 }}
-              onChange={(event) => {
-                validateInput(event.target.value, /^[VE]-\d{7,8}$/, setIdDocumentError);
-                handleFieldChange("generalInfo")(event);
-              }}
+              onChange={(event) => {handleFieldChange("generalInfo")(event)}}
               value={formInputs.generalInfo.idDocument}
             />
 
@@ -261,13 +305,10 @@ const SignupForm = () => {
               label="Teléfono de contacto"
               fullWidth
               required
-              error={phoneNumberError}
-              helperText={phoneNumberError ? "El número telefónico no es válido" : ""}
+              error={errors.phone}
+              helperText={errors.phone && "El teléfono no es válido"}
               inputProps={{ maxLength: 14 }}
-              onChange={(event) => {
-                validateInput(event.target.value, /^(?:\+)?[0-9]{0,4} ?[0-9]{10}$/, setPhoneNumberError);
-                handleFieldChange("generalInfo")(event);
-              }}
+              onChange={(event) => {handleFieldChange("generalInfo")(event)}}
               value={formInputs.generalInfo.phone}
             />
           </Stack>
@@ -440,13 +481,10 @@ const SignupForm = () => {
               fullWidth
               required
               sx={{ mb: 4 }}
-              error={rifError}
-              helperText={rifError ? "El RIF no es válido (ejemplo: J-12345678-9)" : ""}
+              error={errors.rif}
+              helperText={errors.rif && "El RIF no es válido (J-12345678-9)"}
               inputProps={{ maxLength: 12 }}
-              onChange={(event) => {
-                validateInput(event.target.value, /^[VEJPGvejpg]-\d{7,8}-\d$/, setRifError);
-                handleFieldChange("workInfo")(event);
-              }}
+              onChange={(event) => {handleFieldChange("workInfo")(event)}}
               value={formInputs.workInfo.rif}
             />
 
@@ -460,13 +498,10 @@ const SignupForm = () => {
               fullWidth
               required
               sx={{ mb: 4 }}
-              error={companyPhoneNumberError}
-              helperText={companyPhoneNumberError ? "El número telefónico no es válido" : ""}
+              error={errors.companyPhone}
+              helperText={errors.companyPhone && "El teléfono no es válido"}
               inputProps={{ maxLength: 14 }}
-              onChange={(event) => {
-                validateInput(event.target.value, /^(?:\+)?[0-9]{0,4} ?[0-9]{10}$/, setCompanyPhoneNumberError);
-                handleFieldChange("workInfo")(event);
-              }}
+              onChange={(event) => {handleFieldChange("workInfo")(event)}}
               value={formInputs.workInfo.phone}
             />
           </Stack>
