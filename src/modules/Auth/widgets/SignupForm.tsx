@@ -70,9 +70,10 @@ const SignupForm = () => {
       nationality: "",
       idDocument: "",
       phone: "",
+      civilStatus: "",
     },
     residenceInfo: { country: "", state: "", city: "", subregion: "", sector: "", street: "", room: "" },
-    workInfo: { company: "", rif: "", phone: "", country: "", state: "", city: "" },
+    workInfo: { company: "", rif: "", phone: "", country: "", state: "", city: "", subregion: "" },
   });
 
   const handleFieldChange =
@@ -118,20 +119,28 @@ const SignupForm = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    await validateInput(formInputs.generalInfo.idDocument, /^[VEJGC]-\d{7,8}$/, (value) =>
-      setErrors((errors) => ({ ...errors, idDocument: value }))
-    );
-    await validateInput(formInputs.generalInfo.phone, /^(?:\+)?[0-9]{0,4} ?[0-9]{10}$/, (value) =>
-      setErrors((errors) => ({ ...errors, phone: value }))
-    );
-    await validateInput(formInputs.workInfo.rif, /^[VEJPGvejpg]-\d{7,8}-\d$/, (value) =>
-      setErrors((errors) => ({ ...errors, rif: value }))
-    );
-    await validateInput(formInputs.workInfo.phone, /^(?:\+)?[0-9]{0,4} ?[0-9]{10}$/, (value) =>
-      setErrors((errors) => ({ ...errors, companyPhone: value }))
-    );
+    const validateAll = async () => {
+      await validateInput(formInputs.generalInfo.idDocument, /^[VEJGC]-\d{7,8}$/, (value) =>
+        setErrors((errors) => ({ ...errors, idDocument: value }))
+      );
+      await validateInput(formInputs.generalInfo.phone, /^(?:\+)?[0-9]{0,4} ?[0-9]{10}$/, (value) =>
+        setErrors((errors) => ({ ...errors, phone: value }))
+      );
+      await validateInput(formInputs.workInfo.rif, /^[VEJPGvejpg]-\d{7,8}-\d$/, (value) =>
+        setErrors((errors) => ({ ...errors, rif: value }))
+      );
+      await validateInput(formInputs.workInfo.phone, /^(?:\+)?[0-9]{0,4} ?[0-9]{10}$/, (value) =>
+        setErrors((errors) => ({ ...errors, companyPhone: value }))
+      );
+    };
 
-    // TODO: Send data to backend
+    await validateAll()
+
+    if (generalError) return
+    else {
+      // TODO: Send form data to backend
+      console.log("form submitted; values:", formInputs);
+    }
   };
 
   useEffect(() => {
@@ -155,6 +164,36 @@ const SignupForm = () => {
         <TabPanel value={tabValue} index={0}>
           {/* Tab 1: General info */}
           <Title title="Información general" />
+          {/* Email */}
+          <Stack spacing={2} direction="row">
+            <TextField
+              name="email"
+              type="email"
+              variant="outlined"
+              color="primary"
+              label="Correo electrónico"
+              fullWidth
+              required
+              sx={{ mb: 4 }}
+              onChange={(event) => handleFieldChange("generalInfo")(event)}
+              value={formInputs.generalInfo.email}
+            />
+
+            {/* Password */}
+            <TextField
+              name="password"
+              type="password"
+              variant="outlined"
+              color="primary"
+              label="Contraseña"
+              fullWidth
+              required
+              sx={{ mb: 4 }}
+              onChange={(event) => handleFieldChange("generalInfo")(event)}
+              value={formInputs.generalInfo.password}
+            />
+          </Stack>
+
           <Stack spacing={2} direction="row" sx={{ mb: 4 }}>
             {/* Names */}
             <TextField
@@ -185,50 +224,42 @@ const SignupForm = () => {
             />
           </Stack>
 
-          {/* Email */}
-          <TextField
-            name="email"
-            type="email"
-            variant="outlined"
-            color="primary"
-            label="Correo electrónico"
-            fullWidth
-            required
-            sx={{ mb: 4 }}
-            onChange={(event) => handleFieldChange("generalInfo")(event)}
-            value={formInputs.generalInfo.email}
-          />
-
-          {/* Password */}
-          <TextField
-            name="password"
-            type="password"
-            variant="outlined"
-            color="primary"
-            label="Contraseña"
-            fullWidth
-            required
-            sx={{ mb: 4 }}
-            onChange={(event) => handleFieldChange("generalInfo")(event)}
-            value={formInputs.generalInfo.password}
-          />
+          {/* Birthdate */}
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label="Fecha de nacimiento"
+              slotProps={{
+                textField: {
+                  helperText: "MM/DD/AAAA",
+                  required: true,
+                },
+              }}
+              minDate={dayjs().subtract(100, "year")}
+              maxDate={dayjs().subtract(18, "year")}
+              onChange={(date: Dayjs | null) => handleDateOfBirthChange(date)}
+              sx={{ width: "100%", mb: 3 }}
+            />
+          </LocalizationProvider>
 
           <Stack spacing={2} direction="row" sx={{ mb: 4 }}>
-            {/* Birthdate */}
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Fecha de nacimiento"
-                slotProps={{
-                  textField: {
-                    helperText: "MM/DD/AAAA",
-                    required: true,
-                  },
-                }}
-                minDate={dayjs().subtract(100, "year")}
-                maxDate={dayjs().subtract(18, "year")}
-                onChange={(date: Dayjs | null) => handleDateOfBirthChange(date)}
-              />
-            </LocalizationProvider>
+            {/* Civil status */}
+            <TextField
+              name="civilStatus"
+              select
+              variant="outlined"
+              color="primary"
+              label="Estado civil"
+              fullWidth
+              required
+              sx={{ width: "60%" }}
+              onChange={(event) => handleFieldChange("generalInfo")(event)}
+              value={formInputs.generalInfo.civilStatus}
+            >
+              <MenuItem value="S">Soltero</MenuItem>
+              <MenuItem value="C">Casado</MenuItem>
+              <MenuItem value="D">Divorciado</MenuItem>
+              <MenuItem value="V">Viudo</MenuItem>
+            </TextField>
 
             {/* Gender */}
             <TextField
@@ -572,6 +603,21 @@ const SignupForm = () => {
               ))}
             </TextField>
           </Stack>
+
+          {/* Subregion */}
+          <TextField
+            name="subregion"
+            type="text"
+            variant="outlined"
+            color="primary"
+            label="Municipio o condado"
+            fullWidth
+            required
+            inputProps={{ maxLength: 20 }}
+            onChange={(event) => handleFieldChange("workInfo")(event)}
+            value={formInputs.workInfo.subregion}
+            sx={{ mb: 4 }}
+          />
         </TabPanel>
 
         {/* Captcha */}
