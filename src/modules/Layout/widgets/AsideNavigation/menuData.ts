@@ -13,13 +13,6 @@ export const menuData: Array<MenuItemInterface> = [
     text: "Home",
   },
   {
-    id: "create-user",
-    type: "link",
-    href: URL_CREATE_USER,
-    leftIcon: AddIcon,
-    text: "Crear usuario",
-  },
-  {
     id: "users-link",
     type: "link",
     href: URL_USER_PROFILES,
