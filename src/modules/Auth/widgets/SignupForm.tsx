@@ -1,5 +1,5 @@
 // import banner from "assets/images/banner.jpg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -106,8 +106,8 @@ const SignupForm = () => {
   const { selected: selectedAddressWork, options: optionsWork, handlers: handlersWork } = useAddressInputs();
 
   // -------------------- Error states --------------------
+  const [generalError, setGeneralError] = useState(false);
   const [errors, setErrors] = useState({
-    general: false,
     idDocument: false,
     phone: false,
     rif: false,
@@ -115,49 +115,28 @@ const SignupForm = () => {
   });
 
   // -------------------- Form submission --------------------
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    setErrors({ ...errors, general: false });
-
-    async function validateInputs() {
-      const inputValidators = [
-        {
-          input: formInputs.generalInfo.idDocument,
-          regex: /^[VEJGC]-\d{7,8}$/,
-          errorSetter: (value: boolean) => setErrors((errors) => ({ ...errors, idDocument: value })),
-        },
-        {
-          input: formInputs.generalInfo.phone,
-          regex: /^(?:\+)?[0-9]{0,4} ?[0-9]{10}$/,
-          errorSetter: (value: boolean) => setErrors((errors) => ({ ...errors, phone: value })),
-        },
-        {
-          input: formInputs.workInfo.rif,
-          regex: /^[VEJPGvejpg]-\d{7,8}-\d$/,
-          errorSetter: (value: boolean) => setErrors((errors) => ({ ...errors, rif: value })),
-        },
-        {
-          input: formInputs.workInfo.phone,
-          regex: /^(?:\+)?[0-9]{0,4} ?[0-9]{10}$/,
-          errorSetter: (value: boolean) => setErrors((errors) => ({ ...errors, companyPhone: value })),
-        },
-      ];
-
-      for (const { input, regex, errorSetter } of inputValidators) await validateInput(input, regex, errorSetter);
-    }
-
-    validateInputs();
-
-    // If there is any error or any field is empty, set the general error
-    if (Object.values({ ...errors, general: false }).some((value) => value)) {
-      setErrors({ ...errors, general: true });
-      return;
-    }
-
+    await validateInput(formInputs.generalInfo.idDocument, /^[VEJGC]-\d{7,8}$/, (value) =>
+      setErrors((errors) => ({ ...errors, idDocument: value }))
+    );
+    await validateInput(formInputs.generalInfo.phone, /^(?:\+)?[0-9]{0,4} ?[0-9]{10}$/, (value) =>
+      setErrors((errors) => ({ ...errors, phone: value }))
+    );
+    await validateInput(formInputs.workInfo.rif, /^[VEJPGvejpg]-\d{7,8}-\d$/, (value) =>
+      setErrors((errors) => ({ ...errors, rif: value }))
+    );
+    await validateInput(formInputs.workInfo.phone, /^(?:\+)?[0-9]{0,4} ?[0-9]{10}$/, (value) =>
+      setErrors((errors) => ({ ...errors, companyPhone: value }))
+    );
 
     // TODO: Send data to backend
   };
+
+  useEffect(() => {
+    setGeneralError(Object.values(errors).some((value) => value));
+  }, [errors]);
 
   return (
     <>
@@ -167,7 +146,7 @@ const SignupForm = () => {
         <Tab label="Dirección" {...allyProps(1)} />
         <Tab label="Datos de contacto" {...allyProps(2)} />
       </Tabs>
-      {errors.general && (
+      {generalError && (
         <Typography variant="body2" color="error" sx={{ mt: 2 }}>
           Ha ocurrido un error. Por favor, revise los campos e intente de nuevo.
         </Typography>
