@@ -23,6 +23,35 @@ const CreateUser = () => {
 
   useEffect(() => {
     if (!creatingUser) return;
+
+    const opts = {
+          method: 'POST',
+          headers: {
+            "Content-Type": 'application/json'
+          },
+          body: JSON.stringify({
+            "login": username,
+            "password": password,
+            "name" : "Nombre",
+            "lastname" : "Apellido",
+            "user_type" : "user",
+            "role_id" : "2"
+          })
+        }
+
+    fetch("http://localhost:9010/auth/register", opts)
+          .then(resp => {
+            console.log(resp);
+            if (resp.status === 200){ 
+              return resp.json();
+            }
+          })
+          .then(data => {
+            console.log(data);
+            //localStorage.setItem("token", data.auth_token);
+          })
+
+    /*
     createUser({
       login: username,
       password: password,
@@ -30,7 +59,7 @@ const CreateUser = () => {
       lastname: "",
       user_type: "user",
       role_id: 2,
-    });
+    });*/
     navigate(URL_HOME);
   }, [creatingUser]);
 
