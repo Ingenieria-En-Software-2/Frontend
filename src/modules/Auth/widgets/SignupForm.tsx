@@ -1,13 +1,14 @@
 // import banner from "assets/images/banner.jpg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { Button, Link, MenuItem, Stack, Tab, Tabs, TextField } from "@mui/material";
+import { Button, Link, MenuItem, Stack, Tab, Tabs, TextField, Typography } from "@mui/material";
 import { ICountry, IState, ICity } from "country-state-city";
 import Title from "components/Title";
 import { SignupFormInputs } from "../types/signup";
 import { useAddressInputs } from "../hooks/useAddressInputs";
+import dayjs, { Dayjs } from "dayjs";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -38,7 +39,25 @@ function allyProps(index: number) {
   };
 }
 
+/**
+ * Generic function to validate input fields with a pattern
+ *
+ * @param value The value to validate
+ * @param pattern The pattern to validate the value
+ * @param setError Function to set the error state
+ */
+const validateInput = (value: string | null, pattern: RegExp, errorSetter: (value: boolean) => void) => {
+  if (!value) errorSetter(true);
+  else errorSetter(!pattern.test(value));
+};
+
 const SignupForm = () => {
+  // -------------------- Form tabs --------------------
+  const [tabValue, setValue] = useState(0);
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+
   // -------------------- Form states --------------------
   const [formInputs, setFormInputs] = useState<SignupFormInputs>({
     generalInfo: {
@@ -56,40 +75,119 @@ const SignupForm = () => {
     workInfo: { company: "", rif: "", phone: "", country: "", state: "", city: "" },
   });
 
-  // Para que pase el build, eliminar luego
-  console.log(formInputs);
-  setFormInputs({ ...formInputs });
+  const handleFieldChange =
+    (field: keyof SignupFormInputs) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const { name, value } = event.target;
+      setFormInputs({
+        ...formInputs,
+        [field]: {
+          ...formInputs[field],
+          [name]: value,
+        },
+      });
+    };
+
+  const handleDateOfBirthChange = (date: Dayjs | null) => {
+    if (date) {
+      setFormInputs({
+        ...formInputs,
+        generalInfo: {
+          ...formInputs.generalInfo,
+          dateOfBirth: date.format("MM/DD/YYYY"),
+        },
+      });
+    }
+  };
+
+  // };
 
   // -------------------- Address inputs --------------------
   const { selected: selectedAddressHome, options: optionsHome, handlers: handlersHome } = useAddressInputs();
   const { selected: selectedAddressWork, options: optionsWork, handlers: handlersWork } = useAddressInputs();
 
-  // -------------------- Form tabs --------------------
-  const [value, setValue] = useState(0);
-  const handleChange = (_event: React.SyntheticEvent, newValue: number) => setValue(newValue);
+  // -------------------- Error states --------------------
+  const [generalError, setGeneralError] = useState(false);
+  const [errors, setErrors] = useState({
+    idDocument: false,
+    phone: false,
+    rif: false,
+    companyPhone: false,
+  });
+
+  // -------------------- Form submission --------------------
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    await validateInput(formInputs.generalInfo.idDocument, /^[VEJGC]-\d{7,8}$/, (value) =>
+      setErrors((errors) => ({ ...errors, idDocument: value }))
+    );
+    await validateInput(formInputs.generalInfo.phone, /^(?:\+)?[0-9]{0,4} ?[0-9]{10}$/, (value) =>
+      setErrors((errors) => ({ ...errors, phone: value }))
+    );
+    await validateInput(formInputs.workInfo.rif, /^[VEJPGvejpg]-\d{7,8}-\d$/, (value) =>
+      setErrors((errors) => ({ ...errors, rif: value }))
+    );
+    await validateInput(formInputs.workInfo.phone, /^(?:\+)?[0-9]{0,4} ?[0-9]{10}$/, (value) =>
+      setErrors((errors) => ({ ...errors, companyPhone: value }))
+    );
+
+    // TODO: Send data to backend
+  };
+
+  useEffect(() => {
+    setGeneralError(Object.values(errors).some((value) => value));
+  }, [errors]);
 
   return (
     <>
       {/* Tabs */}
-      <Tabs value={value} onChange={handleChange} aria-label="signup tabs">
+      <Tabs value={tabValue} onChange={handleTabChange} aria-label="signup tabs">
         <Tab label="Información general" {...allyProps(0)} />
         <Tab label="Dirección" {...allyProps(1)} />
         <Tab label="Datos de contacto" {...allyProps(2)} />
       </Tabs>
-      <form onSubmit={() => null}>
-        <TabPanel value={value} index={0}>
+      {generalError && (
+        <Typography variant="body2" color="error" sx={{ mt: 2 }}>
+          Ha ocurrido un error. Por favor, revise los campos e intente de nuevo.
+        </Typography>
+      )}
+      <form onSubmit={handleSubmit}>
+        <TabPanel value={tabValue} index={0}>
           {/* Tab 1: General info */}
           <Title title="Información general" />
           <Stack spacing={2} direction="row" sx={{ mb: 4 }}>
             {/* Names */}
-            <TextField type="text" variant="outlined" color="primary" label="Nombres" fullWidth required />
+            <TextField
+              name="names"
+              type="text"
+              variant="outlined"
+              color="primary"
+              label="Nombres"
+              fullWidth
+              required
+              inputProps={{ maxLength: 20 }}
+              onChange={(event) => handleFieldChange("generalInfo")(event)}
+              value={formInputs.generalInfo.names}
+            />
 
             {/* Surnames */}
-            <TextField type="text" variant="outlined" color="primary" label="Apellidos" fullWidth required />
+            <TextField
+              name="surnames"
+              type="text"
+              variant="outlined"
+              color="primary"
+              label="Apellidos"
+              fullWidth
+              required
+              inputProps={{ maxLength: 20 }}
+              onChange={(event) => handleFieldChange("generalInfo")(event)}
+              value={formInputs.generalInfo.surnames}
+            />
           </Stack>
 
           {/* Email */}
           <TextField
+            name="email"
             type="email"
             variant="outlined"
             color="primary"
@@ -97,10 +195,13 @@ const SignupForm = () => {
             fullWidth
             required
             sx={{ mb: 4 }}
+            onChange={(event) => handleFieldChange("generalInfo")(event)}
+            value={formInputs.generalInfo.email}
           />
 
           {/* Password */}
           <TextField
+            name="password"
             type="password"
             variant="outlined"
             color="primary"
@@ -108,6 +209,8 @@ const SignupForm = () => {
             fullWidth
             required
             sx={{ mb: 4 }}
+            onChange={(event) => handleFieldChange("generalInfo")(event)}
+            value={formInputs.generalInfo.password}
           />
 
           <Stack spacing={2} direction="row" sx={{ mb: 4 }}>
@@ -121,11 +224,15 @@ const SignupForm = () => {
                     required: true,
                   },
                 }}
+                minDate={dayjs().subtract(100, "year")}
+                maxDate={dayjs().subtract(18, "year")}
+                onChange={(date: Dayjs | null) => handleDateOfBirthChange(date)}
               />
             </LocalizationProvider>
 
             {/* Gender */}
             <TextField
+              name="gender"
               select
               variant="outlined"
               color="primary"
@@ -133,6 +240,8 @@ const SignupForm = () => {
               fullWidth
               required
               sx={{ width: "60%" }}
+              onChange={(event) => handleFieldChange("generalInfo")(event)}
+              value={formInputs.generalInfo.gender}
             >
               <MenuItem value="M">Masculino</MenuItem>
               <MenuItem value="F">Femenino</MenuItem>
@@ -142,9 +251,19 @@ const SignupForm = () => {
 
           <Stack spacing={2} direction="row" sx={{ mb: 4 }}>
             {/* Nationality */}
-            <TextField select variant="outlined" color="primary" label="Nacionalidad" fullWidth required>
+            <TextField
+              name="nationality"
+              select
+              variant="outlined"
+              color="primary"
+              label="Nacionalidad"
+              fullWidth
+              required
+              onChange={(event) => handleFieldChange("generalInfo")(event)}
+              value={formInputs.generalInfo.nationality}
+            >
               {optionsHome.countries.map((country: ICountry) => (
-                <MenuItem key={country.name} value={country.name}>
+                <MenuItem key={country.name} value={country.isoCode}>
                   {country.flag} {country.name}
                 </MenuItem>
               ))}
@@ -152,20 +271,43 @@ const SignupForm = () => {
 
             {/* Identification document */}
             <TextField
+              name="idDocument"
               type="text"
               variant="outlined"
               color="primary"
               label="Documento de identificación"
               fullWidth
               required
+              error={errors.idDocument}
+              helperText={errors.idDocument && "El documento de identificación no es válido"}
+              inputProps={{ maxLength: 10 }}
+              onChange={(event) => {
+                handleFieldChange("generalInfo")(event);
+              }}
+              value={formInputs.generalInfo.idDocument}
             />
 
             {/* Phone number */}
-            <TextField type="text" variant="outlined" color="primary" label="Teléfono de contacto" fullWidth required />
+            <TextField
+              name="phone"
+              type="text"
+              variant="outlined"
+              color="primary"
+              label="Teléfono de contacto"
+              fullWidth
+              required
+              error={errors.phone}
+              helperText={errors.phone && "El teléfono no es válido"}
+              inputProps={{ maxLength: 14 }}
+              onChange={(event) => {
+                handleFieldChange("generalInfo")(event);
+              }}
+              value={formInputs.generalInfo.phone}
+            />
           </Stack>
         </TabPanel>
 
-        <TabPanel value={value} index={1}>
+        <TabPanel value={tabValue} index={1}>
           {/* Tab 2: Residence info */}
           <Title title="Información de residencia" />
 
@@ -173,14 +315,18 @@ const SignupForm = () => {
             {/* Country */}
 
             <TextField
+              name="country"
               select
               variant="outlined"
               color="primary"
               label="País"
               fullWidth
               required
-              onChange={handlersHome.country}
-              value={selectedAddressHome.country}
+              onChange={(event) => {
+                handlersHome.country(event);
+                handleFieldChange("residenceInfo")(event);
+              }}
+              value={formInputs.residenceInfo.country}
             >
               {optionsHome.countries.map((country: ICountry) => (
                 <MenuItem key={country.name} value={country.isoCode}>
@@ -190,15 +336,18 @@ const SignupForm = () => {
             </TextField>
 
             {/* Province or state */}
-
             <TextField
+              name="state"
               select
               variant="outlined"
               color="primary"
               label="Provincia o estado"
               fullWidth
               required
-              onChange={handlersHome.state}
+              onChange={(event) => {
+                handlersHome.state(event);
+                handleFieldChange("residenceInfo")(event);
+              }}
               value={selectedAddressHome.state}
               disabled={optionsHome.states.length === 0}
             >
@@ -211,13 +360,17 @@ const SignupForm = () => {
 
             {/* City */}
             <TextField
+              name="city"
               select
               variant="outlined"
               color="primary"
               label="Ciudad"
               fullWidth
               required
-              onChange={handlersHome.city}
+              onChange={(event) => {
+                handlersHome.city(event);
+                handleFieldChange("residenceInfo")(event);
+              }}
               value={selectedAddressHome.city}
               disabled={optionsHome.cities.length === 0}
             >
@@ -231,14 +384,37 @@ const SignupForm = () => {
 
           <Stack spacing={2} direction="row" sx={{ mb: 4 }}>
             {/* County or municipality */}
-            <TextField type="text" variant="outlined" color="primary" label="Municipio o condado" fullWidth required />
+            <TextField
+              name="subregion"
+              type="text"
+              variant="outlined"
+              color="primary"
+              label="Municipio o condado"
+              fullWidth
+              required
+              inputProps={{ maxLength: 20 }}
+              onChange={(event) => handleFieldChange("residenceInfo")(event)}
+              value={formInputs.residenceInfo.subregion}
+            />
 
             {/* Sector */}
-            <TextField type="text" variant="outlined" color="primary" label="Sector" fullWidth required />
+            <TextField
+              name="sector"
+              type="text"
+              variant="outlined"
+              color="primary"
+              label="Sector"
+              fullWidth
+              required
+              inputProps={{ maxLength: 20 }}
+              onChange={(event) => handleFieldChange("residenceInfo")(event)}
+              value={formInputs.residenceInfo.sector}
+            />
           </Stack>
 
           {/* Street */}
           <TextField
+            name="street"
             type="text"
             variant="outlined"
             color="primary"
@@ -246,10 +422,14 @@ const SignupForm = () => {
             fullWidth
             required
             sx={{ mb: 4 }}
+            inputProps={{ maxLength: 45 }}
+            onChange={(event) => handleFieldChange("residenceInfo")(event)}
+            value={formInputs.residenceInfo.street}
           />
 
           {/* Room or apartment */}
           <TextField
+            name="room"
             multiline
             rows={4}
             type="text"
@@ -259,14 +439,18 @@ const SignupForm = () => {
             fullWidth
             required
             sx={{ mb: 4 }}
+            inputProps={{ maxLength: 190 }}
+            onChange={(event) => handleFieldChange("residenceInfo")(event)}
+            value={formInputs.residenceInfo.room}
           />
         </TabPanel>
-        <TabPanel value={value} index={2}>
+        <TabPanel value={tabValue} index={2}>
           {/* Tab 3: Work info */}
           <Title title="Datos de la empresa donde trabaja" />
 
           {/* Company name */}
           <TextField
+            name="company"
             type="text"
             variant="outlined"
             color="primary"
@@ -274,14 +458,34 @@ const SignupForm = () => {
             fullWidth
             required
             sx={{ mb: 4 }}
+            inputProps={{ maxLength: 45 }}
+            onChange={(event) => handleFieldChange("workInfo")(event)}
+            value={formInputs.workInfo.company}
           />
 
           <Stack spacing={2} direction="row">
             {/* RIF */}
-            <TextField type="text" variant="outlined" color="primary" label="RIF" fullWidth required sx={{ mb: 4 }} />
+            <TextField
+              name="rif"
+              type="text"
+              variant="outlined"
+              color="primary"
+              label="RIF"
+              fullWidth
+              required
+              sx={{ mb: 4 }}
+              error={errors.rif}
+              helperText={errors.rif && "El RIF no es válido (J-12345678-9)"}
+              inputProps={{ maxLength: 12 }}
+              onChange={(event) => {
+                handleFieldChange("workInfo")(event);
+              }}
+              value={formInputs.workInfo.rif}
+            />
 
             {/* Company phone number */}
             <TextField
+              name="phone"
               type="text"
               variant="outlined"
               color="primary"
@@ -289,20 +493,31 @@ const SignupForm = () => {
               fullWidth
               required
               sx={{ mb: 4 }}
+              error={errors.companyPhone}
+              helperText={errors.companyPhone && "El teléfono no es válido"}
+              inputProps={{ maxLength: 14 }}
+              onChange={(event) => {
+                handleFieldChange("workInfo")(event);
+              }}
+              value={formInputs.workInfo.phone}
             />
           </Stack>
 
           <Stack spacing={3} direction="row" sx={{ mb: 4 }}>
             {/* Country */}
             <TextField
+              name="country"
               select
               variant="outlined"
               color="primary"
               label="País"
               fullWidth
               required
-              onChange={handlersWork.country}
-              value={selectedAddressWork.country}
+              onChange={(event) => {
+                handlersWork.country(event);
+                handleFieldChange("workInfo")(event);
+              }}
+              value={formInputs.workInfo.country}
             >
               {optionsWork.countries.map((country: ICountry) => (
                 <MenuItem key={country.name} value={country.isoCode}>
@@ -313,13 +528,17 @@ const SignupForm = () => {
 
             {/* Province or state */}
             <TextField
+              name="state"
               select
               variant="outlined"
               color="primary"
               label="Provincia o estado"
               fullWidth
               required
-              onChange={handlersWork.state}
+              onChange={(event) => {
+                handlersWork.state(event);
+                handleFieldChange("workInfo")(event);
+              }}
               value={selectedAddressWork.state}
               disabled={optionsWork.states.length === 0}
             >
@@ -332,13 +551,17 @@ const SignupForm = () => {
 
             {/* City */}
             <TextField
+              name="city"
               select
               variant="outlined"
               color="primary"
               label="Ciudad"
               fullWidth
               required
-              onChange={handlersWork.city}
+              onChange={(event) => {
+                handlersWork.city(event);
+                handleFieldChange("workInfo")(event);
+              }}
               value={selectedAddressWork.city}
               disabled={optionsWork.cities.length === 0}
             >
@@ -355,19 +578,18 @@ const SignupForm = () => {
 
         {/* Botón de borrar */}
         <Stack direction="row" spacing={2} sx={{ mb: 4 }}>
+          <Button variant="outlined" color="secondary" fullWidth type="reset">
+            Reiniciar
+          </Button>
 
-        <Button variant="outlined" color="secondary" fullWidth type="reset">
-          Reiniciar
-        </Button>
-
-        {/* Botón de envío */}
-        <Button variant="outlined" color="primary" type="submit" fullWidth>
-          Registrarse
-        </Button>
-      </Stack>
+          {/* Botón de envío */}
+          <Button variant="outlined" color="primary" type="submit" fullWidth>
+            Registrarse
+          </Button>
+        </Stack>
       </form>
       {/* Blue font */}
-      <small className="mt-3 text-blue-500">
+      <small className="mt-3 text-sm text-gray-600">
         ¿Ya tienes una cuenta?
         <Link href="/login" underline="hover" sx={{ ml: 3 }}>
           Inicia sesión
