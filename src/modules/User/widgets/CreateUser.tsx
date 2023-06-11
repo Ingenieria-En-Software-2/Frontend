@@ -51,7 +51,7 @@ const CreateUser = () => {
     var pass_e = false;
     var user_e = false;
 
-    if (
+    /*if (
       username == "" ||
       username.length < 8 ||
       username.length > 20 ||
@@ -59,7 +59,7 @@ const CreateUser = () => {
     ) {
       setUsernameError(true);
       user_e = true;
-    }
+    }*/
     if (
       password == "" ||
       password.length < 8 ||
