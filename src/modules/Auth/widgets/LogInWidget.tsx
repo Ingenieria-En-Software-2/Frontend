@@ -154,7 +154,6 @@ const LogInWidget = () => {
             "password": password
           })
         }
-        console.log("before fetching");
 
         fetch("http://localhost:9010/auth/login", opts)
           .then(resp => {
