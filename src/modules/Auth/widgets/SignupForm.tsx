@@ -97,7 +97,7 @@ const SignupForm = () => {
         ...prevState,
         ["generalInfo"]: {
           ...prevState["generalInfo"],
-          ["dateOfBirth"]: new Date(date).toLocaleDateString('en-US'),
+          ["dateOfBirth"]: new Date(date).toLocaleDateString('en-GB').replace(/\//g, '-').replace(/\./g, '-'),
         },
       }));
     }
