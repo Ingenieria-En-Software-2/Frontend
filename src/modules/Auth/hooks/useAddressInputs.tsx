@@ -37,7 +37,7 @@ export const useAddressInputs = () => {
     cities: [],
   });
 
-  const handleChangeCountry = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeCountry = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setOptions({
       ...options,
       states: State.getStatesOfCountry(event.target.value),
@@ -51,7 +51,7 @@ export const useAddressInputs = () => {
     });
   };
 
-  const handleChangeState = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeState = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setOptions({
       ...options,
       cities: City.getCitiesOfState(selected.country, event.target.value),
@@ -64,7 +64,7 @@ export const useAddressInputs = () => {
     });
   };
 
-  const handleChangeCity = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeCity = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setSelected({
       ...selected,
       city: event.target.value,

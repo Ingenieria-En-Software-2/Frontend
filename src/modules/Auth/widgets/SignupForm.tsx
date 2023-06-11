@@ -38,13 +38,24 @@ function allyProps(index: number) {
   };
 }
 
-const SignupForm = () => {
+/**
+ * Generic function to validate input fields with a pattern
+ *
+ * @param value The value to validate
+ * @param pattern The pattern to validate the value
+ * @param setError Function to set the error state
+ */
+const validateInput = (value: string | null, pattern: RegExp, errorSetter: (error: boolean) => void) => {
+  if (!value) errorSetter(true);
+  else errorSetter(!pattern.test(value));
+};
 
+const SignupForm = () => {
   // -------------------- Form tabs --------------------
   const [tabValue, setValue] = useState(0);
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
-  }
+  };
 
   // -------------------- Form states --------------------
   const [formInputs, setFormInputs] = useState<SignupFormInputs>({
@@ -59,37 +70,21 @@ const SignupForm = () => {
       idDocument: "",
       phone: "",
     },
-    residenceInfo: {
-      country: "",
-      state: "",
-      city: "",
-      subregion: "",
-      sector: "",
-      street: "",
-      room: ""
-    },
-    workInfo: {
-      company: "",
-      rif: "",
-      phone: "",
-      country: "",
-      state: "",
-      city: ""
-    },
+    residenceInfo: { country: "", state: "", city: "", subregion: "", sector: "", street: "", room: "" },
+    workInfo: { company: "", rif: "", phone: "", country: "", state: "", city: "" },
   });
 
-  const handleFieldChange = (
-    field: keyof SignupFormInputs
-  ) => (event: any) => {
-    const { name, value } = event.target;
-    setFormInputs((prevState) => ({
-      ...prevState,
-      [field]: {
-        ...prevState[field],
-        [name]: value,
-      },
-    }));
-  };
+  const handleFieldChange =
+    (field: keyof SignupFormInputs) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const { name, value } = event.target;
+      setFormInputs((prevState) => ({
+        ...prevState,
+        [field]: {
+          ...prevState[field],
+          [name]: value,
+        },
+      }));
+    };
 
   const handleDateOfBirthChange = (date: string | null) => {
     if (date) {
@@ -97,59 +92,21 @@ const SignupForm = () => {
         ...prevState,
         ["generalInfo"]: {
           ...prevState["generalInfo"],
-          ["dateOfBirth"]: new Date(date).toLocaleDateString('en-GB').replace(/\//g, '-').replace(/\./g, '-'),
+          ["dateOfBirth"]: new Date(date).toLocaleDateString("en-GB").replace(/\//g, "-").replace(/\./g, "-"),
         },
       }));
     }
-  }
+  };
 
   // -------------------- Address inputs --------------------
   const { selected: selectedAddressHome, options: optionsHome, handlers: handlersHome } = useAddressInputs();
   const { selected: selectedAddressWork, options: optionsWork, handlers: handlersWork } = useAddressInputs();
 
-  
   // -------------------- Validations --------------------
-  const [IdDocumentError, setIdDocumentError] = useState(false)
-  const validateIdDocument = (value: string | null) => {
-    const pattern = /^[VE]-\d{7,8}$/;
-    if (!value) {
-      setIdDocumentError(true);
-      return;
-    }
-    setIdDocumentError(!pattern.test(value))
-  }
-
-  const [phoneNumberError, setPhoneNumberError] = useState(false)
-  const validatePhoneNumber = (value: string | null) => {
-    const pattern = /^(?:\+)?[0-9]{0,4} ?[0-9]{10}$/;
-    if (!value) {
-      setPhoneNumberError(true);
-      return;
-    }
-    setPhoneNumberError(!pattern.test(value))
-  }
-
-  const [rifError, setRifError] = useState(false)
-  const validateRif = (value: string | null) => {
-    const pattern = /^[J]-\d{8,9}$/;
-    if (!value) {
-      setRifError(true);
-      return;
-    }
-    setRifError(!pattern.test(value))
-  }
-
-  const [companyPhoneNumberError, setCompanyPhoneNumberError] = useState(false)
-  const validateCompanyPhoneNumber = (value: string | null) => {
-    const pattern = /^(?:\+)?[0-9]{0,4} ?[0-9]{10}$/;
-    if (!value) {
-      setCompanyPhoneNumberError(true);
-      return;
-    }
-    setCompanyPhoneNumberError(!pattern.test(value))
-  }
-
-  useEffect(() => console.log(formInputs), [formInputs])
+  const [IdDocumentError, setIdDocumentError] = useState(false);
+  const [phoneNumberError, setPhoneNumberError] = useState(false);
+  const [rifError, setRifError] = useState(false);
+  const [companyPhoneNumberError, setCompanyPhoneNumberError] = useState(false);
 
   return (
     <>
@@ -179,12 +136,12 @@ const SignupForm = () => {
             />
 
             {/* Surnames */}
-            <TextField 
+            <TextField
               name="surnames"
-              type="text" 
-              variant="outlined" 
-              color="primary" 
-              label="Apellidos" 
+              type="text"
+              variant="outlined"
+              color="primary"
+              label="Apellidos"
               fullWidth
               required
               inputProps={{ maxLength: 20 }}
@@ -286,13 +243,11 @@ const SignupForm = () => {
               fullWidth
               required
               error={IdDocumentError}
-              helperText={IdDocumentError 
-                ? 'El documento de identidad no es válido' : ''
-              }
-              inputProps={{ maxLength: 10}}
+              helperText={IdDocumentError ? "El documento de identidad no es válido" : ""}
+              inputProps={{ maxLength: 10 }}
               onChange={(event) => {
-                validateIdDocument(event.target.value)
-                handleFieldChange("generalInfo")(event)
+                validateInput(event.target.value, /^[VE]-\d{7,8}$/, setIdDocumentError);
+                handleFieldChange("generalInfo")(event);
               }}
               value={formInputs.generalInfo.idDocument}
             />
@@ -307,13 +262,11 @@ const SignupForm = () => {
               fullWidth
               required
               error={phoneNumberError}
-              helperText={phoneNumberError 
-                ? 'El número telefónico no es válido' : ''
-              }
-              inputProps={{ maxLength: 14}}
+              helperText={phoneNumberError ? "El número telefónico no es válido" : ""}
+              inputProps={{ maxLength: 14 }}
               onChange={(event) => {
-                validatePhoneNumber(event.target.value)
-                handleFieldChange("generalInfo")(event)
+                validateInput(event.target.value, /^(?:\+)?[0-9]{0,4} ?[0-9]{10}$/, setPhoneNumberError);
+                handleFieldChange("generalInfo")(event);
               }}
               value={formInputs.generalInfo.phone}
             />
@@ -335,7 +288,10 @@ const SignupForm = () => {
               label="País"
               fullWidth
               required
-              onChange={(event) => handleFieldChange("residenceInfo")(event)}
+              onChange={(event) => {
+                handlersHome.country(event);
+                handleFieldChange("residenceInfo")(event);
+              }}
               value={formInputs.residenceInfo.country}
             >
               {optionsHome.countries.map((country: ICountry) => (
@@ -346,15 +302,18 @@ const SignupForm = () => {
             </TextField>
 
             {/* Province or state */}
-
             <TextField
+              name="state"
               select
               variant="outlined"
               color="primary"
               label="Provincia o estado"
               fullWidth
               required
-              onChange={handlersHome.state}
+              onChange={(event) => {
+                handlersHome.state(event);
+                handleFieldChange("residenceInfo")(event);
+              }}
               value={selectedAddressHome.state}
               disabled={optionsHome.states.length === 0}
             >
@@ -367,13 +326,17 @@ const SignupForm = () => {
 
             {/* City */}
             <TextField
+              name="city"
               select
               variant="outlined"
               color="primary"
               label="Ciudad"
               fullWidth
               required
-              onChange={handlersHome.city}
+              onChange={(event) => {
+                handlersHome.city(event);
+                handleFieldChange("residenceInfo")(event);
+              }}
               value={selectedAddressHome.city}
               disabled={optionsHome.cities.length === 0}
             >
@@ -393,8 +356,9 @@ const SignupForm = () => {
               variant="outlined"
               color="primary"
               label="Municipio o condado"
-              fullWidth required
-              inputProps={{ maxLength: 20}}
+              fullWidth
+              required
+              inputProps={{ maxLength: 20 }}
               onChange={(event) => handleFieldChange("residenceInfo")(event)}
               value={formInputs.residenceInfo.subregion}
             />
@@ -406,8 +370,9 @@ const SignupForm = () => {
               variant="outlined"
               color="primary"
               label="Sector"
-              fullWidth required
-              inputProps={{ maxLength: 20}}
+              fullWidth
+              required
+              inputProps={{ maxLength: 20 }}
               onChange={(event) => handleFieldChange("residenceInfo")(event)}
               value={formInputs.residenceInfo.sector}
             />
@@ -423,7 +388,7 @@ const SignupForm = () => {
             fullWidth
             required
             sx={{ mb: 4 }}
-            inputProps={{ maxLength: 45}}
+            inputProps={{ maxLength: 45 }}
             onChange={(event) => handleFieldChange("residenceInfo")(event)}
             value={formInputs.residenceInfo.street}
           />
@@ -440,7 +405,7 @@ const SignupForm = () => {
             fullWidth
             required
             sx={{ mb: 4 }}
-            inputProps={{ maxLength: 190}}
+            inputProps={{ maxLength: 190 }}
             onChange={(event) => handleFieldChange("residenceInfo")(event)}
             value={formInputs.residenceInfo.room}
           />
@@ -459,7 +424,7 @@ const SignupForm = () => {
             fullWidth
             required
             sx={{ mb: 4 }}
-            inputProps={{ maxLength: 45}}
+            inputProps={{ maxLength: 45 }}
             onChange={(event) => handleFieldChange("workInfo")(event)}
             value={formInputs.workInfo.company}
           />
@@ -472,14 +437,15 @@ const SignupForm = () => {
               variant="outlined"
               color="primary"
               label="RIF"
-              fullWidth required
+              fullWidth
+              required
               sx={{ mb: 4 }}
               error={rifError}
-              helperText={rifError ? 'El rif no es válido' : ''}
-              inputProps={{ maxLength: 11}}
+              helperText={rifError ? "El RIF no es válido (ejemplo: J-12345678-9)" : ""}
+              inputProps={{ maxLength: 12 }}
               onChange={(event) => {
-                validateRif(event.target.value)
-                handleFieldChange("workInfo")(event)
+                validateInput(event.target.value, /^[VEJPGvejpg]-\d{7,8}-\d$/, setRifError);
+                handleFieldChange("workInfo")(event);
               }}
               value={formInputs.workInfo.rif}
             />
@@ -495,12 +461,11 @@ const SignupForm = () => {
               required
               sx={{ mb: 4 }}
               error={companyPhoneNumberError}
-              helperText={companyPhoneNumberError 
-                ? 'El número telefónico no es válido' : ''}
-              inputProps={{ maxLength: 14}}
+              helperText={companyPhoneNumberError ? "El número telefónico no es válido" : ""}
+              inputProps={{ maxLength: 14 }}
               onChange={(event) => {
-                validateCompanyPhoneNumber(event.target.value)
-                handleFieldChange("workInfo")(event)
+                validateInput(event.target.value, /^(?:\+)?[0-9]{0,4} ?[0-9]{10}$/, setCompanyPhoneNumberError);
+                handleFieldChange("workInfo")(event);
               }}
               value={formInputs.workInfo.phone}
             />
@@ -516,7 +481,10 @@ const SignupForm = () => {
               label="País"
               fullWidth
               required
-              onChange={(event) => handleFieldChange("workInfo")(event)}
+              onChange={(event) => {
+                handlersWork.country(event);
+                handleFieldChange("workInfo")(event);
+              }}
               value={formInputs.workInfo.country}
             >
               {optionsWork.countries.map((country: ICountry) => (
@@ -528,13 +496,17 @@ const SignupForm = () => {
 
             {/* Province or state */}
             <TextField
+              name="state"
               select
               variant="outlined"
               color="primary"
               label="Provincia o estado"
               fullWidth
               required
-              onChange={handlersWork.state}
+              onChange={(event) => {
+                handlersWork.state(event);
+                handleFieldChange("workInfo")(event);
+              }}
               value={selectedAddressWork.state}
               disabled={optionsWork.states.length === 0}
             >
@@ -547,13 +519,17 @@ const SignupForm = () => {
 
             {/* City */}
             <TextField
+              name="city"
               select
               variant="outlined"
               color="primary"
               label="Ciudad"
               fullWidth
               required
-              onChange={handlersWork.city}
+              onChange={(event) => {
+                handlersWork.city(event);
+                handleFieldChange("workInfo")(event);
+              }}
               value={selectedAddressWork.city}
               disabled={optionsWork.cities.length === 0}
             >
