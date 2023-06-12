@@ -9,6 +9,7 @@ export type SignupFormInputs = {
     nationality: string;
     idDocument: string;
     phone: string;
+    civilStatus: string;
   };
   residenceInfo: {
     country: string;
@@ -26,5 +27,6 @@ export type SignupFormInputs = {
     country: string;
     state: string;
     city: string;
+    subregion: string;
   };
 };

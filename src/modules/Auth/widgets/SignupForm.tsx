@@ -1,10 +1,12 @@
 // import banner from "assets/images/banner.jpg";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
+import axios from "axios";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Button, Link, MenuItem, Stack, Tab, Tabs, TextField, Typography } from "@mui/material";
-import { ICountry, IState, ICity } from "country-state-city";
+import { Country, State, ICountry, IState, ICity } from "country-state-city";
 import Title from "components/Title";
 import { SignupFormInputs } from "../types/signup";
 import { useAddressInputs } from "../hooks/useAddressInputs";
@@ -52,6 +54,11 @@ const validateInput = (value: string | null, pattern: RegExp, errorSetter: (valu
 };
 
 const SignupForm = () => {
+  // -------------------- CAPTCHA  --------------------
+  const captchaRef = useRef<ReCAPTCHA>(null);
+  const siteKey = import.meta.env.VITE_APP_SITE_KEY;
+  const secretVar = import.meta.env.VITE_APP_SECRET_KEY;
+
   // -------------------- Form tabs --------------------
   const [tabValue, setValue] = useState(0);
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
@@ -70,9 +77,10 @@ const SignupForm = () => {
       nationality: "",
       idDocument: "",
       phone: "",
+      civilStatus: "",
     },
     residenceInfo: { country: "", state: "", city: "", subregion: "", sector: "", street: "", room: "" },
-    workInfo: { company: "", rif: "", phone: "", country: "", state: "", city: "" },
+    workInfo: { company: "", rif: "", phone: "", country: "", state: "", city: "", subregion: "" },
   });
 
   const handleFieldChange =
@@ -99,8 +107,6 @@ const SignupForm = () => {
     }
   };
 
-  // };
-
   // -------------------- Address inputs --------------------
   const { selected: selectedAddressHome, options: optionsHome, handlers: handlersHome } = useAddressInputs();
   const { selected: selectedAddressWork, options: optionsWork, handlers: handlersWork } = useAddressInputs();
@@ -114,24 +120,121 @@ const SignupForm = () => {
     companyPhone: false,
   });
 
+  // -------------------- Submit error --------------------
+  const [submitError, setSubmitError] = useState(false);
+  const [submitErrorMessages, setSubmitErrorMessages] = useState<string[]>([]);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+
   // -------------------- Form submission --------------------
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    await validateInput(formInputs.generalInfo.idDocument, /^[VEJGC]-\d{7,8}$/, (value) =>
-      setErrors((errors) => ({ ...errors, idDocument: value }))
-    );
-    await validateInput(formInputs.generalInfo.phone, /^(?:\+)?[0-9]{0,4} ?[0-9]{10}$/, (value) =>
-      setErrors((errors) => ({ ...errors, phone: value }))
-    );
-    await validateInput(formInputs.workInfo.rif, /^[VEJPGvejpg]-\d{7,8}-\d$/, (value) =>
-      setErrors((errors) => ({ ...errors, rif: value }))
-    );
-    await validateInput(formInputs.workInfo.phone, /^(?:\+)?[0-9]{0,4} ?[0-9]{10}$/, (value) =>
-      setErrors((errors) => ({ ...errors, companyPhone: value }))
-    );
+    // Clear submit error messages
+    setSubmitErrorMessages([]);
+    setSubmitError(false);
 
-    // TODO: Send data to backend
+    // Captcha validation
+    const token = captchaRef.current?.getValue();
+    try {
+      const response = await axios.post(`http://localhost:4000/verify-token`, {
+        secret: secretVar,
+        response: token,
+      });
+      console.log(response);
+
+      if (!response.data.success) {
+        submitErrorMessages.push("Captcha validation failed");
+        setSubmitError(true);
+      }
+
+    } catch (error) {
+      submitErrorMessages.push("Captcha validation failed");
+      setSubmitError(true);
+    }
+
+    const validateAll = async () => {
+      await validateInput(formInputs.generalInfo.idDocument, /^[VEJGC]-\d{7,8}$/, (value) =>
+        setErrors((errors) => ({ ...errors, idDocument: value }))
+      );
+      await validateInput(formInputs.generalInfo.phone, /^(?:\+)?[0-9]{0,4} ?[0-9]{10}$/, (value) =>
+        setErrors((errors) => ({ ...errors, phone: value }))
+      );
+      await validateInput(formInputs.workInfo.rif, /^[VEJPGvejpg]-\d{7,8}-\d$/, (value) =>
+        setErrors((errors) => ({ ...errors, rif: value }))
+      );
+      await validateInput(formInputs.workInfo.phone, /^(?:\+)?[0-9]{0,4} ?[0-9]{10}$/, (value) =>
+        setErrors((errors) => ({ ...errors, companyPhone: value }))
+      );
+    };
+
+    await validateAll();
+
+    if (generalError) return;
+    else {
+      // Country and state are in code format, so we need to get the name
+      const res_country = Country.getCountryByCode(formInputs.residenceInfo.country) ?? { name: NaN };
+      const res_state = State.getStateByCodeAndCountry(
+        formInputs.residenceInfo.state,
+        formInputs.residenceInfo.country
+      ) ?? { name: "" };
+      const work_country = Country.getCountryByCode(formInputs.workInfo.country) ?? { name: NaN };
+      const work_state = State.getStateByCodeAndCountry(formInputs.workInfo.state, formInputs.workInfo.country) ?? {
+        name: "",
+      };
+      const nationality = Country.getCountryByCode(formInputs.generalInfo.nationality) ?? { name: NaN };
+
+      // Format birthdate to MM-DD-YYYY
+      const birthdate = formInputs.generalInfo.dateOfBirth.split("/");
+      const birthdateFormatted = `${birthdate[0]}-${birthdate[1]}-${birthdate[2]}`;
+
+      const object = {
+        id_number: formInputs.generalInfo.idDocument,
+        gender: formInputs.generalInfo.gender,
+        civil_status: formInputs.generalInfo.civilStatus,
+        birthdate: birthdateFormatted,
+        phone: formInputs.generalInfo.phone,
+        nationality: nationality.name,
+        street: formInputs.residenceInfo.street,
+        sector: formInputs.residenceInfo.sector,
+        city: formInputs.residenceInfo.city,
+        country: res_country.name,
+        province: res_state.name,
+        township: formInputs.residenceInfo.subregion,
+        address: formInputs.residenceInfo.room,
+        employer_name: formInputs.workInfo.company,
+        employer_rif: formInputs.workInfo.rif,
+        employer_city: formInputs.workInfo.city,
+        employer_country: work_country.name,
+        employer_province: work_state.name,
+        employer_township: formInputs.workInfo.subregion,
+        employer_address: formInputs.workInfo.subregion,
+        employer_phone: formInputs.workInfo.phone,
+        login: formInputs.generalInfo.email,
+        name: formInputs.generalInfo.names,
+        lastname: formInputs.generalInfo.surnames,
+        role_id: 1,
+        user_type: "interno",
+      };
+      console.log(object);
+
+      // TO-DO: Modify this jeje
+      const url = `${import.meta.env.VITE_API_URL}/account_holder`;
+      console.log(url);
+      const response = await axios.post(url, object);
+      const data = response.data;
+
+      // Si se registra exitosamente retorna {"id": <id>},
+      // Si algun campo no cumple el patron especificado {"errors": { ... }}
+
+      if (data.id) {
+        setSubmitSuccess(true);
+        setSubmitError(false);
+        setSubmitErrorMessages([]);
+      } else {
+        setSubmitError(true);
+        setSubmitErrorMessages(Object.values(data.errors));
+      }
+    }
   };
 
   useEffect(() => {
@@ -151,10 +254,52 @@ const SignupForm = () => {
           Ha ocurrido un error. Por favor, revise los campos e intente de nuevo.
         </Typography>
       )}
+      {!generalError && submitError && (
+        <Typography variant="body2" color="error" sx={{ mt: 2 }}>
+          {submitErrorMessages.map((message) => (
+            <div>{message}</div>
+          ))}
+        </Typography>
+      )}
+      {submitSuccess && (
+        <Typography variant="body2" color="success" sx={{ mt: 2 }}>
+          Registro exitoso.
+        </Typography>
+      )}
       <form onSubmit={handleSubmit}>
         <TabPanel value={tabValue} index={0}>
           {/* Tab 1: General info */}
           <Title title="Información general" />
+          {/* Email */}
+          <Stack spacing={2} direction="row">
+            <TextField
+              name="email"
+              type="email"
+              variant="outlined"
+              color="primary"
+              label="Correo electrónico"
+              fullWidth
+              required
+              sx={{ mb: 4 }}
+              onChange={(event) => handleFieldChange("generalInfo")(event)}
+              value={formInputs.generalInfo.email}
+            />
+
+            {/* Password */}
+            <TextField
+              name="password"
+              type="password"
+              variant="outlined"
+              color="primary"
+              label="Contraseña"
+              fullWidth
+              required
+              sx={{ mb: 4 }}
+              onChange={(event) => handleFieldChange("generalInfo")(event)}
+              value={formInputs.generalInfo.password}
+            />
+          </Stack>
+
           <Stack spacing={2} direction="row" sx={{ mb: 4 }}>
             {/* Names */}
             <TextField
@@ -185,50 +330,42 @@ const SignupForm = () => {
             />
           </Stack>
 
-          {/* Email */}
-          <TextField
-            name="email"
-            type="email"
-            variant="outlined"
-            color="primary"
-            label="Correo electrónico"
-            fullWidth
-            required
-            sx={{ mb: 4 }}
-            onChange={(event) => handleFieldChange("generalInfo")(event)}
-            value={formInputs.generalInfo.email}
-          />
-
-          {/* Password */}
-          <TextField
-            name="password"
-            type="password"
-            variant="outlined"
-            color="primary"
-            label="Contraseña"
-            fullWidth
-            required
-            sx={{ mb: 4 }}
-            onChange={(event) => handleFieldChange("generalInfo")(event)}
-            value={formInputs.generalInfo.password}
-          />
+          {/* Birthdate */}
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              label="Fecha de nacimiento"
+              slotProps={{
+                textField: {
+                  helperText: "MM/DD/AAAA",
+                  required: true,
+                },
+              }}
+              minDate={dayjs().subtract(100, "year")}
+              maxDate={dayjs().subtract(18, "year")}
+              onChange={(date: Dayjs | null) => handleDateOfBirthChange(date)}
+              sx={{ width: "100%", mb: 3 }}
+            />
+          </LocalizationProvider>
 
           <Stack spacing={2} direction="row" sx={{ mb: 4 }}>
-            {/* Birthdate */}
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Fecha de nacimiento"
-                slotProps={{
-                  textField: {
-                    helperText: "MM/DD/AAAA",
-                    required: true,
-                  },
-                }}
-                minDate={dayjs().subtract(100, "year")}
-                maxDate={dayjs().subtract(18, "year")}
-                onChange={(date: Dayjs | null) => handleDateOfBirthChange(date)}
-              />
-            </LocalizationProvider>
+            {/* Civil status */}
+            <TextField
+              name="civilStatus"
+              select
+              variant="outlined"
+              color="primary"
+              label="Estado civil"
+              fullWidth
+              required
+              sx={{ width: "60%" }}
+              onChange={(event) => handleFieldChange("generalInfo")(event)}
+              value={formInputs.generalInfo.civilStatus}
+            >
+              <MenuItem value="S">Soltero</MenuItem>
+              <MenuItem value="C">Casado</MenuItem>
+              <MenuItem value="D">Divorciado</MenuItem>
+              <MenuItem value="V">Viudo</MenuItem>
+            </TextField>
 
             {/* Gender */}
             <TextField
@@ -279,7 +416,7 @@ const SignupForm = () => {
               fullWidth
               required
               error={errors.idDocument}
-              helperText={errors.idDocument && "El documento de identificación no es válido"}
+              helperText={errors.idDocument && "El documento de identificación no es válido (V-267890123)"}
               inputProps={{ maxLength: 10 }}
               onChange={(event) => {
                 handleFieldChange("generalInfo")(event);
@@ -494,7 +631,7 @@ const SignupForm = () => {
               required
               sx={{ mb: 4 }}
               error={errors.companyPhone}
-              helperText={errors.companyPhone && "El teléfono no es válido"}
+              helperText={errors.companyPhone && "El teléfono no es válido (+58412000000)"}
               inputProps={{ maxLength: 14 }}
               onChange={(event) => {
                 handleFieldChange("workInfo")(event);
@@ -572,9 +709,27 @@ const SignupForm = () => {
               ))}
             </TextField>
           </Stack>
-        </TabPanel>
 
-        {/* Captcha */}
+          {/* Subregion */}
+          <TextField
+            name="subregion"
+            type="text"
+            variant="outlined"
+            color="primary"
+            label="Municipio o condado"
+            fullWidth
+            required
+            inputProps={{ maxLength: 20 }}
+            onChange={(event) => handleFieldChange("workInfo")(event)}
+            value={formInputs.workInfo.subregion}
+            sx={{ mb: 4 }}
+          />
+
+          {/* Captcha */}
+          <div className="justify-center flex flex-wrap mb-8">
+            <ReCAPTCHA sitekey={siteKey} ref={captchaRef} />
+          </div>
+        </TabPanel>
 
         {/* Botón de borrar */}
         <Stack direction="row" spacing={2} sx={{ mb: 4 }}>
