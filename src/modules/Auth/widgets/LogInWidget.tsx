@@ -40,6 +40,8 @@ const LogInWidget = () => {
   const [openExceptionHandler, setOpenExceptionHandler] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const [ errorHandlerMessages , setErrorHandlerMessages ] = useState({ title : "Ups! Algo falló" , description : "Parece que algo fue mal iniciando sesión. Revise su data."});
+
   const { data, error, isLoading } = useGetUsersQuery({ login: email });
 
   const dispatch = useDispatch();
@@ -71,9 +73,11 @@ const LogInWidget = () => {
   useEffect(() => {
     if (showApiResponseErrorWidget) setShowFormErrorWidget(false);
   }, [showApiResponseErrorWidget]);
+
   useEffect(() => {
     if (showFormErrorWidget) setShowApiResponseErrorWidget(false);
   }, [showFormErrorWidget]);
+
   useEffect(() => {
     if (!loginSuccess) return;
     const timer = setTimeout(() => {
@@ -119,6 +123,7 @@ const LogInWidget = () => {
     }
 
     setOpenExceptionHandler(false);
+    setErrorHandlerMessages({ title : "Ups! Algo falló" , description : "Parece que algo fue mal iniciando sesión. Revise su data."});
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -159,7 +164,16 @@ const LogInWidget = () => {
           .then(resp => {
             console.log(resp);
             if (resp.status === 200){ 
+              setLoginSuccess(true);
               return resp.json();
+            }
+            if (resp.status === 401){
+              setOpenExceptionHandler(true);
+              setErrorHandlerMessages({ title : "Falló el login 401" , description : "La contraseña o el correo son incorrectos."});
+            }
+            if (resp.status === 500){
+              setOpenExceptionHandler(true);
+              setErrorHandlerMessages({ title : "Falló el login" , description : "Intenta de nuevo."});
             }
           })
           .then(data => {
@@ -167,9 +181,10 @@ const LogInWidget = () => {
             //localStorage.setItem("auth.refresh_token", data.refresh_token);
             //Cookies.set('auth.auth_token', data.auth_token);
             //Cookies.set('auth.refresh_token', data.refresh_token);
-            setAppContextAuth(data, dispatch);
+            if (data != undefined){
+              setAppContextAuth(data, dispatch);
+            }
           })
-        setLoginSuccess(true);
       }
 
       if (error) {
@@ -267,8 +282,8 @@ const LogInWidget = () => {
           open={openExceptionHandler}
           onClose={handleCloseExceptionHandler}
           icon={<ErrorIcon className={"mb-14 text-[5em] text-red-700"} />}
-          title={"Ups! Algo falló"}
-          description={"Parece que algo fue mal iniciando sesión. Revise su data."}
+          title={errorHandlerMessages.title}
+          description={errorHandlerMessages.description}
           btnText={"Reintentar"}
         />
       </div>
