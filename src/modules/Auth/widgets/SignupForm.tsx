@@ -124,6 +124,10 @@ const SignupForm = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    // Clear submit error messages
+    setSubmitErrorMessages([]);
+    setSubmitError(false);
+
     const validateAll = async () => {
       await validateInput(formInputs.generalInfo.idDocument, /^[VEJGC]-\d{7,8}$/, (value) =>
         setErrors((errors) => ({ ...errors, idDocument: value }))
