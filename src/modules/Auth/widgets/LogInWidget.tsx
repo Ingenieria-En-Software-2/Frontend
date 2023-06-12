@@ -39,8 +39,9 @@ const LogInWidget = () => {
   const [hide, setHide] = useState<boolean>(false);
   const [openExceptionHandler, setOpenExceptionHandler] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  const [ errorHandlerMessages , setErrorHandlerMessages ] = useState({ title : "Ups! Algo falló" , description : "Parece que algo fue mal iniciando sesión. Revise su data."});
+  type ErrorMessages = typeof initErrorHandler;
+  const initErrorHandler = { title : "Ups! Algo falló" , description : "Parece que algo fue mal iniciando sesión. Revise su data."};
+  const [ errorHandlerMessages , setErrorHandlerMessages ] = useState<ErrorMessages>(initErrorHandler);
 
   const { data, error, isLoading } = useGetUsersQuery({ login: email });
 
@@ -169,7 +170,7 @@ const LogInWidget = () => {
             }
             if (resp.status === 401){
               setOpenExceptionHandler(true);
-              setErrorHandlerMessages({ title : "Falló el login 401" , description : "La contraseña o el correo son incorrectos."});
+              setErrorHandlerMessages({ title : "Falló el login" , description : "La contraseña o el correo son incorrectos."});
             }
             if (resp.status === 500){
               setOpenExceptionHandler(true);
