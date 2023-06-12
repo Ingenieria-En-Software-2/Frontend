@@ -106,6 +106,13 @@ npm install
 npm run dev
 ```
 
+### Run the frontend and the server for the Google ReCaptcha locally
+
+```bash
+npm install
+npm run captcha
+```
+
 ## Run Frontend with docker compose
 
 ```bash
