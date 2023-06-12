@@ -4,7 +4,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Button, Link, MenuItem, Stack, Tab, Tabs, TextField, Typography } from "@mui/material";
-import { ICountry, IState, ICity } from "country-state-city";
+import { Country, State, City, ICountry, IState, ICity } from "country-state-city";
 import Title from "components/Title";
 import { SignupFormInputs } from "../types/signup";
 import { useAddressInputs } from "../hooks/useAddressInputs";
@@ -115,6 +115,11 @@ const SignupForm = () => {
     companyPhone: false,
   });
 
+  // -------------------- Submit error --------------------
+  const [submitError, setSubmitError] = useState(false);
+  const [submitErrorMessages, setSubmitErrorMessages] = useState<string[]>([]);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+
   // -------------------- Form submission --------------------
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -138,26 +143,41 @@ const SignupForm = () => {
 
     if (generalError) return;
     else {
-      // TODO: Send form data to backend
+      // Country and state are in code format, so we need to get the name
+      const res_country = Country.getCountryByCode(formInputs.residenceInfo.country) ?? { name: NaN };
+      const res_state = State.getStateByCodeAndCountry(
+        formInputs.residenceInfo.state,
+        formInputs.residenceInfo.country
+      ) ?? { name: "" };
+      const work_country = Country.getCountryByCode(formInputs.workInfo.country) ?? { name: NaN };
+      const work_state = State.getStateByCodeAndCountry(formInputs.workInfo.state, formInputs.workInfo.country) ?? {
+        name: "",
+      };
+      const nationality = Country.getCountryByCode(formInputs.generalInfo.nationality) ?? { name: NaN };
+
+      // Format birthdate to MM-DD-YYYY
+      const birthdate = formInputs.generalInfo.dateOfBirth.split("/");
+      const birthdateFormatted = `${birthdate[0]}-${birthdate[1]}-${birthdate[2]}`;
+
       const object = {
         id_number: formInputs.generalInfo.idDocument,
         gender: formInputs.generalInfo.gender,
         civil_status: formInputs.generalInfo.civilStatus,
-        birthdate: formInputs.generalInfo.dateOfBirth,
+        birthdate: birthdateFormatted,
         phone: formInputs.generalInfo.phone,
-        nationality: formInputs.generalInfo.nationality,
+        nationality: nationality.name,
         street: formInputs.residenceInfo.street,
         sector: formInputs.residenceInfo.sector,
         city: formInputs.residenceInfo.city,
-        country: formInputs.residenceInfo.country,
-        province: formInputs.residenceInfo.state,
+        country: res_country.name,
+        province: res_state.name,
         township: formInputs.residenceInfo.subregion,
         address: formInputs.residenceInfo.room,
         employer_name: formInputs.workInfo.company,
         employer_rif: formInputs.workInfo.rif,
         employer_city: formInputs.workInfo.city,
-        employer_country: formInputs.workInfo.country,
-        employer_province: formInputs.workInfo.state,
+        employer_country: work_country.name,
+        employer_province: work_state.name,
         employer_township: formInputs.workInfo.subregion,
         employer_address: formInputs.workInfo.subregion,
         employer_phone: formInputs.workInfo.phone,
@@ -167,23 +187,31 @@ const SignupForm = () => {
         role_id: 1,
         user_type: "interno",
       };
-
       console.log(object);
 
-      // curl -i -X POST http://127.0.0.1:9010/api/account_holder -H 
-      // "Content-Type:application/json" -d '{...}'
-      
-      const url = "http://127.0.0.1:9010/api/account_holder";
-      const response = await fetch( url, {
-        method: 'POST',
+      // TO-DO: Modify this jeje
+      const url = `http://localhost:${import.meta.env.VITE_API_URL}/api/account_holder`;
+      console.log(url);
+      const response = await fetch(url, {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(object)
+        body: JSON.stringify(object),
       });
       const data = await response.json();
-      console.log(data);
 
+      // Si se registra exitosamente retorna {"id": <id>},
+      // Si algun campo no cumple el patron especificado {"errors": { ... }}
+
+      if (data.id) {
+        setSubmitSuccess(true);
+        setSubmitError(false);
+        setSubmitErrorMessages([]);
+      } else {
+        setSubmitError(true);
+        setSubmitErrorMessages(Object.values(data.errors));
+      }
     }
   };
 
@@ -202,6 +230,18 @@ const SignupForm = () => {
       {generalError && (
         <Typography variant="body2" color="error" sx={{ mt: 2 }}>
           Ha ocurrido un error. Por favor, revise los campos e intente de nuevo.
+        </Typography>
+      )}
+      {!generalError && submitError && (
+        <Typography variant="body2" color="error" sx={{ mt: 2 }}>
+          {submitErrorMessages.map((message) => (
+            <div>{message}</div>
+          ))}
+        </Typography>
+      )}
+      {submitSuccess && (
+        <Typography variant="body2" color="success" sx={{ mt: 2 }}>
+          Registro exitoso.
         </Typography>
       )}
       <form onSubmit={handleSubmit}>
@@ -354,7 +394,7 @@ const SignupForm = () => {
               fullWidth
               required
               error={errors.idDocument}
-              helperText={errors.idDocument && "El documento de identificación no es válido. Ej: V-XXXXXXXX"}
+              helperText={errors.idDocument && "El documento de identificación no es válido (V-267890123)"}
               inputProps={{ maxLength: 10 }}
               onChange={(event) => {
                 handleFieldChange("generalInfo")(event);
