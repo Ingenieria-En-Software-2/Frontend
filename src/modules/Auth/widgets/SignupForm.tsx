@@ -1,10 +1,12 @@
 // import banner from "assets/images/banner.jpg";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
+import axios from "axios";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Button, Link, MenuItem, Stack, Tab, Tabs, TextField, Typography } from "@mui/material";
-import { Country, State, City, ICountry, IState, ICity } from "country-state-city";
+import { Country, State, ICountry, IState, ICity } from "country-state-city";
 import Title from "components/Title";
 import { SignupFormInputs } from "../types/signup";
 import { useAddressInputs } from "../hooks/useAddressInputs";
@@ -52,6 +54,11 @@ const validateInput = (value: string | null, pattern: RegExp, errorSetter: (valu
 };
 
 const SignupForm = () => {
+  // -------------------- CAPTCHA  --------------------
+  const captchaRef = useRef<ReCAPTCHA>(null);
+  const siteKey = import.meta.env.VITE_APP_SITE_KEY;
+  const secretVar = import.meta.env.VITE_APP_SECRET_KEY;
+
   // -------------------- Form tabs --------------------
   const [tabValue, setValue] = useState(0);
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
@@ -100,8 +107,6 @@ const SignupForm = () => {
     }
   };
 
-  // };
-
   // -------------------- Address inputs --------------------
   const { selected: selectedAddressHome, options: optionsHome, handlers: handlersHome } = useAddressInputs();
   const { selected: selectedAddressWork, options: optionsWork, handlers: handlersWork } = useAddressInputs();
@@ -127,6 +132,25 @@ const SignupForm = () => {
     // Clear submit error messages
     setSubmitErrorMessages([]);
     setSubmitError(false);
+
+    // Captcha validation
+    const token = captchaRef.current?.getValue();
+    try {
+      const response = await axios.post(`http://localhost:4000/verify-token`, {
+        secret: secretVar,
+        response: token,
+      });
+      console.log(response);
+
+      if (!response.data.success) {
+        submitErrorMessages.push("Captcha validation failed");
+        setSubmitError(true);
+      }
+
+    } catch (error) {
+      submitErrorMessages.push("Captcha validation failed");
+      setSubmitError(true);
+    }
 
     const validateAll = async () => {
       await validateInput(formInputs.generalInfo.idDocument, /^[VEJGC]-\d{7,8}$/, (value) =>
@@ -196,14 +220,8 @@ const SignupForm = () => {
       // TO-DO: Modify this jeje
       const url = `${import.meta.env.VITE_API_URL}/account_holder`;
       console.log(url);
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(object),
-      });
-      const data = await response.json();
+      const response = await axios.post(url, object);
+      const data = response.data;
 
       // Si se registra exitosamente retorna {"id": <id>},
       // Si algun campo no cumple el patron especificado {"errors": { ... }}
@@ -706,9 +724,12 @@ const SignupForm = () => {
             value={formInputs.workInfo.subregion}
             sx={{ mb: 4 }}
           />
-        </TabPanel>
 
-        {/* Captcha */}
+          {/* Captcha */}
+          <div className="justify-center flex flex-wrap mb-8">
+            <ReCAPTCHA sitekey={siteKey} ref={captchaRef} />
+          </div>
+        </TabPanel>
 
         {/* Botón de borrar */}
         <Stack direction="row" spacing={2} sx={{ mb: 4 }}>
