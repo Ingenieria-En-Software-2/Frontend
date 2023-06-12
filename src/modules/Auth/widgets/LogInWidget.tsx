@@ -172,6 +172,10 @@ const LogInWidget = () => {
               setOpenExceptionHandler(true);
               setErrorHandlerMessages({ title : "Falló el login" , description : "La contraseña o el correo son incorrectos."});
             }
+            if (resp.status === 400){
+              setOpenExceptionHandler(true);
+              setErrorHandlerMessages({ title : "Falló el login" , description : "El correo no ha sido verificado."});
+            }
             if (resp.status === 500){
               setOpenExceptionHandler(true);
               setErrorHandlerMessages({ title : "Falló el login" , description : "Intenta de nuevo."});
