@@ -134,12 +134,56 @@ const SignupForm = () => {
       );
     };
 
-    await validateAll()
+    await validateAll();
 
-    if (generalError) return
+    if (generalError) return;
     else {
       // TODO: Send form data to backend
-      console.log("form submitted; values:", formInputs);
+      const object = {
+        id_number: formInputs.generalInfo.idDocument,
+        gender: formInputs.generalInfo.gender,
+        civil_status: formInputs.generalInfo.civilStatus,
+        birthdate: formInputs.generalInfo.dateOfBirth,
+        phone: formInputs.generalInfo.phone,
+        nationality: formInputs.generalInfo.nationality,
+        street: formInputs.residenceInfo.street,
+        sector: formInputs.residenceInfo.sector,
+        city: formInputs.residenceInfo.city,
+        country: formInputs.residenceInfo.country,
+        province: formInputs.residenceInfo.state,
+        township: formInputs.residenceInfo.subregion,
+        address: formInputs.residenceInfo.room,
+        employer_name: formInputs.workInfo.company,
+        employer_rif: formInputs.workInfo.rif,
+        employer_city: formInputs.workInfo.city,
+        employer_country: formInputs.workInfo.country,
+        employer_province: formInputs.workInfo.state,
+        employer_township: formInputs.workInfo.subregion,
+        employer_address: formInputs.workInfo.subregion,
+        employer_phone: formInputs.workInfo.phone,
+        login: formInputs.generalInfo.email,
+        name: formInputs.generalInfo.names,
+        lastname: formInputs.generalInfo.surnames,
+        role_id: 1,
+        user_type: "interno",
+      };
+
+      console.log(object);
+
+      // curl -i -X POST http://127.0.0.1:9010/api/account_holder -H 
+      // "Content-Type:application/json" -d '{...}'
+      
+      const url = "http://127.0.0.1:9010/api/account_holder";
+      const response = await fetch( url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(object)
+      });
+      const data = await response.json();
+      console.log(data);
+
     }
   };
 
@@ -310,7 +354,7 @@ const SignupForm = () => {
               fullWidth
               required
               error={errors.idDocument}
-              helperText={errors.idDocument && "El documento de identificación no es válido"}
+              helperText={errors.idDocument && "El documento de identificación no es válido. Ej: V-XXXXXXXX"}
               inputProps={{ maxLength: 10 }}
               onChange={(event) => {
                 handleFieldChange("generalInfo")(event);
@@ -525,7 +569,7 @@ const SignupForm = () => {
               required
               sx={{ mb: 4 }}
               error={errors.companyPhone}
-              helperText={errors.companyPhone && "El teléfono no es válido"}
+              helperText={errors.companyPhone && "El teléfono no es válido (+58412000000)"}
               inputProps={{ maxLength: 14 }}
               onChange={(event) => {
                 handleFieldChange("workInfo")(event);
