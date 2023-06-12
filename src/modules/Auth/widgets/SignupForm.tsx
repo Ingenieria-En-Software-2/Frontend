@@ -194,7 +194,7 @@ const SignupForm = () => {
       console.log(object);
 
       // TO-DO: Modify this jeje
-      const url = `http://localhost:${import.meta.env.VITE_API_URL}/api/account_holder`;
+      const url = `${import.meta.env.VITE_API_URL}/account_holder`;
       console.log(url);
       const response = await fetch(url, {
         method: "POST",
