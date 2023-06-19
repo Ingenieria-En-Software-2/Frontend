@@ -134,7 +134,7 @@ const SignupForm = () => {
     setSubmitError(false);
 
     // Captcha validation
-    const token = captchaRef.current?.getValue();
+    const token = captchaRef.current.getValue();
     try {
       const response = await axios.post(`http://localhost:4000/verify-token`, {
         secret: secretVar,
@@ -143,6 +143,7 @@ const SignupForm = () => {
       console.log(response);
 
       if (!response.data.success) {
+        console.log(response);
         submitErrorMessages.push("Captcha validation failed");
         setSubmitError(true);
       }
