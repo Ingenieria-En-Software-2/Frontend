@@ -10,11 +10,12 @@ import UserRoles from "modules/User/widgets/UserRoles";
 import LoginPage from "modules/Auth/pages/LoginPage";
 import SignupPage from "modules/Auth/pages/SignupPage";
 import VerifyPage from "modules/Auth/pages/VerifyPage";
+import CreateAccount from "modules/Accounts/widgets/CreateAccount";
 import { Provider } from "react-redux";
 import getStore from "context/store/createStore";
 import Gate from "modules/Auth/components/Gate";
 
-const { URL_CREATE_USER, URL_HOME, URL_USER_PROFILES, URL_USER_ROLES, URL_LOGIN, URL_SIGNUP, URL_VERIFY } = SERVER_URLS;
+const { URL_CREATE_USER, URL_HOME, URL_USER_PROFILES, URL_USER_ROLES, URL_LOGIN, URL_SIGNUP, URL_VERIFY, URL_CREATE_ACCOUNT } = SERVER_URLS;
 
 function App() {
   return (
@@ -28,7 +29,8 @@ function App() {
             <Route path={URL_HOME} element={<Home />} />
             <Route path={URL_CREATE_USER} element={<CreateUser />} />
             <Route path={URL_USER_PROFILES} element={<UserProfiles />} />
-            <Route path={URL_USER_ROLES} element={<UserRoles />} />{" "}
+            <Route path={URL_USER_ROLES} element={<UserRoles />} />
+            <Route path={URL_CREATE_ACCOUNT} element={<CreateAccount />} />
           </Routes>
         </Gate>
       </Provider>
