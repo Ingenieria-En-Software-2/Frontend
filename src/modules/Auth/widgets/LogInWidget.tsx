@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import banner from "assets/images/banner.jpg";
+import banner from "assets/images/banner.png";
 
 import type ValidationErrorsDict from "utils/validate/types/ValidationErrorsDict.type";
 import type ValidationError from "utils/validate/types/validationError.type";
@@ -20,7 +20,7 @@ const { URL_USER_PROFILES, URL_SIGNUP } = SERVER_URLS;
 import { useDispatch } from "react-redux";
 import {setAppContextAuth } from "../utils/auth";
 
-import Cookies from 'js-cookie'
+// import Cookies from 'js-cookie'
 
 
 const LogInWidget = () => {

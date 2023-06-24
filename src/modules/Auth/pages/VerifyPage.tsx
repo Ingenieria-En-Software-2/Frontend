@@ -1,5 +1,3 @@
-import React, { useState, useEffect } from "react";
-import { useHref } from "react-router-dom";
 import SERVER_URLS from "utils/serversUrls";
 import { Button } from "@mui/material";
 

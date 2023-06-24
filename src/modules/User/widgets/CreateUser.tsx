@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import DashboardLayoutBasic from "modules/Layout/widgets/containers/DashboardLayoutBasic";
 import { DashboardWrapper } from "modules/Layout/context/dashboardLayout";
-import { useGetUsersQuery, useCreateUserMutation } from "services/dbApi";
+import { useGetUsersQuery, /*useCreateUserMutation*/ } from "services/dbApi";
 import { useEffect } from "react";
 
 import SERVER_URLS from "utils/serversUrls.ts";
@@ -16,7 +16,7 @@ const CreateUser = () => {
   const [usernameError, setUsernameError] = useState(false);
   const [usernameAlreadyExistsError, setUsernameExistsError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
-  const [createUser, {}] = useCreateUserMutation(); //
+  // const [createUser, {}] = useCreateUserMutation();
   const [creatingUser, setCreatingUser] = useState(false);
   const { data: data2, error: error2 } = useGetUsersQuery({ login: username });
   const navigate = useNavigate();
@@ -99,20 +99,20 @@ const CreateUser = () => {
       pass_e = true;
     }
 
-    if (pass_e == true || user_e == true) {
+    if (pass_e == true || user_e) {
       //If there's an error
-      if (user_e == true && pass_e == true) {
+      if (user_e && pass_e == true) {
         setUsernameError(true);
         setPasswordError(true);
       }
-      if (user_e == true) {
+      if (user_e) {
         setUsernameError(true);
       }
       if (pass_e == true) {
         setPasswordError(true);
       }
     }
-    if (user_e == false && pass_e == false) {
+    if (!user_e && pass_e == false) {
       //If there's not an error anywhere
       var searched_obj = undefined;
       if (data2 != undefined) {

@@ -1,4 +1,4 @@
-// import banner from "assets/images/banner.jpg";
+// import banner from "assets/images/banner.png";
 import { useEffect, useState, useRef } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import axios from "axios";
