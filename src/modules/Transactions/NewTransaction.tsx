@@ -53,7 +53,9 @@ const NewTransaction = () => {
                 Inter Wallet
               </MenuItem>
             </TextField>
+
             {<ShowForm type={transaction_type}/>}
+            
           </Box>
         </DashboardLayoutBasic>
       </DashboardWrapper>

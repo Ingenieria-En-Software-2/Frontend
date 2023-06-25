@@ -8,8 +8,10 @@ import { TRANSACTION_TYPE } from "./NewTransaction";
 import internal from "stream";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { Console } from "console";
 
 const URL_TRANSACTIONS = `${import.meta.env.VITE_API_URL}/user_transactions`
+const URL_ACCOUNTS = `${import.meta.env.VITE_API_URL}/user_account`
 
 type BetweenAccountsFields = {
   origin : string;
@@ -30,6 +32,7 @@ Enviar los datos al back e informar sobre las respuestas al usuario
 
 
 const BetweenAccountsTransactions = () => {
+  const [originAccounts, setOriginAccounts] = useState({})
   const [formInputs, setFormInputs] = useState<BetweenAccountsFields>(
     {      
       origin: "", // TODO: Se hace un query para ver las cuentas del usuario logeado y elegir una de ellas
@@ -41,24 +44,41 @@ const BetweenAccountsTransactions = () => {
       transaction_status_id: "2",   
     }    
   );
+  useEffect(() => {
+    async function getOriginAccounts() {
+      const response = await axios.get(
+        URL_ACCOUNTS, {
+          headers: {
+            'Authorization': `Bearer ${Cookies.get('auth.auth_token')}`,
+            'Origin': `${URL_TRANSACTIONS}` }
+          }
+        );
+      setOriginAccounts(response.data)
+    }
+    getOriginAccounts()
+  }, [])
 
   const handleFieldChange =
   (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
    const { name, value } = event.target;
    setFormInputs({...formInputs, [name]: value,});
   };
-
+  
+  
   const  handleSubmit = async (e:any) => {
     e.preventDefault()
     console.log(formInputs)
     const response = await axios.post(
       URL_TRANSACTIONS, formInputs, {
         headers: {
-          'Authorization': `Bearer ${Cookies.get('auth.auth_token')}`}
+          'Authorization': `Bearer ${Cookies.get('auth.auth_token')}`          
+        }
         }
       );
-
+    // TODO: Mostrar que la transacción se realizó o mostrar mensajes de error en caso de que los haya.
   }
+
+  console.log(originAccounts)
   
 
   return (
@@ -68,18 +88,29 @@ const BetweenAccountsTransactions = () => {
         
         {/*Cuenta de destino */}
         
-          <TextField
-                  name="origin"
-                  type="text"
-                  variant="outlined"
-                  color="primary"
-                  label="Cuenta de origen"
-                  fullWidth
-                  required
-                  sx={{ mb: 4 }}
-                  onChange={(event) => handleFieldChange(event)}
-                  value={formInputs.origin}
-                /> 
+        <TextField
+              name="origin"
+              select
+              variant="outlined"
+              color="primary"
+              label="Cuenta de origen"
+              fullWidth
+              required
+              sx={{mb : 4 }}
+              onChange={(event) => handleFieldChange(event)}
+              value={formInputs.origin}
+            >
+              {originAccounts && originAccounts.corriente && originAccounts.corriente.map((account) => (
+                 <MenuItem value={account}>
+                  {`Corriente ${account}`}
+                 </MenuItem>
+              ))}
+              {originAccounts && originAccounts.ahorro && originAccounts.ahorro.map((account) => (
+                 <MenuItem value={account}>
+                  {`Ahorro ${account}`}
+                 </MenuItem>
+              ))}
+            </TextField>
 
           <TextField
                   name="destination"
