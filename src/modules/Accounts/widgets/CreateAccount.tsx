@@ -6,6 +6,7 @@ import Title from "components/Title";
 import { AccountFormInputs } from "../types/account"; 
 
 import { Box, Stack, MenuItem, TextField, Button, Modal } from "@mui/material";
+import axios from "axios";
 
 const CreateAccountForm = () => {
   // Modal state
@@ -29,13 +30,25 @@ const CreateAccountForm = () => {
     });
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    // TO-DO: Send data to API
     console.log(formInputs);
+    
+    const object = {
+      user_id: 1,
+      account_number: "01503000000000000003",
+      account_type_id: 1, // 1: Current, 2: Saving
+    }
 
-    // Open modal
+    const url = `${import.meta.env.VITE_API_URL}/user_account`;
+    const response = await axios.post(url, object)
+    const data = response.data;
+    
+    console.log(data);
+    // If the request is successful, show a success message
+    // If the request is not successful, show an error message
+    
+    // Open modal (For what?)
     handleOpenModal();
   };
 
