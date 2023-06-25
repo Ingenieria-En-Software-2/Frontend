@@ -8,7 +8,6 @@ import { TRANSACTION_TYPE } from "./NewTransaction";
 import internal from "stream";
 
 type BetweenAccountsFields = {
-  user_id : string;
   origin_account : string;
   destination_account : string;
   amount : string;
@@ -25,17 +24,17 @@ Enviar los datos al back e informar sobre las respuestas al usuario
 
 
 
+
 const BetweenAccountsTransactions = () => {
   const [formInputs, setFormInputs] = useState<BetweenAccountsFields>(
-    {
-      user_id: "", // TODO: Se debe conseguir del usuario logeado actualmente
+    {      
       origin_account: "", // TODO: Se hace un query para ver las cuentas del usuario logeado y elegir una de ellas
       destination_account: "",
       amount: "",
-      transaction_type: "", 
+      transaction_type: "b_a", 
       transaction_description: "",
       currency_id: "", // TODO: Se hace un query para ver las monedas disponibles
-      transaction_status_id: "",   //Creo que esto no debe ponerse aqui   
+      transaction_status_id: "2",   
     }    
   );
 
@@ -44,12 +43,17 @@ const BetweenAccountsTransactions = () => {
    const { name, value } = event.target;
    setFormInputs({...formInputs, [name]: value,});
   };
+
+  const  handleSubmit = (e:any) => {
+    e.preventDefault()
+    console.log(formInputs)
+  }
   
 
   return (
     <div className="main-container">
     <Box sx={{ width: "80%" }}>
-      <form onSubmit={ console.log(formInputs)}>
+      <form onSubmit={ handleSubmit}>
         
         {/*Cuenta de destino */}
         
@@ -120,7 +124,7 @@ const BetweenAccountsTransactions = () => {
           <Button 
                 variant="outlined" 
                 color="primary" 
-                type="button"
+                type="submit"
                 fullWidth>
             Enviar
           </Button>

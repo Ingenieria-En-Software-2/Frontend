@@ -20,7 +20,7 @@ const { URL_USER_PROFILES, URL_SIGNUP } = SERVER_URLS;
 import { useDispatch } from "react-redux";
 import {setAppContextAuth } from "../utils/auth";
 
-// import Cookies from 'js-cookie'
+import Cookies from 'js-cookie'
 
 
 const LogInWidget = () => {
@@ -102,11 +102,11 @@ const LogInWidget = () => {
       formErrors_ = { ...formErrors_, [error.field]: [...(formErrors_[error.field] ?? []), error] };
     };
 
-    const emailValidation = validate.email(email);
-    if (emailValidation.hasErrors) emailValidation.errors?.forEach((error) => addError(error));
+    // const emailValidation = validate.email(email);
+    // if (emailValidation.hasErrors) emailValidation.errors?.forEach((error) => addError(error));
 
-    const passwordValidation = validate.password(password);
-    if (passwordValidation.hasErrors) passwordValidation.errors?.forEach((error) => addError(error));
+    // const passwordValidation = validate.password(password);
+    // if (passwordValidation.hasErrors) passwordValidation.errors?.forEach((error) => addError(error));
 
     setFormErrors(formErrors_);
     if (Object.keys(formErrors_).length == 0) {
@@ -161,7 +161,7 @@ const LogInWidget = () => {
           })
         }
 
-        fetch("http://localhost:9010/auth/login", opts)
+        fetch("http://localhost:9010/auth/auth/login", opts)
           .then(resp => {
             console.log(resp);
             if (resp.status === 200){ 
@@ -182,10 +182,10 @@ const LogInWidget = () => {
             }
           })
           .then(data => {
-            //localStorage.setItem("auth.auth_token", data.auth_token);
-            //localStorage.setItem("auth.refresh_token", data.refresh_token);
-            //Cookies.set('auth.auth_token', data.auth_token);
-            //Cookies.set('auth.refresh_token', data.refresh_token);
+            localStorage.setItem("auth.auth_token", data.auth_token);
+            localStorage.setItem("auth.refresh_token", data.refresh_token);
+            Cookies.set('auth.auth_token', data.auth_token);
+            Cookies.set('auth.refresh_token', data.refresh_token);
             if (data != undefined){
               setAppContextAuth(data, dispatch);
             }
