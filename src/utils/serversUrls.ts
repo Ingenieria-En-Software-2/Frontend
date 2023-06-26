@@ -8,6 +8,7 @@ export const SERVER_URLS = Object.freeze({
   URL_CREATE_USER: "/users/new",
   URL_USER_ROLES: "/roles",
   URL_VERIFY: "/verify",
+  URL_CREATE_ACCOUNT: "/create-account",
 });
 
 export default SERVER_URLS;

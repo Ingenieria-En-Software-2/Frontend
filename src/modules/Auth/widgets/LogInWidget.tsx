@@ -11,17 +11,15 @@ import { Button, FormHelperText, TextField } from "@mui/material";
 
 import SERVER_URLS from "utils/serversUrls";
 import validate from "utils/validate/validate";
-import { useGetUsersQuery } from "services/dbApi";
+// import { useGetUsersQuery } from "services/dbApi";
 import { useNavigate } from "react-router-dom";
 
 const { URL_USER_PROFILES, URL_SIGNUP } = SERVER_URLS;
 
-
 import { useDispatch } from "react-redux";
-import {setAppContextAuth } from "../utils/auth";
+import { setAppContextAuth } from "../utils/auth";
 
-// import Cookies from 'js-cookie'
-
+import Cookies from "js-cookie";
 
 const LogInWidget = () => {
   const navigate = useNavigate();
@@ -40,13 +38,15 @@ const LogInWidget = () => {
   const [openExceptionHandler, setOpenExceptionHandler] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   type ErrorMessages = typeof initErrorHandler;
-  const initErrorHandler = { title : "Ups! Algo falló" , description : "Parece que algo fue mal iniciando sesión. Revise su data."};
-  const [ errorHandlerMessages , setErrorHandlerMessages ] = useState<ErrorMessages>(initErrorHandler);
+  const initErrorHandler = {
+    title: "Ups! Algo falló",
+    description: "Parece que algo fue mal iniciando sesión. Revise su data.",
+  };
+  const [errorHandlerMessages, setErrorHandlerMessages] = useState<ErrorMessages>(initErrorHandler);
 
-  const { data, error, isLoading } = useGetUsersQuery({ login: email });
+  // const { data, error, isLoading } = useGetUsersQuery({ login: email });
 
   const dispatch = useDispatch();
-
 
   useEffect(() => {
     if (!hide) return;
@@ -124,85 +124,92 @@ const LogInWidget = () => {
     }
 
     setOpenExceptionHandler(false);
-    setErrorHandlerMessages({ title : "Ups! Algo falló" , description : "Parece que algo fue mal iniciando sesión. Revise su data."});
+    setErrorHandlerMessages({
+      title: "Ups! Algo falló",
+      description: "Parece que algo fue mal iniciando sesión. Revise su data.",
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setShowApiResponseErrorWidget(false);
 
-    if (checkData()) {
-      setListenCheckData(false);
-      // const requestData: LoginRequest = { email: email, password: password };
-      let responseError = null;
-      if (data && !isLoading) {
-        const responseData: any = data;
-        const user = responseData.items.find((user: any) => user.login === email);
-        if (!user) {
-          responseError = { data: { field: "email", message: "No existe un user con ese email" } };
+    // if (checkData()) {
+    //   setListenCheckData(false);
+    //   // const requestData: LoginRequest = { email: email, password: password };
+    //   let responseError = null;
+    //   if (data && !isLoading) {
+    //     const responseData: any = data;
+    //     const user = responseData.items.find((user: any) => user.login === email);
+    //     if (!user) {
+    //       responseError = { data: { field: "email", message: "No existe un user con ese email" } };
+    //     }
+
+    //     /* if (user && user.password !== password) {
+    //       responseError = { data: { field: "password", message: "Contraseña incorrecta" } };
+    //     } */
+    //   }
+
+    //   if (responseError) {
+    //     setErrorMessage(responseError.data.message);
+    //   } else {
+    const opts = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        login: email,
+        password: password,
+      }),
+    };
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    console.log(backendUrl);
+    fetch(backendUrl + "/auth/login", opts)
+      .then((resp) => {
+        console.log(resp);
+        if (resp.status === 200) {
+          setLoginSuccess(true);
+          return resp.json();
         }
-
-        /* if (user && user.password !== password) {
-          responseError = { data: { field: "password", message: "Contraseña incorrecta" } };
-        } */
-      }
-
-      if (responseError) {
-        setErrorMessage(responseError.data.message);
-      } else {
-        const opts = {
-          method: 'POST',
-          headers: {
-            "Content-Type": 'application/json'
-          },
-          body: JSON.stringify({
-            "login": email,
-            "password": password
-          })
+        if (resp.status === 401) {
+          setOpenExceptionHandler(true);
+          setErrorHandlerMessages({
+            title: "Falló el login",
+            description: "La contraseña o el correo son incorrectos.",
+          });
         }
-
-        fetch("http://localhost:9010/auth/login", opts)
-          .then(resp => {
-            console.log(resp);
-            if (resp.status === 200){ 
-              setLoginSuccess(true);
-              return resp.json();
-            }
-            if (resp.status === 401){
-              setOpenExceptionHandler(true);
-              setErrorHandlerMessages({ title : "Falló el login" , description : "La contraseña o el correo son incorrectos."});
-            }
-            if (resp.status === 400){
-              setOpenExceptionHandler(true);
-              setErrorHandlerMessages({ title : "Falló el login" , description : "El correo no ha sido verificado."});
-            }
-            if (resp.status === 500){
-              setOpenExceptionHandler(true);
-              setErrorHandlerMessages({ title : "Falló el login" , description : "Intenta de nuevo."});
-            }
-          })
-          .then(data => {
-            //localStorage.setItem("auth.auth_token", data.auth_token);
-            //localStorage.setItem("auth.refresh_token", data.refresh_token);
-            //Cookies.set('auth.auth_token', data.auth_token);
-            //Cookies.set('auth.refresh_token', data.refresh_token);
-            if (data != undefined){
-              setAppContextAuth(data, dispatch);
-            }
-          })
-      }
-
-      if (error) {
-        setOpenExceptionHandler(true);
-      }
-    } else {
-      setShowFormErrorWidget(true);
-    }
+        if (resp.status === 400) {
+          setOpenExceptionHandler(true);
+          setErrorHandlerMessages({ title: "Falló el login", description: "El correo no ha sido verificado." });
+        }
+        if (resp.status === 500) {
+          setOpenExceptionHandler(true);
+          setErrorHandlerMessages({ title: "Falló el login", description: "Intenta de nuevo." });
+        }
+      })
+      .then((data) => {
+        localStorage.setItem("auth.auth_token", data.auth_token);
+        localStorage.setItem("auth.refresh_token", data.refresh_token);
+        Cookies.set("auth.auth_token", data.auth_token);
+        Cookies.set("auth.refresh_token", data.refresh_token);
+        if (data != undefined) {
+          setAppContextAuth(data, dispatch);
+        }
+      });
   };
 
+  //     if (error) {
+  //       setOpenExceptionHandler(true);
+  //     }
+  //   } else {
+  //     setShowFormErrorWidget(true);
+  //   }
+  // };
+
   return (
-    <div className={"w-full h-full flex flex-col justify-center items-center flex-1 pt-[2em]"}>
-      <div className={"mb-[2em] max-w-[20em]"}>
+    <div className={"w-full h-full flex flex-col justify-center items-center flex-1"}>
+      <div className={"mb-[2em] max-w-[40em]"}>
         <img className="w-full" src={banner} />
       </div>
       <div
@@ -214,7 +221,7 @@ const LogInWidget = () => {
           {!loginSuccess && (
             <>
               <div className={"w-full flex flex-col items-center justify-center mb-[1em]"}>
-                <h2 className="m-0 font-bold text-4xl text-blue-600">Iniciar Sesión</h2>
+                <h2 className="m-0 font-bold text-4xl text-[#0e7490]">Iniciar Sesión</h2>
               </div>
               <form
                 className={"w-full flex flex-col items-center justify-center px-[1.5em] py-[1.7em]"}
@@ -269,8 +276,8 @@ const LogInWidget = () => {
                 {/* Botón para registrarse */}
                 <div className={"w-full flex flex-row items-center justify-center mt-[1.5em]"}>
                   <p className={"text-sm text-gray-600"}>¿No tienes cuenta?</p>
-                  <Button href={URL_SIGNUP} className={"ml-[0.5em] text-sm text-blue-600"}>
-                    <a className={"ml-[0.5em] text-sm text-blue-600"}>Regístrate</a>
+                  <Button href={URL_SIGNUP} className={"ml-[0.5em] text-sm text-[#0e7490]"}>
+                    <a className={"ml-[0.5em] text-sm text-[#0e7490]"}>Regístrate</a>
                   </Button>
                 </div>
               </form>
@@ -279,7 +286,7 @@ const LogInWidget = () => {
         </div>
         <ExceptionHandler
           open={loginSuccess}
-          icon={<CheckIcon className={"mb-14 text-[5em] text-blue-600"} />}
+          icon={<CheckIcon className={"mb-14 text-[5em] text-[#0e7490]"} />}
           title={"Inicio de sesión exitoso"}
           description={"Espere a ser redirigido"}
         />
