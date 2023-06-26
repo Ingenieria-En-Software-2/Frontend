@@ -20,7 +20,7 @@ const { URL_USER_PROFILES, URL_SIGNUP } = SERVER_URLS;
 import { useDispatch } from "react-redux";
 import {setAppContextAuth } from "../utils/auth";
 
-// import Cookies from 'js-cookie'
+import Cookies from 'js-cookie'
 
 
 const LogInWidget = () => {
@@ -183,10 +183,10 @@ const LogInWidget = () => {
             }
           })
           .then(data => {
-            //localStorage.setItem("auth.auth_token", data.auth_token);
-            //localStorage.setItem("auth.refresh_token", data.refresh_token);
-            //Cookies.set('auth.auth_token', data.auth_token);
-            //Cookies.set('auth.refresh_token', data.refresh_token);
+            localStorage.setItem("auth.auth_token", data.auth_token);
+            localStorage.setItem("auth.refresh_token", data.refresh_token);
+            Cookies.set('auth.auth_token', data.auth_token);
+            Cookies.set('auth.refresh_token', data.refresh_token);
             if (data != undefined){
               setAppContextAuth(data, dispatch);
             }

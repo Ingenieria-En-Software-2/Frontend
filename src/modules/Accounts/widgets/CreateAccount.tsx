@@ -9,14 +9,17 @@ import { Box, Stack, MenuItem, TextField, Button, Modal } from "@mui/material";
 import axios from "axios";
 
 const CreateAccountForm = () => {
-  // Modal state
+  // Info Modal state
   const [open, setOpen] = useState(false);
   const handleOpenModal = () => setOpen(true);
   const handleCloseModal = () => setOpen(false);
+  const [modalInfo, setModalInfo] = useState({
+    success: false,
+    message: "",
+  });
 
   // Submit form
   const [formInputs, setFormInputs] = useState<AccountFormInputs>({
-    accountName: "",
     accountType: "",
   });
 
@@ -33,20 +36,36 @@ const CreateAccountForm = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     console.log(formInputs);
-    
+
+    // Get user token from local storage
+    const token = localStorage.getItem("auth.auth_token");
+
+    // Request to create account
+    const type = formInputs.accountType == "Checking" ? 1 : 2
     const object = {
-      user_id: 1,
-      account_number: "01503000000000000003",
-      account_type_id: 1, // 1: Current, 2: Saving
+      user_id: token,
+      account_type_id: type,
     }
 
     const url = `${import.meta.env.VITE_API_URL}/user_account`;
     const response = await axios.post(url, object)
     const data = response.data;
-    
+
     console.log(data);
+
     // If the request is successful, show a success message
-    // If the request is not successful, show an error message
+    // If not, show an error message
+    if (data.errors) {
+      setModalInfo({
+        success: false,
+        message: data.errors.join(", "),
+      });
+    } else {
+      setModalInfo({
+        success: true,
+        message: `Se ha creado la cuenta ${type == 1 ? "corriente" : "ahorro"} exitosamente. Su número de cuenta es ${data.account_number}.`,
+      });
+    }
     
     // Open modal (For what?)
     handleOpenModal();
@@ -70,17 +89,6 @@ const CreateAccountForm = () => {
               disabled
             />
           </Stack>
-
-          {/* Account name */}
-          <TextField
-            name="accountName"
-            variant="outlined"
-            color="primary"
-            label="Nombre de la cuenta"
-            fullWidth
-            required
-            onChange={handleFieldChange("accountName")}
-          />
 
           {/* Account type */}
           <TextField
