@@ -54,7 +54,7 @@ const CreateAccountForm = () => {
     console.log(data);
 
     // If the request is successful, show a success message
-    // If not, show an error message
+    // Otherwise, show an error message
     if (data.errors) {
       setModalInfo({
         success: false,
@@ -67,7 +67,7 @@ const CreateAccountForm = () => {
       });
     }
     
-    // Open modal (For what?)
+    // Open modal
     handleOpenModal();
   };
 
@@ -75,21 +75,6 @@ const CreateAccountForm = () => {
     <Box>
       <form className="flex flex-col" autoComplete="off" onSubmit={handleSubmit}>
         <Stack spacing={4}>
-          {/* Account Holder Info */}
-          <Stack direction="row" spacing={2}>
-            {/* Account Holder */}
-            <TextField id="outlined-required" label="Cuentahabiente" defaultValue="Fulanito" fullWidth disabled />
-
-            {/* Account Holder ID */}
-            <TextField
-              id="outlined-required"
-              label="Documento de Identidad"
-              defaultValue="V-123456789"
-              fullWidth
-              disabled
-            />
-          </Stack>
-
           {/* Account type */}
           <TextField
             name="accountType"
@@ -130,7 +115,7 @@ const CreateAccountForm = () => {
         >
           <h2 id="modal-modal-title">Comisión</h2>
           <p id="modal-modal-description">
-            Info de comisión
+            {modalInfo.message}
           </p>
         </Box>
       </Modal>
