@@ -11,7 +11,7 @@ import { Button, FormHelperText, TextField } from "@mui/material";
 
 import SERVER_URLS from "utils/serversUrls";
 import validate from "utils/validate/validate";
-import { useGetUsersQuery } from "services/dbApi";
+// import { useGetUsersQuery } from "services/dbApi";
 import { useNavigate } from "react-router-dom";
 
 const { URL_USER_PROFILES, URL_SIGNUP } = SERVER_URLS;
@@ -44,7 +44,7 @@ const LogInWidget = () => {
   };
   const [errorHandlerMessages, setErrorHandlerMessages] = useState<ErrorMessages>(initErrorHandler);
 
-  const { data, error, isLoading } = useGetUsersQuery({ login: email });
+  // const { data, error, isLoading } = useGetUsersQuery({ login: email });
 
   const dispatch = useDispatch();
 
