@@ -134,25 +134,25 @@ const LogInWidget = () => {
     e.preventDefault();
     setShowApiResponseErrorWidget(false);
 
-    if (checkData()) {
-      setListenCheckData(false);
-      // const requestData: LoginRequest = { email: email, password: password };
-      let responseError = null;
-      if (data && !isLoading) {
-        const responseData: any = data;
-        const user = responseData.items.find((user: any) => user.login === email);
-        if (!user) {
-          responseError = { data: { field: "email", message: "No existe un user con ese email" } };
-        }
+    // if (checkData()) {
+    //   setListenCheckData(false);
+    //   // const requestData: LoginRequest = { email: email, password: password };
+    //   let responseError = null;
+    //   if (data && !isLoading) {
+    //     const responseData: any = data;
+    //     const user = responseData.items.find((user: any) => user.login === email);
+    //     if (!user) {
+    //       responseError = { data: { field: "email", message: "No existe un user con ese email" } };
+    //     }
 
-        /* if (user && user.password !== password) {
-          responseError = { data: { field: "password", message: "Contraseña incorrecta" } };
-        } */
-      }
+    //     /* if (user && user.password !== password) {
+    //       responseError = { data: { field: "password", message: "Contraseña incorrecta" } };
+    //     } */
+    //   }
 
-      if (responseError) {
-        setErrorMessage(responseError.data.message);
-      } else {
+    //   if (responseError) {
+    //     setErrorMessage(responseError.data.message);
+    //   } else {
         const opts = {
           method: "POST",
           headers: {
@@ -199,17 +199,17 @@ const LogInWidget = () => {
           });
       }
 
-      if (error) {
-        setOpenExceptionHandler(true);
-      }
-    } else {
-      setShowFormErrorWidget(true);
-    }
-  };
+  //     if (error) {
+  //       setOpenExceptionHandler(true);
+  //     }
+  //   } else {
+  //     setShowFormErrorWidget(true);
+  //   }
+  // };
 
   return (
-    <div className={"w-full h-full flex flex-col justify-center items-center flex-1 pt-[2em]"}>
-      <div className={"mb-[2em] max-w-[20em]"}>
+    <div className={"w-full h-full flex flex-col justify-center items-center flex-1"}>
+      <div className={"mb-[2em] max-w-[40em]"}>
         <img className="w-full" src={banner} />
       </div>
       <div
@@ -221,7 +221,7 @@ const LogInWidget = () => {
           {!loginSuccess && (
             <>
               <div className={"w-full flex flex-col items-center justify-center mb-[1em]"}>
-                <h2 className="m-0 font-bold text-4xl text-blue-600">Iniciar Sesión</h2>
+                <h2 className="m-0 font-bold text-4xl text-[#0e7490]">Iniciar Sesión</h2>
               </div>
               <form
                 className={"w-full flex flex-col items-center justify-center px-[1.5em] py-[1.7em]"}
@@ -276,8 +276,8 @@ const LogInWidget = () => {
                 {/* Botón para registrarse */}
                 <div className={"w-full flex flex-row items-center justify-center mt-[1.5em]"}>
                   <p className={"text-sm text-gray-600"}>¿No tienes cuenta?</p>
-                  <Button href={URL_SIGNUP} className={"ml-[0.5em] text-sm text-blue-600"}>
-                    <a className={"ml-[0.5em] text-sm text-blue-600"}>Regístrate</a>
+                  <Button href={URL_SIGNUP} className={"ml-[0.5em] text-sm text-[#0e7490]"}>
+                    <a className={"ml-[0.5em] text-sm text-[#0e7490]"}>Regístrate</a>
                   </Button>
                 </div>
               </form>
@@ -286,7 +286,7 @@ const LogInWidget = () => {
         </div>
         <ExceptionHandler
           open={loginSuccess}
-          icon={<CheckIcon className={"mb-14 text-[5em] text-blue-600"} />}
+          icon={<CheckIcon className={"mb-14 text-[5em] text-[#0e7490]"} />}
           title={"Inicio de sesión exitoso"}
           description={"Espere a ser redirigido"}
         />

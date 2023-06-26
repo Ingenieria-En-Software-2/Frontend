@@ -14,7 +14,7 @@ export default function ExceptionContent({ icon, title, description, btnText, se
   return (
     <>
       {icon}
-      <h2 className={"m-0 font-bold text-4xl text-blue-600"}>{title}</h2>
+      <h2 className={"m-0 font-bold text-4xl text-[#0e7490]"}>{title}</h2>
       <p className={"mt-2 text-gray-600"}>{description}</p>
       {btnText && (
         <Button sx={{ mt: 2, backgroundColor: "#e0f2fe" }} onClick={() => setHide(true)}>
