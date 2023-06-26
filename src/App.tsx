@@ -15,7 +15,16 @@ import { Provider } from "react-redux";
 import getStore from "context/store/createStore";
 import Gate from "modules/Auth/components/Gate";
 
-const { URL_CREATE_USER, URL_HOME, URL_USER_PROFILES, URL_USER_ROLES, URL_LOGIN, URL_SIGNUP, URL_VERIFY, URL_CREATE_ACCOUNT } = SERVER_URLS;
+const {
+  URL_CREATE_USER,
+  URL_HOME,
+  URL_USER_PROFILES,
+  URL_USER_ROLES,
+  URL_LOGIN,
+  URL_SIGNUP,
+  URL_VERIFY,
+  URL_CREATE_ACCOUNT,
+} = SERVER_URLS;
 
 function App() {
   return (

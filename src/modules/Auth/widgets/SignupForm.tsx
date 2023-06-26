@@ -147,7 +147,6 @@ const SignupForm = () => {
         submitErrorMessages.push("Captcha validation failed");
         setSubmitError(true);
       }
-
     } catch (error) {
       submitErrorMessages.push("Captcha validation failed");
       setSubmitError(true);

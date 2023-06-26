@@ -16,12 +16,10 @@ import { useNavigate } from "react-router-dom";
 
 const { URL_USER_PROFILES, URL_SIGNUP } = SERVER_URLS;
 
-
 import { useDispatch } from "react-redux";
-import {setAppContextAuth } from "../utils/auth";
+import { setAppContextAuth } from "../utils/auth";
 
-import Cookies from 'js-cookie'
-
+import Cookies from "js-cookie";
 
 const LogInWidget = () => {
   const navigate = useNavigate();
@@ -40,13 +38,15 @@ const LogInWidget = () => {
   const [openExceptionHandler, setOpenExceptionHandler] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   type ErrorMessages = typeof initErrorHandler;
-  const initErrorHandler = { title : "Ups! Algo falló" , description : "Parece que algo fue mal iniciando sesión. Revise su data."};
-  const [ errorHandlerMessages , setErrorHandlerMessages ] = useState<ErrorMessages>(initErrorHandler);
+  const initErrorHandler = {
+    title: "Ups! Algo falló",
+    description: "Parece que algo fue mal iniciando sesión. Revise su data.",
+  };
+  const [errorHandlerMessages, setErrorHandlerMessages] = useState<ErrorMessages>(initErrorHandler);
 
   const { data, error, isLoading } = useGetUsersQuery({ login: email });
 
   const dispatch = useDispatch();
-
 
   useEffect(() => {
     if (!hide) return;
@@ -124,7 +124,10 @@ const LogInWidget = () => {
     }
 
     setOpenExceptionHandler(false);
-    setErrorHandlerMessages({ title : "Ups! Algo falló" , description : "Parece que algo fue mal iniciando sesión. Revise su data."});
+    setErrorHandlerMessages({
+      title: "Ups! Algo falló",
+      description: "Parece que algo fue mal iniciando sesión. Revise su data.",
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -151,46 +154,49 @@ const LogInWidget = () => {
         setErrorMessage(responseError.data.message);
       } else {
         const opts = {
-          method: 'POST',
+          method: "POST",
           headers: {
-            "Content-Type": 'application/json'
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            "login": email,
-            "password": password
-          })
-        }
+            login: email,
+            password: password,
+          }),
+        };
         const backendUrl = import.meta.env.VITE_BACKEND_URL;
-        console.log(backendUrl)
+        console.log(backendUrl);
         fetch(backendUrl + "/auth/login", opts)
-          .then(resp => {
+          .then((resp) => {
             console.log(resp);
-            if (resp.status === 200){ 
+            if (resp.status === 200) {
               setLoginSuccess(true);
               return resp.json();
             }
-            if (resp.status === 401){
+            if (resp.status === 401) {
               setOpenExceptionHandler(true);
-              setErrorHandlerMessages({ title : "Falló el login" , description : "La contraseña o el correo son incorrectos."});
+              setErrorHandlerMessages({
+                title: "Falló el login",
+                description: "La contraseña o el correo son incorrectos.",
+              });
             }
-            if (resp.status === 400){
+            if (resp.status === 400) {
               setOpenExceptionHandler(true);
-              setErrorHandlerMessages({ title : "Falló el login" , description : "El correo no ha sido verificado."});
+              setErrorHandlerMessages({ title: "Falló el login", description: "El correo no ha sido verificado." });
             }
-            if (resp.status === 500){
+            if (resp.status === 500) {
               setOpenExceptionHandler(true);
-              setErrorHandlerMessages({ title : "Falló el login" , description : "Intenta de nuevo."});
+              setErrorHandlerMessages({ title: "Falló el login", description: "Intenta de nuevo." });
             }
           })
-          .then(data => {
+          .then((data) => {
             localStorage.setItem("auth.auth_token", data.auth_token);
             localStorage.setItem("auth.refresh_token", data.refresh_token);
-            Cookies.set('auth.auth_token', data.auth_token);
-            Cookies.set('auth.refresh_token', data.refresh_token);
-            if (data != undefined){
+            Cookies.set("auth.auth_token", data.auth_token);
+            Cookies.set("auth.refresh_token", data.refresh_token);
+            if (data != undefined) {
               setAppContextAuth(data, dispatch);
             }
-          })
+          });
       }
 
       if (error) {

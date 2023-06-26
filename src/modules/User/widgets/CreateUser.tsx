@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import DashboardLayoutBasic from "modules/Layout/widgets/containers/DashboardLayoutBasic";
 import { DashboardWrapper } from "modules/Layout/context/dashboardLayout";
-import { useGetUsersQuery, /*useCreateUserMutation*/ } from "services/dbApi";
+import { useGetUsersQuery /*useCreateUserMutation*/ } from "services/dbApi";
 import { useEffect } from "react";
 
 import SERVER_URLS from "utils/serversUrls.ts";
@@ -25,29 +25,30 @@ const CreateUser = () => {
     if (!creatingUser) return;
 
     const opts = {
-      method: 'POST',
+      method: "POST",
       headers: {
-        "Content-Type": 'application/json'
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        "login": username,
-        "password": password,
-        "name" : "Nombre",
-        "lastname" : "Apellido",
-        "user_type" : "user",
-        "role_id" : "2"
-      })
-    }
+        login: username,
+        password: password,
+        name: "Nombre",
+        lastname: "Apellido",
+        user_type: "user",
+        role_id: "2",
+      }),
+    };
 
     const url = `${import.meta.env.VITE_BACKEND_URL}/auth/register`;
-    fetch(url, opts).then(resp => {
-      console.log(resp);
-      if (resp.status === 200) return resp.json();
-    })
-    .then(data => {
-      console.log(data);
-      localStorage.setItem("auth.auth_token", data.auth_token);
-    })
+    fetch(url, opts)
+      .then((resp) => {
+        console.log(resp);
+        if (resp.status === 200) return resp.json();
+      })
+      .then((data) => {
+        console.log(data);
+        localStorage.setItem("auth.auth_token", data.auth_token);
+      });
 
     /*
     createUser({
@@ -61,7 +62,9 @@ const CreateUser = () => {
     navigate(URL_HOME);
   }, [creatingUser, username, password, navigate]);
 
-  function callback_func(object: any) { return object.login == username }
+  function callback_func(object: any) {
+    return object.login == username;
+  }
 
   const handleSubmit = (event: any) => {
     event.preventDefault();

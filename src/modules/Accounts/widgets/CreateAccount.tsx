@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import DashboardLayoutBasic from "modules/Layout/widgets/containers/DashboardLayoutBasic";
 import { DashboardWrapper } from "modules/Layout/context/dashboardLayout";
 import Title from "components/Title";
-import { AccountFormInputs } from "../types/account"; 
+import { AccountFormInputs } from "../types/account";
 
 import { Box, Stack, MenuItem, TextField, Button, Modal } from "@mui/material";
 import axios from "axios";
@@ -25,13 +25,13 @@ const CreateAccountForm = () => {
 
   // Handle form input changes
   const handleFieldChange =
-  (field: keyof AccountFormInputs) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { value } = event.target;
-    setFormInputs({
-      ...formInputs,
-      [field]: value,
-    });
-  };
+    (field: keyof AccountFormInputs) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      const { value } = event.target;
+      setFormInputs({
+        ...formInputs,
+        [field]: value,
+      });
+    };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -41,14 +41,14 @@ const CreateAccountForm = () => {
     const token = localStorage.getItem("auth.auth_token");
 
     // Request to create account
-    const type = formInputs.accountType == "Checking" ? 1 : 2
+    const type = formInputs.accountType == "Checking" ? 1 : 2;
     const object = {
       user_id: token,
       account_type_id: type,
-    }
+    };
 
     const url = `${import.meta.env.VITE_API_URL}/user_account`;
-    const response = await axios.post(url, object)
+    const response = await axios.post(url, object);
     const data = response.data;
 
     console.log(data);
@@ -63,10 +63,12 @@ const CreateAccountForm = () => {
     } else {
       setModalInfo({
         success: true,
-        message: `Se ha creado la cuenta ${type == 1 ? "corriente" : "ahorro"} exitosamente. Su número de cuenta es ${data.account_number}.`,
+        message: `Se ha creado la cuenta ${type == 1 ? "corriente" : "ahorro"} exitosamente. Su número de cuenta es ${
+          data.account_number
+        }.`,
       });
     }
-    
+
     // Open modal
     handleOpenModal();
   };
@@ -114,9 +116,7 @@ const CreateAccountForm = () => {
           }}
         >
           <h2 id="modal-modal-title">Comisión</h2>
-          <p id="modal-modal-description">
-            {modalInfo.message}
-          </p>
+          <p id="modal-modal-description">{modalInfo.message}</p>
         </Box>
       </Modal>
     </Box>
