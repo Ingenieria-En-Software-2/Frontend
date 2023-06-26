@@ -6,11 +6,11 @@ import DashboardLayoutBasic from "modules/Layout/widgets/containers/DashboardLay
 import { DashboardWrapper } from "modules/Layout/context/dashboardLayout";
 import Title from "components/Title";
 import { AccountFormInputs } from "../types/account";
+import { InfoAlert } from "../../../components/Alerts";
 
 import { Box, Stack, MenuItem, TextField, Button, Modal } from "@mui/material";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 
-const URL_TRANSACTIONS = `${import.meta.env.VITE_API_URL}/user_transactions`;
 const URL_ACCOUNTS = `${import.meta.env.VITE_API_URL}/user_account`;
 
 const AccountTable = () => {
@@ -21,14 +21,13 @@ const AccountTable = () => {
   };
 
   // Get accounts from API
-  const [checkingAccounts, setCheckingAccounts] = useState({} as string[]);
-  const [savingAccounts, setSavingAccounts] = useState({} as string[]);
+  const [checkingAccounts, setCheckingAccounts] = useState([]);
+  const [savingAccounts, setSavingAccounts] = useState([]);
   useEffect(() => {
     async function getOriginAccounts() {
       const response = await axios.get(URL_ACCOUNTS, {
         headers: {
           Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
-          Origin: `${URL_TRANSACTIONS}`,
         },
       });
       setCheckingAccounts(response.data.corriente);
@@ -40,65 +39,67 @@ const AccountTable = () => {
   return (
     <Box>
       <Title title="Cuentas" />
-      <TableContainer>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell align="center" sx={headerStyle}>
-                Tipo
-              </TableCell>
-              <TableCell align="center" sx={headerStyle}>
-                Número de cuenta
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {checkingAccounts && checkingAccounts.length > 0 ? (
-              checkingAccounts.map((account) => (
-                <TableRow key={account}>
-                  <TableCell align="center">Corriente</TableCell>
-                  <TableCell align="center">{account}</TableCell>
-                </TableRow>
-              ))
-            ) : (
+
+      {/* No accounts */}
+      {(!checkingAccounts || checkingAccounts.length === 0) && (!savingAccounts || savingAccounts.length === 0) ? (
+        <InfoAlert message="No tienes cuentas registradas" />
+      ) : (
+        <TableContainer>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead>
               <TableRow>
-                <TableCell align="center">Corriente</TableCell>
-                <TableCell align="center">No hay cuentas</TableCell>
+                <TableCell align="center" sx={headerStyle}>
+                  Tipo
+                </TableCell>
+                <TableCell align="center" sx={headerStyle}>
+                  Número de cuenta
+                </TableCell>
               </TableRow>
-            )}
-            {savingAccounts && savingAccounts.length > 0 ? (
-              savingAccounts.map((account) => (
-                <TableRow key={account}>
-                  <TableCell align="center">Ahorro</TableCell>
-                  <TableCell align="center">{account}</TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell align="center">Ahorro</TableCell>
-                <TableCell align="center">No hay cuentas</TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {checkingAccounts &&
+                checkingAccounts.length > 0 &&
+                checkingAccounts.map((account) => (
+                  <TableRow key={account}>
+                    <TableCell align="center">Corriente</TableCell>
+                    <TableCell align="center">{account}</TableCell>
+                  </TableRow>
+                ))}
+              {savingAccounts &&
+                savingAccounts.length > 0 &&
+                savingAccounts.map((account) => (
+                  <TableRow key={account}>
+                    <TableCell align="center">Ahorro</TableCell>
+                    <TableCell align="center">{account}</TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
     </Box>
   );
 };
 
 const CreateAccountForm = () => {
+  // Form state
+  const [showForm, setShowForm] = useState(false);
+  const [showButton, setShowButton] = useState(true);
+  const handleForm = () => {
+    setShowForm(!showForm);
+    setShowButton(!showButton);
+  };
+
+  const [formInputs, setFormInputs] = useState<AccountFormInputs>({
+    accountType: "",
+  });
+
   // Info Modal state
   const [open, setOpen] = useState(false);
-  const handleOpenModal = () => setOpen(true);
-  const handleCloseModal = () => setOpen(false);
+  const handleModal = () => setOpen(!open);
   const [modalInfo, setModalInfo] = useState({
     success: false,
     message: "",
-  });
-
-  // Submit form
-  const [formInputs, setFormInputs] = useState<AccountFormInputs>({
-    accountType: "",
   });
 
   // Handle form input changes
@@ -111,6 +112,7 @@ const CreateAccountForm = () => {
       });
     };
 
+  // Handle form submit
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     // Get user token from local storage
@@ -122,9 +124,9 @@ const CreateAccountForm = () => {
       user_id: token,
       account_type_id: type,
     };
-    const url = `${import.meta.env.VITE_API_URL}/user_account`;
+
     await axios
-      .post(url, object, {
+      .post(URL_ACCOUNTS, object, {
         headers: {
           Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
         },
@@ -136,7 +138,7 @@ const CreateAccountForm = () => {
           message: data.errors.join(", "),
         });
         // Open modal
-        handleOpenModal();
+        handleModal();
       })
       .then((result) => {
         if (!result) return;
@@ -146,20 +148,8 @@ const CreateAccountForm = () => {
           message: `Se ha creado la cuenta ${type == 1 ? "corriente" : "ahorro"}, con número ${data.account_number}.`,
         });
         // Open modal
-        handleOpenModal();
+        handleModal();
       });
-  };
-
-  const [showForm, setShowForm] = useState(false);
-  const [showButton, setShowButton] = useState(true);
-  const handleShowForm = () => {
-    setShowForm(true);
-    setShowButton(false);
-  };
-
-  const handleHideForm = () => {
-    setShowForm(false);
-    setShowButton(true);
   };
 
   return (
@@ -185,7 +175,7 @@ const CreateAccountForm = () => {
               </TextField>
             </Stack>
             <Stack direction="row" spacing={2} justifyContent="center">
-              <Button variant="outlined" color="secondary" onClick={handleHideForm}>
+              <Button variant="outlined" color="secondary" onClick={handleForm}>
                 Cancelar
               </Button>
               <Button variant="outlined" color="primary" type="submit">
@@ -196,13 +186,16 @@ const CreateAccountForm = () => {
         </Box>
       )}
       {showButton && (
-        <Button variant="outlined" color="primary" fullWidth onClick={handleShowForm}>
-          Crear cuenta
-        </Button>
+        // Button right side
+        <Box className="flex justify-end">
+          <Button variant="outlined" color="primary" onClick={handleForm}>
+            Crear cuenta
+          </Button>
+        </Box>
       )}
       <Modal
         open={open}
-        onClose={handleCloseModal}
+        onClose={handleModal}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -220,7 +213,7 @@ const CreateAccountForm = () => {
         >
           <h2
             id="modal-modal-title"
-            className={`p-1 text-2xl ${modalInfo.success ? "text-green-500" : "text-red-500"}`}
+            className={`py-1 text-2xl ${modalInfo.success ? "text-green-500" : "text-red-500"}`}
           >
             {modalInfo.success ? "Operación exitosa" : "Operación fallida"}
           </h2>
