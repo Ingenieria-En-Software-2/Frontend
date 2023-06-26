@@ -36,7 +36,7 @@ const CreateAccountForm = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(formInputs);
+    // console.log(formInputs);
 
     // Get user token from local storage
     const token = localStorage.getItem("auth.auth_token");
@@ -47,36 +47,33 @@ const CreateAccountForm = () => {
       user_id: token,
       account_type_id: type,
     };
-
     const url = `${import.meta.env.VITE_API_URL}/user_account`;
     const response = await axios.post(url, object, {
       headers: {
         'Authorization': `Bearer ${Cookies.get('auth.auth_token')}`
       },
-    });
-
-    const data = response.data;
-
-    console.log(data);
-
-    // If the request is successful, show a success message
-    // Otherwise, show an error message
-    if (data.errors) {
+    }).catch((error) => {
+      console.log(error.response.data.errors);
+      const data = error.response.data;
       setModalInfo({
         success: false,
         message: data.errors.join(", "),
       });
-    } else {
+      // Open modal
+      handleOpenModal();
+    }).then( (result) => {
+      console.log(result)
+      const data = result.data;
       setModalInfo({
         success: true,
-        message: `Se ha creado la cuenta ${type == 1 ? "corriente" : "ahorro"} exitosamente. Su número de cuenta es ${
+        message: `Se ha creado la cuenta ${type == 1 ? "corriente" : "ahorro"} número ${
           data.account_number
         }.`,
       });
-    }
-
-    // Open modal
-    handleOpenModal();
+      // Open modal
+      handleOpenModal();
+    } );
+    
   };
 
   return (
@@ -121,7 +118,8 @@ const CreateAccountForm = () => {
             p: 4,
           }}
         >
-          <h2 id="modal-modal-title">Comisión</h2>
+
+          <h2 id="modal-modal-title">{modalInfo.success ? 'Operacion Exitosa' : 'Operacion Fallida'}</h2>
           <p id="modal-modal-description">{modalInfo.message}</p>
         </Box>
       </Modal>
