@@ -153,51 +153,51 @@ const LogInWidget = () => {
     //   if (responseError) {
     //     setErrorMessage(responseError.data.message);
     //   } else {
-        const opts = {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            login: email,
-            password: password,
-          }),
-        };
-        const backendUrl = import.meta.env.VITE_BACKEND_URL;
-        console.log(backendUrl);
-        fetch(backendUrl + "/auth/login", opts)
-          .then((resp) => {
-            console.log(resp);
-            if (resp.status === 200) {
-              setLoginSuccess(true);
-              return resp.json();
-            }
-            if (resp.status === 401) {
-              setOpenExceptionHandler(true);
-              setErrorHandlerMessages({
-                title: "Falló el login",
-                description: "La contraseña o el correo son incorrectos.",
-              });
-            }
-            if (resp.status === 400) {
-              setOpenExceptionHandler(true);
-              setErrorHandlerMessages({ title: "Falló el login", description: "El correo no ha sido verificado." });
-            }
-            if (resp.status === 500) {
-              setOpenExceptionHandler(true);
-              setErrorHandlerMessages({ title: "Falló el login", description: "Intenta de nuevo." });
-            }
-          })
-          .then((data) => {
-            localStorage.setItem("auth.auth_token", data.auth_token);
-            localStorage.setItem("auth.refresh_token", data.refresh_token);
-            Cookies.set("auth.auth_token", data.auth_token);
-            Cookies.set("auth.refresh_token", data.refresh_token);
-            if (data != undefined) {
-              setAppContextAuth(data, dispatch);
-            }
+    const opts = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        login: email,
+        password: password,
+      }),
+    };
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    console.log(backendUrl);
+    fetch(backendUrl + "/auth/login", opts)
+      .then((resp) => {
+        console.log(resp);
+        if (resp.status === 200) {
+          setLoginSuccess(true);
+          return resp.json();
+        }
+        if (resp.status === 401) {
+          setOpenExceptionHandler(true);
+          setErrorHandlerMessages({
+            title: "Falló el login",
+            description: "La contraseña o el correo son incorrectos.",
           });
-      }
+        }
+        if (resp.status === 400) {
+          setOpenExceptionHandler(true);
+          setErrorHandlerMessages({ title: "Falló el login", description: "El correo no ha sido verificado." });
+        }
+        if (resp.status === 500) {
+          setOpenExceptionHandler(true);
+          setErrorHandlerMessages({ title: "Falló el login", description: "Intenta de nuevo." });
+        }
+      })
+      .then((data) => {
+        localStorage.setItem("auth.auth_token", data.auth_token);
+        localStorage.setItem("auth.refresh_token", data.refresh_token);
+        Cookies.set("auth.auth_token", data.auth_token);
+        Cookies.set("auth.refresh_token", data.refresh_token);
+        if (data != undefined) {
+          setAppContextAuth(data, dispatch);
+        }
+      });
+  };
 
   //     if (error) {
   //       setOpenExceptionHandler(true);
