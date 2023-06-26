@@ -160,8 +160,9 @@ const LogInWidget = () => {
             "password": password
           })
         }
-
-        fetch("http://localhost:9010/auth/login", opts)
+        const backendUrl = import.meta.env.VITE_BACKEND_URL;
+        console.log(backendUrl)
+        fetch(backendUrl + "/auth/login", opts)
           .then(resp => {
             console.log(resp);
             if (resp.status === 200){ 
