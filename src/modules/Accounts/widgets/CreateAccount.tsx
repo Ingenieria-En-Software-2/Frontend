@@ -188,7 +188,11 @@ const CreateAccountForm = () => {
       {showButton && (
         // Button right side
         <Box className="flex justify-end">
-          <Button variant="outlined" color="primary" onClick={handleForm}>
+          <Button
+            variant="contained"
+            sx={{ bgcolor: "#0e7490", color: "white", ":hover": { bgcolor: "#e0f2fe", color: "#0e7490" } }}
+            onClick={handleForm}
+          >
             Crear cuenta
           </Button>
         </Box>
