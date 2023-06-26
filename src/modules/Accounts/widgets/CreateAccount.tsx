@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 import DashboardLayoutBasic from "modules/Layout/widgets/containers/DashboardLayoutBasic";
 import { DashboardWrapper } from "modules/Layout/context/dashboardLayout";
@@ -6,7 +8,6 @@ import Title from "components/Title";
 import { AccountFormInputs } from "../types/account";
 
 import { Box, Stack, MenuItem, TextField, Button, Modal } from "@mui/material";
-import axios from "axios";
 
 const CreateAccountForm = () => {
   // Info Modal state
@@ -48,7 +49,12 @@ const CreateAccountForm = () => {
     };
 
     const url = `${import.meta.env.VITE_API_URL}/user_account`;
-    const response = await axios.post(url, object);
+    const response = await axios.post(url, object, {
+      headers: {
+        'Authorization': `Bearer ${Cookies.get('auth.auth_token')}`
+      },
+    });
+
     const data = response.data;
 
     console.log(data);
