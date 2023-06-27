@@ -222,7 +222,6 @@ const SignupForm = () => {
         role_id: 1,
         user_type: "interno",
       };
-      console.log(JSON.stringify(object));
 
       // POST request
       await axios

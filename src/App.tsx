@@ -11,6 +11,8 @@ import LoginPage from "modules/Auth/pages/LoginPage";
 import SignupPage from "modules/Auth/pages/SignupPage";
 import VerifyPage from "modules/Auth/pages/VerifyPage";
 import CreateAccount from "modules/Accounts/widgets/CreateAccount";
+import SavingsPage from "modules/Transactions/pages/SavingsPage";
+import CheckingPage from "modules/Transactions/pages/CheckingPage";
 import { Provider } from "react-redux";
 import getStore from "context/store/createStore";
 import Gate from "modules/Auth/components/Gate";
@@ -24,6 +26,8 @@ const {
   URL_SIGNUP,
   URL_VERIFY,
   URL_CREATE_ACCOUNT,
+  URL_SAVINGS_TRANSACTION, 
+  URL_CHECKING_TRANSACTION,
 } = SERVER_URLS;
 
 function App() {
@@ -40,6 +44,8 @@ function App() {
             <Route path={URL_USER_PROFILES} element={<UserProfiles />} />
             <Route path={URL_USER_ROLES} element={<UserRoles />} />
             <Route path={URL_CREATE_ACCOUNT} element={<CreateAccount />} />
+            <Route path={URL_CHECKING_TRANSACTION} element={<CheckingPage />} />
+            <Route path={URL_SAVINGS_TRANSACTION} element={<SavingsPage />} />
           </Routes>
         </Gate>
       </Provider>
