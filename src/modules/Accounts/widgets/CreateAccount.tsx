@@ -13,28 +13,12 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from
 
 const URL_ACCOUNTS = `${import.meta.env.VITE_API_URL}/user_account`;
 
-const AccountTable = () => {
+const AccountTable = ({ checkingAccounts, savingAccounts }: any) => {
   const headerStyle = {
     backgroundColor: "#4e8391",
     color: "#fff",
     fontSize: "1rem",
   };
-
-  // Get accounts from API
-  const [checkingAccounts, setCheckingAccounts] = useState([]);
-  const [savingAccounts, setSavingAccounts] = useState([]);
-  useEffect(() => {
-    async function getOriginAccounts() {
-      const response = await axios.get(URL_ACCOUNTS, {
-        headers: {
-          Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
-        },
-      });
-      setCheckingAccounts(response.data.corriente);
-      setSavingAccounts(response.data.ahorro);
-    }
-    getOriginAccounts();
-  }, [checkingAccounts, savingAccounts]);
 
   return (
     <Box>
@@ -81,7 +65,7 @@ const AccountTable = () => {
   );
 };
 
-const CreateAccountForm = () => {
+const CreateAccountForm = ({setReloadTable}: any) => {
   // Form state
   const [showForm, setShowForm] = useState(false);
   const [showButton, setShowButton] = useState(true);
@@ -148,6 +132,7 @@ const CreateAccountForm = () => {
           message: `Se ha creado la cuenta ${type == 1 ? "corriente" : "ahorro"}, con número ${data.account_number}.`,
         });
         // Open modal
+        setReloadTable(true);
         handleModal();
       });
   };
@@ -229,14 +214,31 @@ const CreateAccountForm = () => {
 };
 
 const CreateAccount = () => {
+  // Get accounts from API
+  const [reloadTable, setReloadTable] = useState(false);
+  const [checkingAccounts, setCheckingAccounts] = useState([]);
+  const [savingAccounts, setSavingAccounts] = useState([]);
+  useEffect(() => {
+    async function getOriginAccounts() {
+      const response = await axios.get(URL_ACCOUNTS, {
+        headers: {
+          Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
+        },
+      });
+      setCheckingAccounts(response.data.corriente);
+      setSavingAccounts(response.data.ahorro);
+    }
+    getOriginAccounts();
+  }, [reloadTable]);
+
   return (
     <div className="main-container">
       <DashboardWrapper>
         <DashboardLayoutBasic>
           <Box sx={{ width: "100%" }}>
-            <CreateAccountForm />
+            <CreateAccountForm setReloadTable={setReloadTable} />
             <hr className="my-4" />
-            <AccountTable />
+            <AccountTable checkingAccounts={checkingAccounts} savingAccounts={savingAccounts} />
           </Box>
         </DashboardLayoutBasic>
       </DashboardWrapper>
