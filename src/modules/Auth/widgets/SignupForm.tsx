@@ -82,7 +82,6 @@ const SignupForm = () => {
       idDocument: "",
       phone: "",
       civilStatus: "",
-      personType: "",
     },
     residenceInfo: { country: "", state: "", city: "", subregion: "", sector: "", street: "", room: "" },
     workInfo: { company: "", rif: "", phone: "", country: "", state: "", city: "", subregion: "" },
@@ -140,10 +139,11 @@ const SignupForm = () => {
 
     // Captcha validation
     const token = captchaRef.current?.getValue();
+
     try {
-      const response = await axios.post(`http://localhost:4000/verify-token`, {
-        secret: secretVar,
-        response: token,
+      let response = await axios.post(`http://localhost:4000/verify-token`,{
+          secret: secretVar,
+          response: token
       });
       console.log(response);
 
@@ -221,7 +221,7 @@ const SignupForm = () => {
         role_id: 1,
         user_type: "interno",
       };
-      console.log(object);
+      console.log(JSON.stringify(object));
 
       // POST request
       await axios
