@@ -232,6 +232,7 @@ const CreateAccount = () => {
       });
       setCheckingAccounts(response.data.corriente);
       setSavingAccounts(response.data.ahorro);
+      setReloadTable(false);
     }
     getOriginAccounts();
   }, [reloadTable]);
