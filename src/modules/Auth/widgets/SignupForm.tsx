@@ -11,6 +11,9 @@ import Title from "components/Title";
 import { SignupFormInputs } from "../types/signup";
 import { useAddressInputs } from "../hooks/useAddressInputs";
 import dayjs, { Dayjs } from "dayjs";
+import SERVER_URLS from "utils/serversUrls";
+
+const { URL_LOGIN } = SERVER_URLS;
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -746,7 +749,7 @@ const SignupForm = () => {
       {/* Blue font */}
       <small className="mt-3 text-sm text-gray-600">
         ¿Ya tienes una cuenta?
-        <Link href="/login" underline="hover" sx={{ ml: 3 }}>
+        <Link href={URL_LOGIN} underline="hover" sx={{ ml: 3 }}>
           Inicia sesión
         </Link>
       </small>
