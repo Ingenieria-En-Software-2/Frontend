@@ -8,6 +8,14 @@ import TransactionTable from "../widgets/TransactionTable";
 import { Column } from "../widgets/TransactionTable";
 import InfoUser from "../widgets/InfoUser";
 
+import { useGetTransactionsByUserQuery } from "services/dbApi";
+import { useEffect, useState } from "react";
+
+interface IRows {
+  id: string;
+  [key: string]: string | number | JSX.Element;
+}
+
 const columns: Array<Column> = [
   { id: "transaction_id", label: "Transaction ID", align: "center" },
   { id: "transaction_date", label: "Fecha", align: "center" },
@@ -37,9 +45,39 @@ const rows = [
 
 const SavingsPage = () => {
   // Get transactions from API
+  const { data, error: errorTransactions } = useGetTransactionsByUserQuery();
+  const [rows, setRows] = useState<IRows[]>([]);
+  const [error, setError] = useState("");
 
-  const error = rows.length === 0;
+  // const error = rows.length === 0;
   const errorMessage = error ? "No se encontraron transacciones de cuenta de ahorros" : "";
+
+  useEffect(() => {
+    if (data) {
+      console.log("data", data);
+      setRows(
+        data.items.map((item, index) => ({
+          id: index.toString(),
+          transaction_id: item.id,
+          transaction_date: item.transaction_date,
+          transaction_type: item.transaction_type,
+          transaction_description: item.description,
+          amount: item.amount,
+        }))
+      );
+      if (data.items.length === 0) {
+        setError("No se encontraron transacciones de cuenta corriente");
+      }
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (errorTransactions) {
+      console.log("errorTransactions", errorTransactions);
+      setError("Ocurrió un error al cargar las transacciones");
+    }
+  }, [errorTransactions]);
+
   return (
     <div className="main-container">
       <DashboardWrapper>
@@ -47,7 +85,7 @@ const SavingsPage = () => {
           <Box sx={{ width: "100%" }}>
             <InfoUser user={{ name: "User", document: "C-123456789" }} />
             <Title title="Cuenta de Ahorros" />
-            <TransactionTable title="Detalle de transacciones" columns={columns} rows={rows} error={errorMessage} />
+            <TransactionTable title="Detalle de transacciones" columns={columns} rows={rows} error={error} />
           </Box>
         </DashboardLayoutBasic>
       </DashboardWrapper>

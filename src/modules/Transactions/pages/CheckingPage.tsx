@@ -85,7 +85,7 @@ const CheckingPage = () => {
           <Box sx={{ width: "100%" }}>
             <InfoUser user={{ name: "User", document: "C-123456789" }} />
             <Title title="Cuenta Corriente" />
-            <TransactionTable title="Detalle de transacciones" columns={columns} rows={rows} error={errorMessage} />
+            <TransactionTable title="Detalle de transacciones" columns={columns} rows={rows} error={error} />
           </Box>
         </DashboardLayoutBasic>
       </DashboardWrapper>
