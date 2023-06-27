@@ -165,7 +165,7 @@ const LogInWidget = () => {
     };
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     console.log(backendUrl);
-    fetch(backendUrl + "/auth/auth/login", opts)
+    fetch(backendUrl + "/auth/login", opts)
       .then((resp) => {
         console.log(resp);
         if (resp.status === 200) {
