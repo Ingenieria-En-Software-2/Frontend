@@ -13,7 +13,12 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from
 
 const URL_ACCOUNTS = `${import.meta.env.VITE_API_URL}/user_account`;
 
-const AccountTable = ({ checkingAccounts, savingAccounts }: any) => {
+interface AccountTableProps {
+  checkingAccounts: string[];
+  savingAccounts: string[];
+}
+
+const AccountTable = ({ checkingAccounts, savingAccounts }: AccountTableProps) => {
   const headerStyle = {
     backgroundColor: "#4e8391",
     color: "#fff",
