@@ -13,9 +13,8 @@ import { useAddressInputs } from "../hooks/useAddressInputs";
 import dayjs, { Dayjs } from "dayjs";
 import SERVER_URLS from "utils/serversUrls";
 
-const { URL_LOGIN } = SERVER_URLS;
-
 const URL_ACCOUNT_HOLDER = `${import.meta.env.VITE_API_URL}/account_holder`;
+const { URL_LOGIN } = SERVER_URLS;
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -141,8 +140,9 @@ const SignupForm = () => {
 
     // Captcha validation
     const token = captchaRef.current?.getValue();
+
     try {
-      const response = await axios.post(`http://localhost:4000/verify-token`, {
+      const response = await axios.post(`http://localhost:4000/verify-token`,{
         secret: secretVar,
         response: token,
       });
@@ -222,7 +222,6 @@ const SignupForm = () => {
         role_id: 1,
         user_type: "interno",
       };
-      console.log(object);
 
       // POST request
       await axios
