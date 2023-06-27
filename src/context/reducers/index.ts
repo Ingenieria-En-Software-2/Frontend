@@ -1,5 +1,5 @@
 import { combineReducers } from "redux";
-import { Action, /*AuthInterface, UserInterface*/ } from "types/appContext.type";
+import { Action /*AuthInterface, UserInterface*/ } from "types/appContext.type";
 import initialState from "./initialState";
 import { dbApi } from "services/dbApi";
 

@@ -230,7 +230,7 @@ function EditUser({ user, roles, users }: EditProps) {
   const handleEdit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Verify if username is unique 
+    // Verify if username is unique
     if (users.some((u) => u.login === inputs.username && user.login !== inputs.username)) {
       setFormErrorMessages([<InfoAlert message="El nombre de usuario ya existe" />]);
       return;

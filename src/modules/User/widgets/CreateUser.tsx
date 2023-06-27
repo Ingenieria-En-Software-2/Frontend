@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import DashboardLayoutBasic from "modules/Layout/widgets/containers/DashboardLayoutBasic";
 import { DashboardWrapper } from "modules/Layout/context/dashboardLayout";
-import { useGetUsersQuery, /*useCreateUserMutation*/ } from "services/dbApi";
+import { useGetUsersQuery /*useCreateUserMutation*/ } from "services/dbApi";
 import { useEffect } from "react";
 
 import SERVER_URLS from "utils/serversUrls.ts";
@@ -25,31 +25,30 @@ const CreateUser = () => {
     if (!creatingUser) return;
 
     const opts = {
-          method: 'POST',
-          headers: {
-            "Content-Type": 'application/json'
-          },
-          body: JSON.stringify({
-            "login": username,
-            "password": password,
-            "name" : "Nombre",
-            "lastname" : "Apellido",
-            "user_type" : "user",
-            "role_id" : "2"
-          })
-        }
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        login: username,
+        password: password,
+        name: "Nombre",
+        lastname: "Apellido",
+        user_type: "user",
+        role_id: "2",
+      }),
+    };
 
-    fetch("http://localhost:9010/auth/register", opts)
-          .then(resp => {
-            console.log(resp);
-            if (resp.status === 200){ 
-              return resp.json();
-            }
-          })
-          .then(data => {
-            console.log(data);
-            //localStorage.setItem("token", data.auth_token);
-          })
+    const url = `${import.meta.env.VITE_BACKEND_URL}/auth/register`;
+    fetch(url, opts)
+      .then((resp) => {
+        console.log(resp);
+        if (resp.status === 200) return resp.json();
+      })
+      .then((data) => {
+        console.log(data);
+        localStorage.setItem("auth.auth_token", data.auth_token);
+      });
 
     /*
     createUser({
@@ -61,13 +60,10 @@ const CreateUser = () => {
       role_id: 2,
     });*/
     navigate(URL_HOME);
-  }, [creatingUser]);
+  }, [creatingUser, username, password, navigate]);
 
   function callback_func(object: any) {
-    if (object.login == username) {
-      return true;
-    }
-    return false;
+    return object.login == username;
   }
 
   const handleSubmit = (event: any) => {
@@ -77,8 +73,8 @@ const CreateUser = () => {
     setUsernameExistsError(false);
     setPasswordError(false);
 
-    var pass_e = false;
-    var user_e = false;
+    let pass_e = false;
+    const user_e = false;
 
     /*if (
       username == "" ||
@@ -114,7 +110,7 @@ const CreateUser = () => {
     }
     if (!user_e && pass_e == false) {
       //If there's not an error anywhere
-      var searched_obj = undefined;
+      let searched_obj = undefined;
       if (data2 != undefined) {
         searched_obj = data2.items.find(callback_func);
       }
