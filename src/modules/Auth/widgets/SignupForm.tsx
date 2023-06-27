@@ -82,6 +82,7 @@ const SignupForm = () => {
       idDocument: "",
       phone: "",
       civilStatus: "",
+      personType: "",
     },
     residenceInfo: { country: "", state: "", city: "", subregion: "", sector: "", street: "", room: "" },
     workInfo: { company: "", rif: "", phone: "", country: "", state: "", city: "", subregion: "" },
@@ -141,9 +142,9 @@ const SignupForm = () => {
     const token = captchaRef.current?.getValue();
 
     try {
-      let response = await axios.post(`http://localhost:4000/verify-token`,{
-          secret: secretVar,
-          response: token
+      const response = await axios.post(`http://localhost:4000/verify-token`,{
+        secret: secretVar,
+        response: token,
       });
       console.log(response);
 

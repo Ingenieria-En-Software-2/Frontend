@@ -15,9 +15,9 @@ const Captcha = () => {
     const token = captchaRef.current?.getValue();
 
     try {
-      let response = await axios.post(`http://localhost:4000/verify-token`,{
-          secret: secretVar,
-          response: token
+      const response = await axios.post(`http://localhost:4000/verify-token`,{
+        secret: secretVar,
+        response: token,
       });
       console.log(response);
       return response.data;
