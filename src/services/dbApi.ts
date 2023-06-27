@@ -10,6 +10,7 @@ import {
   Transaction,
   TransactionQueryParams,
 } from "./types";
+import Cookies from "js-cookie";
 
 export const dbApi = createApi({
   reducerPath: "dbApi",
@@ -95,6 +96,9 @@ export const dbApi = createApi({
     getTransactionsByUser: builder.query<PaginatedApiObject & { items: Transaction[] }, void>({
       query: () => ({
         url: "user_transactions",
+        headers: {
+          Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
+        },
       }),
       providesTags: ["Transaction"],
     }),
