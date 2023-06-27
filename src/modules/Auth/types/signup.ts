@@ -10,6 +10,7 @@ export type SignupFormInputs = {
     idDocument: string;
     phone: string;
     civilStatus: string;
+    personType: string;
   };
   residenceInfo: {
     country: string;

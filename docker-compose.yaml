@@ -11,6 +11,9 @@ services:
         ipv4_address: 192.168.41.3
     ports:
       - "5173:5173"
+      - "4000:4000"
+    volumes:
+      - ./src:/app/src
 
 networks:
   project-network:

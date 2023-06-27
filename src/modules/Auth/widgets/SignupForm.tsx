@@ -11,6 +11,10 @@ import Title from "components/Title";
 import { SignupFormInputs } from "../types/signup";
 import { useAddressInputs } from "../hooks/useAddressInputs";
 import dayjs, { Dayjs } from "dayjs";
+import SERVER_URLS from "utils/serversUrls";
+
+const URL_ACCOUNT_HOLDER = `${import.meta.env.VITE_API_URL}/account_holder`;
+const { URL_LOGIN } = SERVER_URLS;
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -78,6 +82,7 @@ const SignupForm = () => {
       idDocument: "",
       phone: "",
       civilStatus: "",
+      personType: "",
     },
     residenceInfo: { country: "", state: "", city: "", subregion: "", sector: "", street: "", room: "" },
     workInfo: { company: "", rif: "", phone: "", country: "", state: "", city: "", subregion: "" },
@@ -135,8 +140,9 @@ const SignupForm = () => {
 
     // Captcha validation
     const token = captchaRef.current?.getValue();
+
     try {
-      const response = await axios.post(`http://localhost:4000/verify-token`, {
+      const response = await axios.post(`http://localhost:4000/verify-token`,{
         secret: secretVar,
         response: token,
       });
@@ -191,6 +197,7 @@ const SignupForm = () => {
         id_number: formInputs.generalInfo.idDocument,
         gender: formInputs.generalInfo.gender,
         civil_status: formInputs.generalInfo.civilStatus,
+        person_type: formInputs.generalInfo.personType,
         birthdate: birthdateFormatted,
         phone: formInputs.generalInfo.phone,
         nationality: nationality.name,
@@ -215,25 +222,22 @@ const SignupForm = () => {
         role_id: 1,
         user_type: "interno",
       };
-      console.log(object);
 
-      // TO-DO: Modify this jeje
-      const url = `${import.meta.env.VITE_API_URL}/account_holder`;
-      console.log(url);
-      const response = await axios.post(url, object);
-      const data = response.data;
-
-      // Si se registra exitosamente retorna {"id": <id>},
-      // Si algun campo no cumple el patron especificado {"errors": { ... }}
-
-      if (data.id) {
-        setSubmitSuccess(true);
-        setSubmitError(false);
-        setSubmitErrorMessages([]);
-      } else {
-        setSubmitError(true);
-        setSubmitErrorMessages(Object.values(data.errors));
-      }
+      // POST request
+      await axios
+        .post(URL_ACCOUNT_HOLDER, object)
+        .catch((error) => {
+          console.log(error.response);
+          setSubmitError(true);
+          setSubmitErrorMessages(Object.values(error.response.data.errors));
+        })
+        .then((response) => {
+          if (response) {
+            setSubmitSuccess(true);
+            setSubmitError(false);
+            setSubmitErrorMessages([]);
+          }
+        });
     }
   };
 
@@ -330,22 +334,40 @@ const SignupForm = () => {
             />
           </Stack>
 
-          {/* Birthdate */}
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              label="Fecha de nacimiento"
-              slotProps={{
-                textField: {
-                  helperText: "MM/DD/AAAA",
-                  required: true,
-                },
-              }}
-              minDate={dayjs().subtract(100, "year")}
-              maxDate={dayjs().subtract(18, "year")}
-              onChange={(date: Dayjs | null) => handleDateOfBirthChange(date)}
-              sx={{ width: "100%", mb: 3 }}
-            />
-          </LocalizationProvider>
+          <Stack spacing={2} direction="row" sx={{ mb: 4 }}>
+            {/* Type person */}
+            <TextField
+              name="personType"
+              select
+              variant="outlined"
+              color="primary"
+              label="Tipo de persona"
+              fullWidth
+              required
+              onChange={(event) => handleFieldChange("generalInfo")(event)}
+              value={formInputs.generalInfo.personType}
+            >
+              <MenuItem value="natural">Natural</MenuItem>
+              <MenuItem value="legal">Jurídico</MenuItem>
+            </TextField>
+
+            {/* Birthdate */}
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Fecha de nacimiento"
+                slotProps={{
+                  textField: {
+                    helperText: "MM/DD/AAAA",
+                    required: true,
+                  },
+                }}
+                minDate={dayjs().subtract(100, "year")}
+                maxDate={dayjs().subtract(18, "year")}
+                onChange={(date: Dayjs | null) => handleDateOfBirthChange(date)}
+                sx={{ width: "100%", mb: 3 }}
+              />
+            </LocalizationProvider>
+          </Stack>
 
           <Stack spacing={2} direction="row" sx={{ mb: 4 }}>
             {/* Civil status */}
@@ -746,7 +768,7 @@ const SignupForm = () => {
       {/* Blue font */}
       <small className="mt-3 text-sm text-gray-600">
         ¿Ya tienes una cuenta?
-        <Link href="/login" underline="hover" sx={{ ml: 3 }}>
+        <Link href={URL_LOGIN} underline="hover" sx={{ ml: 3 }}>
           Inicia sesión
         </Link>
       </small>

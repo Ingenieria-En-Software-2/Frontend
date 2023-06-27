@@ -163,9 +163,8 @@ const LogInWidget = () => {
         password: password,
       }),
     };
-    const backendUrl = import.meta.env.VITE_BACKEND_URL;
-    console.log(backendUrl);
-    fetch(backendUrl + "/auth/login", opts)
+
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/login`, opts)
       .then((resp) => {
         console.log(resp);
         if (resp.status === 200) {
@@ -277,7 +276,7 @@ const LogInWidget = () => {
                 <div className={"w-full flex flex-row items-center justify-center mt-[1.5em]"}>
                   <p className={"text-sm text-gray-600"}>¿No tienes cuenta?</p>
                   <Button href={URL_SIGNUP} className={"ml-[0.5em] text-sm text-[#0e7490]"}>
-                    <a className={"ml-[0.5em] text-sm text-[#0e7490]"}>Regístrate</a>
+                    Regístrate
                   </Button>
                 </div>
               </form>
