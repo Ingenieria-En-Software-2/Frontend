@@ -140,8 +140,9 @@ const SignupForm = () => {
 
     // Captcha validation
     const token = captchaRef.current?.getValue();
+
     try {
-      const response = await axios.post(`http://localhost:4000/verify-token`, {
+      const response = await axios.post(`http://localhost:4000/verify-token`,{
         secret: secretVar,
         response: token,
       });
@@ -221,7 +222,6 @@ const SignupForm = () => {
         role_id: 1,
         user_type: "interno",
       };
-      console.log(object);
 
       // POST request
       await axios

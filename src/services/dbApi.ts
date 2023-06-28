@@ -7,12 +7,15 @@ import {
   UpdateRoleParams,
   UpdateUserParams,
   User,
+  Transaction,
+  TransactionQueryParams,
 } from "./types";
+import Cookies from "js-cookie";
 
 export const dbApi = createApi({
   reducerPath: "dbApi",
   baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_API_URL }),
-  tagTypes: ["User", "Role"],
+  tagTypes: ["User", "Role", "Transaction"],
   endpoints: (builder) => ({
     // User Api
     // Get users by query params
@@ -87,6 +90,18 @@ export const dbApi = createApi({
       }),
       invalidatesTags: ["Role"],
     }),
+
+    // Transaction Api
+    // Get transactions by query params
+    getTransactionsByUser: builder.query<PaginatedApiObject & { items: Transaction[] }, void>({
+      query: () => ({
+        url: "user_transactions",
+        headers: {
+          Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
+        },
+      }),
+      providesTags: ["Transaction"],
+    }),
   }),
 });
 
@@ -101,4 +116,5 @@ export const {
   useCreateRoleMutation,
   useUpdateRoleMutation,
   useDeleteRoleMutation,
+  useGetTransactionsByUserQuery,
 } = dbApi;

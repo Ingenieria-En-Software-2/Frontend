@@ -21,6 +21,18 @@ export type User = {
   role_id: number;
 };
 
+export type Transaction = {
+  id: number;
+  origin: number;
+  destination: number;
+  amount: number;
+  transaction_type: string;
+  transaction_date: string;
+  currency: string;
+  status: string;
+  description: string;
+};
+
 export type UserApiObject = {
   item_count: number;
   items: User[];
@@ -45,6 +57,7 @@ export type UserQueryParams =
   | undefined;
 
 export type RoleQueryParams = (Omit<QueryParams, "sort_by"> & { sort_by?: keyof Role }) | undefined;
+export type TransactionQueryParams = (Omit<QueryParams, "sort_by"> & { sort_by?: keyof Transaction }) | undefined;
 
 export type UpdateRoleParams = Partial<Omit<Role, "id">> & Pick<Role, "id">;
 export type UpdateUserParams = Partial<Omit<User, "id">> & Pick<User, "id">;

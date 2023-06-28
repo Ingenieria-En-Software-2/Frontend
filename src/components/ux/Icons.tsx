@@ -18,6 +18,7 @@ import {
   faSpinner,
   faCheckCircle,
   faTimesCircle,
+  faCreditCard,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -101,3 +102,8 @@ export function CheckIcon({ className }: ComponentProps) {
 export function ErrorIcon({ className }: ComponentProps) {
   return <FontAwesomeIcon className={className} icon={faTimesCircle} />;
 }
+
+export function CardIcon({ className }: ComponentProps) {
+  return <FontAwesomeIcon className={className} icon={faCreditCard} />;
+}
+

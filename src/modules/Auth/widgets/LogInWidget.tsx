@@ -102,11 +102,11 @@ const LogInWidget = () => {
       formErrors_ = { ...formErrors_, [error.field]: [...(formErrors_[error.field] ?? []), error] };
     };
 
-    const emailValidation = validate.email(email);
-    if (emailValidation.hasErrors) emailValidation.errors?.forEach((error) => addError(error));
+    // const emailValidation = validate.email(email);
+    // if (emailValidation.hasErrors) emailValidation.errors?.forEach((error) => addError(error));
 
-    const passwordValidation = validate.password(password);
-    if (passwordValidation.hasErrors) passwordValidation.errors?.forEach((error) => addError(error));
+    // const passwordValidation = validate.password(password);
+    // if (passwordValidation.hasErrors) passwordValidation.errors?.forEach((error) => addError(error));
 
     setFormErrors(formErrors_);
     if (Object.keys(formErrors_).length == 0) {
