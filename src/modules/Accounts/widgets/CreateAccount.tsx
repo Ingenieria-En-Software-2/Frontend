@@ -70,7 +70,7 @@ const AccountTable = ({ checkingAccounts, savingAccounts }: AccountTableProps) =
   );
 };
 
-const CreateAccountForm = ({setReloadTable}: any) => {
+const CreateAccountForm = ({ setReloadTable }: any) => {
   // Form state
   const [showForm, setShowForm] = useState(false);
   const [showButton, setShowButton] = useState(true);
