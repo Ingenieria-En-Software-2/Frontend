@@ -66,7 +66,7 @@ const CheckingPage = () => {
           Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
         },
       });
-      
+
       if (response.data) {
         const trans = response.data.transactions;
         setRows(trans);

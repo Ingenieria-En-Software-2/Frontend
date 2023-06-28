@@ -2,7 +2,15 @@ import { HomeIcon, UsersIcon, RolesIcon, AddIcon, CardIcon } from "components/ux
 import MenuItemInterface from "../../types/menuItem.type";
 import SERVER_URLS from "utils/serversUrls";
 
-const { URL_HOME, URL_USER_PROFILES, URL_USER_ROLES, URL_CREATE_ACCOUNT, URL_NEW_TRANSACTIONS, URL_SAVINGS_TRANSACTION, URL_CHECKING_TRANSACTION } = SERVER_URLS;
+const {
+  URL_HOME,
+  URL_USER_PROFILES,
+  URL_USER_ROLES,
+  URL_CREATE_ACCOUNT,
+  URL_NEW_TRANSACTIONS,
+  URL_SAVINGS_TRANSACTION,
+  URL_CHECKING_TRANSACTION,
+} = SERVER_URLS;
 
 export const menuData: Array<MenuItemInterface> = [
   {

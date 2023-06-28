@@ -142,7 +142,7 @@ const SignupForm = () => {
     const token = captchaRef.current?.getValue();
 
     try {
-      const response = await axios.post(`http://localhost:4000/verify-token`,{
+      const response = await axios.post(`http://localhost:4000/verify-token`, {
         secret: secretVar,
         response: token,
       });

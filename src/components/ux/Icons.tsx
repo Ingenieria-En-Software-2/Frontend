@@ -106,4 +106,3 @@ export function ErrorIcon({ className }: ComponentProps) {
 export function CardIcon({ className }: ComponentProps) {
   return <FontAwesomeIcon className={className} icon={faCreditCard} />;
 }
-

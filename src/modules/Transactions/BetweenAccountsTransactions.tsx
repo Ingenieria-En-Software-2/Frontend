@@ -10,171 +10,150 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { Console } from "console";
 
-const URL_TRANSACTIONS = `${import.meta.env.VITE_API_URL}/user_transactions`
-const URL_ACCOUNTS = `${import.meta.env.VITE_API_URL}/user_account`
+const URL_TRANSACTIONS = `${import.meta.env.VITE_API_URL}/user_transactions`;
+const URL_ACCOUNTS = `${import.meta.env.VITE_API_URL}/user_account`;
 
 type BetweenAccountsFields = {
-  origin : string;
-  destination : string;
-  amount : string;
-  transaction_type : string;  
-  description : string;
-  currency : string;
-  transaction_status_id : string; 
-}
+  origin: string;
+  destination: string;
+  amount: string;
+  transaction_type: string;
+  description: string;
+  currency: string;
+  transaction_status_id: string;
+};
 
 /* TODO:
 Hacer las verificaciones de los campos y mostrar los mensajes de error.
 Enviar los datos al back e informar sobre las respuestas al usuario 
 */
 
-
-
-
 const BetweenAccountsTransactions = () => {
-  const [originAccounts, setOriginAccounts] = useState({})
-  const [formInputs, setFormInputs] = useState<BetweenAccountsFields>(
-    {      
-      origin: "", // TODO: Se hace un query para ver las cuentas del usuario logeado y elegir una de ellas
-      destination: "",
-      amount: "",
-      transaction_type: "b_a", 
-      description: "",
-      currency: "", // TODO: Se hace un query para ver las monedas disponibles
-      transaction_status_id: "2",   
-    }    
-  );
+  const [originAccounts, setOriginAccounts] = useState({});
+  const [formInputs, setFormInputs] = useState<BetweenAccountsFields>({
+    origin: "", // TODO: Se hace un query para ver las cuentas del usuario logeado y elegir una de ellas
+    destination: "",
+    amount: "",
+    transaction_type: "b_a",
+    description: "",
+    currency: "", // TODO: Se hace un query para ver las monedas disponibles
+    transaction_status_id: "2",
+  });
   useEffect(() => {
     async function getOriginAccounts() {
-      const response = await axios.get(
-        URL_ACCOUNTS, {
-          headers: {
-            'Authorization': `Bearer ${Cookies.get('auth.auth_token')}`,
-            'Origin': `${URL_TRANSACTIONS}` }
-          }
-        );
-      setOriginAccounts(response.data)
-    }
-    getOriginAccounts()
-  }, [])
-
-  const handleFieldChange =
-  (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-   const { name, value } = event.target;
-   setFormInputs({...formInputs, [name]: value,});
-  };
-  
-  
-  const  handleSubmit = async (e:any) => {
-    e.preventDefault()
-    console.log(formInputs)
-    const response = await axios.post(
-      URL_TRANSACTIONS, formInputs, {
+      const response = await axios.get(URL_ACCOUNTS, {
         headers: {
-          'Authorization': `Bearer ${Cookies.get('auth.auth_token')}`          
-        }
-        }
-      );
-    // TODO: Mostrar que la transacción se realizó o mostrar mensajes de error en caso de que los haya.
-  }
+          Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
+          Origin: `${URL_TRANSACTIONS}`,
+        },
+      });
+      setOriginAccounts(response.data);
+    }
+    getOriginAccounts();
+  }, []);
 
-  console.log(originAccounts)
-  
+  const handleFieldChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = event.target;
+    setFormInputs({ ...formInputs, [name]: value });
+  };
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    console.log(formInputs);
+    const response = await axios.post(URL_TRANSACTIONS, formInputs, {
+      headers: {
+        Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
+      },
+    });
+    // TODO: Mostrar que la transacción se realizó o mostrar mensajes de error en caso de que los haya.
+  };
+
+  console.log(originAccounts);
 
   return (
     <div className="main-container">
-    <Box sx={{ width: "80%" }}>
-      <form onSubmit={ handleSubmit}>
-        
-        {/*Cuenta de destino */}
-        
-        <TextField
-              name="origin"
-              select
-              variant="outlined"
-              color="primary"
-              label="Cuenta de origen"
-              fullWidth
-              required
-              sx={{mb : 4 }}
-              onChange={(event) => handleFieldChange(event)}
-              value={formInputs.origin}
-            >
-              {originAccounts && originAccounts.corriente && originAccounts.corriente.map((account) => (
-                 <MenuItem value={account}>
-                  {`Corriente ${account}`}
-                 </MenuItem>
-              ))}
-              {originAccounts && originAccounts.ahorro && originAccounts.ahorro.map((account) => (
-                 <MenuItem value={account}>
-                  {`Ahorro ${account}`}
-                 </MenuItem>
-              ))}
-            </TextField>
+      <Box sx={{ width: "80%" }}>
+        <form onSubmit={handleSubmit}>
+          {/*Cuenta de destino */}
 
           <TextField
-                  name="destination"
-                  type="text"
-                  variant="outlined"
-                  color="primary"
-                  label="Cuenta de destino"
-                  fullWidth
-                  required
-                  sx={{ mb: 4 }}
-                  onChange={(event) => handleFieldChange(event)}
-                  value={formInputs.destination}
-                /> 
+            name="origin"
+            select
+            variant="outlined"
+            color="primary"
+            label="Cuenta de origen"
+            fullWidth
+            required
+            sx={{ mb: 4 }}
+            onChange={(event) => handleFieldChange(event)}
+            value={formInputs.origin}
+          >
+            {originAccounts &&
+              originAccounts.corriente &&
+              originAccounts.corriente.map((account) => <MenuItem value={account}>{`Corriente ${account}`}</MenuItem>)}
+            {originAccounts &&
+              originAccounts.ahorro &&
+              originAccounts.ahorro.map((account) => <MenuItem value={account}>{`Ahorro ${account}`}</MenuItem>)}
+          </TextField>
 
           <TextField
-                  name="amount"
-                  type="number"
-                  variant="outlined"
-                  color="primary"
-                  label="Monto"
-                  fullWidth
-                  required
-                  sx={{ mb: 4 }}
-                  onChange={(event) => handleFieldChange(event)}
-                  value={formInputs.amount}
-                /> 
+            name="destination"
+            type="text"
+            variant="outlined"
+            color="primary"
+            label="Cuenta de destino"
+            fullWidth
+            required
+            sx={{ mb: 4 }}
+            onChange={(event) => handleFieldChange(event)}
+            value={formInputs.destination}
+          />
 
           <TextField
-                  name="description"
-                  type="text"
-                  variant="outlined"
-                  color="primary"
-                  label="Concepto"
-                  fullWidth
-                  required
-                  sx={{ mb: 4 }}
-                  onChange={(event) => handleFieldChange(event)}
-                  value={formInputs.description}
-                /> 
+            name="amount"
+            type="number"
+            variant="outlined"
+            color="primary"
+            label="Monto"
+            fullWidth
+            required
+            sx={{ mb: 4 }}
+            onChange={(event) => handleFieldChange(event)}
+            value={formInputs.amount}
+          />
 
           <TextField
-                  name="currency"
-                  type="text"
-                  variant="outlined"
-                  color="primary"
-                  label="Moneda"
-                  fullWidth
-                  required
-                  sx={{ mb: 4 }}
-                  onChange={(event) => handleFieldChange(event)}
-                  value={formInputs.currency}
-                />
-          <Button 
-                variant="outlined" 
-                color="primary" 
-                type="submit"
-                fullWidth>
+            name="description"
+            type="text"
+            variant="outlined"
+            color="primary"
+            label="Concepto"
+            fullWidth
+            required
+            sx={{ mb: 4 }}
+            onChange={(event) => handleFieldChange(event)}
+            value={formInputs.description}
+          />
+
+          <TextField
+            name="currency"
+            type="text"
+            variant="outlined"
+            color="primary"
+            label="Moneda"
+            fullWidth
+            required
+            sx={{ mb: 4 }}
+            onChange={(event) => handleFieldChange(event)}
+            value={formInputs.currency}
+          />
+          <Button variant="outlined" color="primary" type="submit" fullWidth>
             Enviar
           </Button>
-          </form>
+        </form>
       </Box>
     </div>
-  )
-}
-
+  );
+};
 
 export default BetweenAccountsTransactions;

@@ -28,7 +28,7 @@ const {
   URL_VERIFY,
   URL_CREATE_ACCOUNT,
   URL_NEW_TRANSACTIONS,
-  URL_SAVINGS_TRANSACTION, 
+  URL_SAVINGS_TRANSACTION,
   URL_CHECKING_TRANSACTION,
 } = SERVER_URLS;
 
@@ -45,7 +45,7 @@ function App() {
             <Route path={URL_CREATE_USER} element={<CreateUser />} />
             <Route path={URL_USER_PROFILES} element={<UserProfiles />} />
             <Route path={URL_USER_ROLES} element={<UserRoles />} />
-            <Route path={URL_NEW_TRANSACTIONS} element={<NewTransaction/>}/>
+            <Route path={URL_NEW_TRANSACTIONS} element={<NewTransaction />} />
             <Route path={URL_CREATE_ACCOUNT} element={<CreateAccount />} />
             <Route path={URL_CHECKING_TRANSACTION} element={<CheckingPage />} />
             <Route path={URL_SAVINGS_TRANSACTION} element={<SavingsPage />} />

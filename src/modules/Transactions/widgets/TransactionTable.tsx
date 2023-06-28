@@ -50,7 +50,7 @@ export default function DataTable({ title = "", columns, rows, error }: Props): 
     setPage(newPage);
   };
 
-  console.log(rows)
+  console.log(rows);
 
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setRowsPerPage(parseInt(event.target.value, 15));
