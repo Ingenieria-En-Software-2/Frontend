@@ -7,6 +7,7 @@ import CreateUser from "modules/User/widgets/CreateUser.tsx";
 import SERVER_URLS from "utils/serversUrls.ts";
 import UserProfiles from "modules/User/widgets/UserProfiles.tsx";
 import UserRoles from "modules/User/widgets/UserRoles";
+import NewTransaction from "modules/Transactions/NewTransaction";
 import LoginPage from "modules/Auth/pages/LoginPage";
 import SignupPage from "modules/Auth/pages/SignupPage";
 import VerifyPage from "modules/Auth/pages/VerifyPage";
@@ -26,6 +27,7 @@ const {
   URL_SIGNUP,
   URL_VERIFY,
   URL_CREATE_ACCOUNT,
+  URL_NEW_TRANSACTIONS,
   URL_SAVINGS_TRANSACTION, 
   URL_CHECKING_TRANSACTION,
 } = SERVER_URLS;
@@ -43,6 +45,7 @@ function App() {
             <Route path={URL_CREATE_USER} element={<CreateUser />} />
             <Route path={URL_USER_PROFILES} element={<UserProfiles />} />
             <Route path={URL_USER_ROLES} element={<UserRoles />} />
+            <Route path={URL_NEW_TRANSACTIONS} element={<NewTransaction/>}/>
             <Route path={URL_CREATE_ACCOUNT} element={<CreateAccount />} />
             <Route path={URL_CHECKING_TRANSACTION} element={<CheckingPage />} />
             <Route path={URL_SAVINGS_TRANSACTION} element={<SavingsPage />} />
