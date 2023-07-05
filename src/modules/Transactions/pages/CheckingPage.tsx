@@ -18,6 +18,8 @@ import InfoUser from "../widgets/InfoUser";
 //   [key: string]: string | number | JSX.Element;
 // }
 
+const URL_TRANSACTIONS = `${import.meta.env.VITE_API_URL}/user_transactions`;
+
 const columns: Array<Column> = [
   { id: "id", label: "Transaction ID", align: "center" },
   { id: "transaction_date", label: "Fecha, Hora", align: "center" },
@@ -68,14 +70,15 @@ const CheckingPage = () => {
       });
 
       if (response.data) {
-        const trans = response.data.transactions;
-        setRows(trans);
+        const items = response.data.items;
+        setRows(items);
 
         if (response.data.items.length === 0) {
           setError("No se encontraron transacciones de cuenta corriente");
         }
       }
     }
+
     getTransactions();
   }, []);
 
@@ -86,7 +89,9 @@ const CheckingPage = () => {
           <Box sx={{ width: "100%" }}>
             <InfoUser user={{ name: "User", document: "C-123456789" }} />
             <Title title="Cuenta Corriente" />
-            <TransactionTable title="Detalle de transacciones" columns={columns} rows={rows} error={error} />
+            {rows.length > 0 && (
+              <TransactionTable title="Detalle de transacciones" columns={columns} rows={rows} error={error} />
+            )}
           </Box>
         </DashboardLayoutBasic>
       </DashboardWrapper>
