@@ -70,8 +70,8 @@ const SavingsPage = () => {
       });
 
       if (response.data) {
-        const trans = response.data.transactions;
-        setRows(trans);
+        const items = response.data.items;
+        setRows(items);
 
         if (response.data.items.length === 0) {
           setError("No se encontraron transacciones de cuenta corriente");
@@ -88,7 +88,9 @@ const SavingsPage = () => {
           <Box sx={{ width: "100%" }}>
             <InfoUser user={{ name: "User", document: "C-123456789" }} />
             <Title title="Cuenta de Ahorros" />
-            <TransactionTable title="Detalle de transacciones" columns={columns} rows={rows} error={error} />
+            {rows.length > 0 && (
+              <TransactionTable title="Detalle de transacciones" columns={columns} rows={rows} error={error} />
+            )}
           </Box>
         </DashboardLayoutBasic>
       </DashboardWrapper>
