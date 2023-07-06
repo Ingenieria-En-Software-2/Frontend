@@ -24,7 +24,7 @@ const { URL_NEW_TRANSACTIONS } = SERVER_URLS;
 const URL_TRANSACTIONS = `${import.meta.env.VITE_API_URL}/user_transactions`;
 const URL_ACCOUNTS = `${import.meta.env.VITE_API_URL}/user_account`;
 
-type BetweenAccountsFields = {
+type ThirdPartiesAccountsFields = {
   origin: string;
   destination: string;
   amount: string;
@@ -39,13 +39,13 @@ Hacer las verificaciones de los campos y mostrar los mensajes de error.
 Enviar los datos al back e informar sobre las respuestas al usuario 
 */
 
-const BetweenAccountsTransactions = () => {
+const ThirdPartiesAccountsTransactions = () => {
   const [originAccounts, setOriginAccounts] = useState({});
-  const [formInputs, setFormInputs] = useState<BetweenAccountsFields>({
+  const [formInputs, setFormInputs] = useState<ThirdPartiesAccountsFields>({
     origin: "", // TODO: Se hace un query para ver las cuentas del usuario logeado y elegir una de ellas
     destination: "",
     amount: "",
-    transaction_type: "b_a",
+    transaction_type: "to_3rds",
     description: "",
     currency: "", // TODO: Se hace un query para ver las monedas disponibles
     transaction_status_id: "2",
@@ -81,6 +81,7 @@ const BetweenAccountsTransactions = () => {
           Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
         },
       });    
+      console.log(response.status)
       if (response.status == 200) {
         console.log(response.data.message);
         setModal(true);
@@ -88,7 +89,6 @@ const BetweenAccountsTransactions = () => {
       }
     } catch (error) {
       console.log(error.response.data.message);
-      console.log(error);
       setModal(true);
       setModalText({"title" : "Error al realizar la transferencia", "text" : error.response.data.message, "button" : "Volver"})
     }
@@ -100,10 +100,6 @@ const BetweenAccountsTransactions = () => {
     navigate(URL_NEW_TRANSACTIONS)
   }
 
-  const unfillAccountText = () => {
-
-  }
-
   console.log(originAccounts);
 
   return (
@@ -112,10 +108,6 @@ const BetweenAccountsTransactions = () => {
       <Box sx={{ width: "80%"}} >
         <form onSubmit={handleSubmit}>
           {/*Cuenta de destino */}
-          <Button variant="contained" color="success" onClick= {e => setFormInputs({ ...formInputs, ['origin']: '', ['destination'] : '' })} 
-          style={{paddingBottom : "10px"}} > Vaciar cuentas seleccionadas </Button>
-
-          <div style={{padding : "10px"}}> </div>
 
           <TextField
             name="origin"
@@ -131,26 +123,15 @@ const BetweenAccountsTransactions = () => {
           >
             {originAccounts &&
               originAccounts.corriente &&
-              originAccounts.corriente.map((account) => 
-                {
-                    if(account == formInputs.destination)
-                        return <MenuItem disabled value={account}>{`Corriente ${account}`}</MenuItem>
-                    return <MenuItem value={account}>{`Corriente ${account}`}</MenuItem>
-                })}
-
+              originAccounts.corriente.map((account) => <MenuItem value={account}>{`Corriente ${account}`}</MenuItem>)}
             {originAccounts &&
               originAccounts.ahorro &&
-              originAccounts.ahorro.map((account) => 
-                {
-                    if(account == formInputs.destination)
-                        return <MenuItem disabled value={account}>{`Ahorro ${account}`}</MenuItem>
-                    return <MenuItem value={account}>{`Ahorro ${account}`}</MenuItem>
-                })}
+              originAccounts.ahorro.map((account) => <MenuItem value={account}>{`Ahorro ${account}`}</MenuItem>)}
           </TextField>
 
           <TextField
             name="destination"
-            select
+            type="text"
             variant="outlined"
             color="primary"
             label="Cuenta de destino"
@@ -159,25 +140,7 @@ const BetweenAccountsTransactions = () => {
             sx={{ mb: 4 }}
             onChange={(event) => handleFieldChange(event)}
             value={formInputs.destination}
-          >
-            {originAccounts &&
-              originAccounts.corriente &&
-              originAccounts.corriente.map((account) => 
-                {
-                    if(account == formInputs.origin)
-                        return <MenuItem disabled value={account}>{`Corriente ${account}`}</MenuItem>
-                    return <MenuItem value={account}>{`Corriente ${account}`}</MenuItem>
-                })}
-
-            {originAccounts &&
-              originAccounts.ahorro &&
-              originAccounts.ahorro.map((account) => 
-                {
-                    if(account == formInputs.origin)
-                        return <MenuItem disabled value={account}>{`Ahorro ${account}`}</MenuItem>
-                    return <MenuItem value={account}>{`Ahorro ${account}`}</MenuItem>
-                })}
-          </TextField>
+          />
 
           <TextField
             name="amount"
@@ -247,4 +210,4 @@ const BetweenAccountsTransactions = () => {
   );
 };
 
-export default BetweenAccountsTransactions;
+export default ThirdPartiesAccountsTransactions;

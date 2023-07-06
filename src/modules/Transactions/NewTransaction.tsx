@@ -5,6 +5,9 @@ import { useEffect, useState, useRef } from "react";
 import Box from "@mui/material/Box";
 import Title from "components/Title";
 import BetweenAccountsTransactions from "./BetweenAccountsTransactions";
+import ThirdPartiesTransactions from "./ThirdPartiesTransactions";
+import InterWalletTransactions from "./InterWalletTransactions";
+
 
 export const TRANSACTION_TYPE = Object.freeze({
   BETWEEN_ACCOUNTS: "b_a",
@@ -15,6 +18,14 @@ export const TRANSACTION_TYPE = Object.freeze({
 function ShowForm({ type }) {
   if (type === TRANSACTION_TYPE.BETWEEN_ACCOUNTS) {
     return <BetweenAccountsTransactions />;
+  }
+
+  if (type === TRANSACTION_TYPE.TO_THIRD_PARTIES_IN_WALLET) {
+    return <ThirdPartiesTransactions />;
+  }
+
+  if (type === TRANSACTION_TYPE.INTER_WALLET) {
+    return <InterWalletTransactions />;
   }
 
   return (
