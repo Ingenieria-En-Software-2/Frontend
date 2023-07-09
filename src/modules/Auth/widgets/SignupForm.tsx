@@ -245,11 +245,13 @@ const SignupForm = () => {
           setSubmitError(false);
           setSubmitErrorMessages([]);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.log(error.response.data);
         console.log(error.response);
         setSubmitError(true);
-        setSubmitErrorMessages(Object.values(error.response.data.error));
+        setSubmitErrorMessages(Object.values(error.response.data.errors).flat());
+
+        console.log(object);
       }
     }
   };
@@ -267,14 +269,14 @@ const SignupForm = () => {
         <Tab label="Datos de contacto" {...allyProps(2)} />
       </Tabs>
       {generalError && (
-        <Typography variant="body2" color="error" sx={{ mt: 2 }}>
+        <Typography variant="body2" color="red" sx={{ mt: 2 }}>
           Ha ocurrido un error. Por favor, revise los campos e intente de nuevo.
         </Typography>
       )}
       {!generalError && submitError && (
-        <Typography variant="body2" color="error" sx={{ mt: 2 }}>
-          {submitErrorMessages.map((message) => (
-            <div>{message}</div>
+        <Typography variant="body2" color="red" sx={{ mt: 2 }}>
+          {submitErrorMessages.map((err) => (
+            <div>{err}</div>
           ))}
         </Typography>
       )}
