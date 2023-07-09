@@ -81,6 +81,44 @@ const SavingsPage = () => {
     getTransactions();
   }, []);
 
+  const dummyRows = [
+    {
+      id: "1",
+      transaction_date: "2021-03-01 10:00:00",
+      transaction_type: "Depósito",
+      description: "Depósito de dinero",
+      amount: 100,
+    },
+    {
+      id: "2",
+      transaction_date: "2023-07-08 10:00:00",
+      transaction_type: "Depósito",
+      description: "Depósito de dinero",
+      amount: 100,
+    },
+    {
+      id: "3",
+      transaction_date: "2023-10-02 10:00:00",
+      transaction_type: "Depósito",
+      description: "Depósito de dinero",
+      amount: 100,
+    },
+    {
+      id: "4",
+      transaction_date: "2021-09-01 10:00:00",
+      transaction_type: "Depósito",
+      description: "Depósito de dinero",
+      amount: 100,
+    },
+    {
+      id: "5",
+      transaction_date: "2021-10-01 10:00:00",
+      transaction_type: "Depósito",
+      description: "Depósito de dinero",
+      amount: 100,
+    },
+  ];
+
   return (
     <div className="main-container">
       <DashboardWrapper>
@@ -88,9 +126,7 @@ const SavingsPage = () => {
           <Box sx={{ width: "100%" }}>
             <InfoUser user={{ name: "User", document: "C-123456789" }} />
             <Title title="Cuenta de Ahorros" />
-            {rows.length > 0 && (
-              <TransactionTable title="Detalle de transacciones" columns={columns} rows={rows} error={error} />
-            )}
+            <TransactionTable title="Detalle de transacciones" columns={columns} rows={dummyRows} error={error} />
           </Box>
         </DashboardLayoutBasic>
       </DashboardWrapper>
