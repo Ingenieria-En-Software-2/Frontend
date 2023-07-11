@@ -109,6 +109,5 @@ export function CardIcon({ className }: ComponentProps) {
 }
 
 export function RightBracketIcon({ className }: ComponentProps) {
-  return <FontAwesomeIcon className={className} icon={faRightFromBracket}/>;
+  return <FontAwesomeIcon className={className} icon={faRightFromBracket} />;
 }
-

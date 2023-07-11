@@ -122,7 +122,7 @@ const CreateAccountForm = ({ setReloadTable }: any) => {
       })
       .catch((error) => {
         const data = error.response.data;
-        console.log(data)
+        console.log(data);
         setModalInfo({
           success: false,
           message: data.errors.join(", "),
@@ -212,9 +212,7 @@ const CreateAccountForm = ({ setReloadTable }: any) => {
           >
             {modalInfo.success ? "Operación exitosa" : "Operación fallida"}
           </h2>
-          <p id="modal-modal-description"
-            className={modalInfo.success ? 'text-green-500' : 'text-red-500'}
-            >
+          <p id="modal-modal-description" className={modalInfo.success ? "text-green-500" : "text-red-500"}>
             {modalInfo.message}
           </p>
         </Box>

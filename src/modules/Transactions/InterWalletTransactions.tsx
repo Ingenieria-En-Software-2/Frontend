@@ -10,11 +10,11 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { Console } from "console";
 
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 import SERVER_URLS from "utils/serversUrls";
 import { useNavigate } from "react-router-dom";
@@ -45,7 +45,7 @@ const InterWalletAccountsTransactions = () => {
   const [originAccounts, setOriginAccounts] = useState({});
   const [wallets, setWallets] = useState([]);
   const [formInputs, setFormInputs] = useState<IWAccountsFields>({
-    origin: "", 
+    origin: "",
     email_destination: "",
     wallet: "",
     amount: "",
@@ -55,8 +55,8 @@ const InterWalletAccountsTransactions = () => {
     transaction_status_id: "2",
   });
   const [modalOn, setModal] = useState(false);
-  const [modalText, setModalText] = useState({"title" : "", "text" : "", "button" : ""})
-  const navigate = useNavigate(); 
+  const [modalText, setModalText] = useState({ title: "", text: "", button: "" });
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function getOriginAccounts() {
@@ -68,7 +68,7 @@ const InterWalletAccountsTransactions = () => {
       });
       setOriginAccounts(response.data);
     }
-    
+
     async function getWallets() {
       const response = await axios.get(URL_WALLETS, {
         headers: {
@@ -80,7 +80,7 @@ const InterWalletAccountsTransactions = () => {
 
     getOriginAccounts();
     getWallets();
-      }, []);
+  }, []);
 
   const handleFieldChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target;
@@ -95,57 +95,63 @@ const InterWalletAccountsTransactions = () => {
         headers: {
           Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
         },
-      });    
-      console.log(response.status)
+      });
+      console.log(response.status);
       if (response.status == 200) {
         console.log(response.data.message);
         setModal(true);
-        setModalText({"title" : "Transferencia Exitosa", "text" : response.data.message, "button" : "Volver"})
+        setModalText({ title: "Transferencia Exitosa", text: response.data.message, button: "Volver" });
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       console.log(error.response.data.message);
       setModal(true);
-      setModalText({"title" : "Error al realizar la transferencia", "text" : error.response.data.message, "button" : "Volver"})
+      setModalText({
+        title: "Error al realizar la transferencia",
+        text: error.response.data.message,
+        button: "Volver",
+      });
     }
     // TODO: Mostrar que la transacción se realizó o mostrar mensajes de error en caso de que los haya.
   };
 
   const handleCloseModal = () => {
     setModal(false);
-    navigate(URL_NEW_TRANSACTIONS)
-  }
+    navigate(URL_NEW_TRANSACTIONS);
+  };
 
   console.log(originAccounts);
 
   return (
     <>
-    <div className="main-container" style={{height : "80%"}}>
-      <Box sx={{ width: "80%"}} >
-        <form onSubmit={handleSubmit}>
-          {/*Cuenta de destino */}
+      <div className="main-container" style={{ height: "80%" }}>
+        <Box sx={{ width: "80%" }}>
+          <form onSubmit={handleSubmit}>
+            {/*Cuenta de destino */}
 
-          <TextField
-            name="origin"
-            select
-            variant="outlined"
-            color="primary"
-            label="Cuenta de origen"
-            fullWidth
-            required
-            sx={{ mb: 4 }}
-            onChange={(event) => handleFieldChange(event)}
-            value={formInputs.origin}
-          >
-            {originAccounts &&
-              originAccounts.corriente &&
-              originAccounts.corriente.map((account) => <MenuItem value={account}>{`Corriente ${account}`}</MenuItem>)}
-            {originAccounts &&
-              originAccounts.ahorro &&
-              originAccounts.ahorro.map((account) => <MenuItem value={account}>{`Ahorro ${account}`}</MenuItem>)}
-          </TextField>
+            <TextField
+              name="origin"
+              select
+              variant="outlined"
+              color="primary"
+              label="Cuenta de origen"
+              fullWidth
+              required
+              sx={{ mb: 4 }}
+              onChange={(event) => handleFieldChange(event)}
+              value={formInputs.origin}
+            >
+              {originAccounts &&
+                originAccounts.corriente &&
+                originAccounts.corriente.map((account) => (
+                  <MenuItem value={account}>{`Corriente ${account}`}</MenuItem>
+                ))}
+              {originAccounts &&
+                originAccounts.ahorro &&
+                originAccounts.ahorro.map((account) => <MenuItem value={account}>{`Ahorro ${account}`}</MenuItem>)}
+            </TextField>
 
-          {/* <TextField    Deberia ser un correo electronico porque son transacciones interwallet y colocar el nombre de la wallet
+            {/* <TextField    Deberia ser un correo electronico porque son transacciones interwallet y colocar el nombre de la wallet
             name="email_destination"
             type="text"
             variant="outlined"
@@ -158,102 +164,94 @@ const InterWalletAccountsTransactions = () => {
             value={formInputs.email_destination}
           /> */}
 
-          <TextField
-            name="email_destination"
-            type="email"
-            variant="outlined"
-            color="primary"
-            label="Correo electrónico"
-            fullWidth
-            required
-            sx={{ mb: 4 }}
-            onChange={(event) => handleFieldChange(event)}
-            value={formInputs.email_destination}
-          />
+            <TextField
+              name="email_destination"
+              type="email"
+              variant="outlined"
+              color="primary"
+              label="Correo electrónico"
+              fullWidth
+              required
+              sx={{ mb: 4 }}
+              onChange={(event) => handleFieldChange(event)}
+              value={formInputs.email_destination}
+            />
 
-          <TextField
-            name="wallet"
-            select
-            variant="outlined"
-            color="primary"
-            label="Wallet"
-            fullWidth
-            required
-            sx={{ mb: 4 }}
-            onChange={(event) => handleFieldChange(event)}
-            value={formInputs.wallet}
-          >
-            {wallets.map((wallet) => (
-              <MenuItem key={wallet.id} value={wallet.id}>
-                {wallet.alias}
-              </MenuItem>
-            ))}
-          </TextField>
+            <TextField
+              name="wallet"
+              select
+              variant="outlined"
+              color="primary"
+              label="Wallet"
+              fullWidth
+              required
+              sx={{ mb: 4 }}
+              onChange={(event) => handleFieldChange(event)}
+              value={formInputs.wallet}
+            >
+              {wallets.map((wallet) => (
+                <MenuItem key={wallet.id} value={wallet.id}>
+                  {wallet.alias}
+                </MenuItem>
+              ))}
+            </TextField>
 
-          <TextField
-            name="amount"
-            type="number"
-            variant="outlined"
-            color="primary"
-            label="Monto"
-            fullWidth
-            required
-            sx={{ mb: 4 }}
-            onChange={(event) => handleFieldChange(event)}
-            value={formInputs.amount}
-          />
+            <TextField
+              name="amount"
+              type="number"
+              variant="outlined"
+              color="primary"
+              label="Monto"
+              fullWidth
+              required
+              sx={{ mb: 4 }}
+              onChange={(event) => handleFieldChange(event)}
+              value={formInputs.amount}
+            />
 
-          <TextField
-            name="description"
-            type="text"
-            variant="outlined"
-            color="primary"
-            label="Concepto"
-            fullWidth
-            required
-            sx={{ mb: 4 }}
-            onChange={(event) => handleFieldChange(event)}
-            value={formInputs.description}
-          />
+            <TextField
+              name="description"
+              type="text"
+              variant="outlined"
+              color="primary"
+              label="Concepto"
+              fullWidth
+              required
+              sx={{ mb: 4 }}
+              onChange={(event) => handleFieldChange(event)}
+              value={formInputs.description}
+            />
 
-          <TextField
-            name="currency"
-            type="text"
-            variant="outlined"
-            color="primary"
-            label="Moneda"
-            fullWidth
-            required
-            sx={{ mb: 4 }}
-            onChange={(event) => handleFieldChange(event)}
-            value={formInputs.currency}
-          />
-          <Button variant="outlined" color="primary" type="submit" fullWidth>
-            Enviar
-          </Button>
-        </form>
-      </Box>
-    </div>
-    {/* dialog de exito de registro*/}
-    <div>
-      <Dialog
-        open={modalOn}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {modalText.title}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            {modalText.text}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseModal}>{modalText.button}</Button>
-        </DialogActions>
-      </Dialog>
-    </div>
+            <TextField
+              name="currency"
+              type="text"
+              variant="outlined"
+              color="primary"
+              label="Moneda"
+              fullWidth
+              required
+              sx={{ mb: 4 }}
+              onChange={(event) => handleFieldChange(event)}
+              value={formInputs.currency}
+            />
+            <Button variant="outlined" color="primary" type="submit" fullWidth>
+              Enviar
+            </Button>
+          </form>
+        </Box>
+      </div>
+      {/* dialog de exito de registro*/}
+      <div>
+        <Dialog open={modalOn} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+          <DialogTitle id="alert-dialog-title">{modalText.title}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">{modalText.text}</DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseModal}>{modalText.button}</Button>
+          </DialogActions>
+        </Dialog>
+      </div>
     </>
   );
 };

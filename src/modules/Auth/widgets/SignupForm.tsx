@@ -7,11 +7,11 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Button, Link, MenuItem, Stack, Tab, Tabs, TextField, Typography } from "@mui/material";
 
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 import { Country, State, ICountry, IState, ICity } from "country-state-city";
 import Title from "components/Title";
@@ -137,7 +137,7 @@ const SignupForm = () => {
   const [submitError, setSubmitError] = useState(false);
   const [submitErrorMessages, setSubmitErrorMessages] = useState<string[]>([]);
   const [submitSuccess, setSubmitSuccess] = useState(false);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   // -------------------- Form submission --------------------
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -228,7 +228,7 @@ const SignupForm = () => {
         login: formInputs.generalInfo.email,
         name: formInputs.generalInfo.names,
         lastname: formInputs.generalInfo.surnames,
-        password : formInputs.generalInfo.password,
+        password: formInputs.generalInfo.password,
         role_id: 1,
         user_type: "interno",
       };
@@ -236,10 +236,8 @@ const SignupForm = () => {
       // POST request
       try {
         const responses = await axios.post(URL_ACCOUNT_HOLDER, object, {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
+          headers: { "Content-Type": "application/json" },
+        });
         if (responses.status == 201) {
           setSubmitSuccess(true);
           setSubmitError(false);
@@ -782,24 +780,18 @@ const SignupForm = () => {
       </form>
       {/* dialog de exito de registro*/}
       <div>
-      <Dialog
-        open={submitSuccess}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {"¡Tu registro ha sido exitoso!"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Se ha enviado un mensaje a tu correo electrónico, verifica tu cuenta para poder iniciar sesión.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={e => navigate(URL_LOGIN)}>Volver al login</Button>
-        </DialogActions>
-      </Dialog>
-    </div>
+        <Dialog open={submitSuccess} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+          <DialogTitle id="alert-dialog-title">{"¡Tu registro ha sido exitoso!"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Se ha enviado un mensaje a tu correo electrónico, verifica tu cuenta para poder iniciar sesión.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={(e) => navigate(URL_LOGIN)}>Volver al login</Button>
+          </DialogActions>
+        </Dialog>
+      </div>
       {/* Blue font */}
       <small className="mt-3 text-sm text-gray-600">
         ¿Ya tienes una cuenta?

@@ -8,7 +8,6 @@ import BetweenAccountsTransactions from "./BetweenAccountsTransactions";
 import ThirdPartiesTransactions from "./ThirdPartiesTransactions";
 import InterWalletTransactions from "./InterWalletTransactions";
 
-
 export const TRANSACTION_TYPE = Object.freeze({
   BETWEEN_ACCOUNTS: "b_a",
   TO_THIRD_PARTIES_IN_WALLET: "to_3rds",

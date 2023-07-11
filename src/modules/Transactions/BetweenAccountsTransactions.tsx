@@ -10,11 +10,11 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { Console } from "console";
 
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 import SERVER_URLS from "utils/serversUrls";
 import { useNavigate } from "react-router-dom";
@@ -51,8 +51,8 @@ const BetweenAccountsTransactions = () => {
     transaction_status_id: "2",
   });
   const [modalOn, setModal] = useState(false);
-  const [modalText, setModalText] = useState({"title" : "", "text" : "", "button" : ""})
-  const navigate = useNavigate(); 
+  const [modalText, setModalText] = useState({ title: "", text: "", button: "" });
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function getOriginAccounts() {
@@ -80,170 +80,167 @@ const BetweenAccountsTransactions = () => {
         headers: {
           Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
         },
-      });    
-      console.log(response.status)
+      });
+      console.log(response.status);
       if (response.status == 200) {
         console.log(response.data.message);
         setModal(true);
-        setModalText({"title" : "Transferencia Exitosa", "text" : response.data.message, "button" : "Volver"})
+        setModalText({ title: "Transferencia Exitosa", text: response.data.message, button: "Volver" });
       }
     } catch (error) {
       console.log(error);
       console.log(error.response.data.message);
       setModal(true);
-      setModalText({"title" : "Error al realizar la transferencia", "text" : error.response.data.message, "button" : "Volver"})
+      setModalText({
+        title: "Error al realizar la transferencia",
+        text: error.response.data.message,
+        button: "Volver",
+      });
     }
     // TODO: Mostrar que la transacción se realizó o mostrar mensajes de error en caso de que los haya.
   };
 
   const handleCloseModal = () => {
     setModal(false);
-    navigate(URL_NEW_TRANSACTIONS)
-  }
+    navigate(URL_NEW_TRANSACTIONS);
+  };
 
-  const unfillAccountText = () => {
-
-  }
+  const unfillAccountText = () => {};
 
   console.log(originAccounts);
 
   return (
     <>
-    <div className="main-container" style={{height : "80%"}}>
-      <Box sx={{ width: "80%"}} >
-        <form onSubmit={handleSubmit}>
-          {/*Cuenta de destino */}
-          <Button variant="contained" color="success" onClick= {e => setFormInputs({ ...formInputs, ['origin']: '', ['destination'] : '' })} 
-          style={{paddingBottom : "10px"}} > Vaciar cuentas seleccionadas </Button>
+      <div className="main-container" style={{ height: "80%" }}>
+        <Box sx={{ width: "80%" }}>
+          <form onSubmit={handleSubmit}>
+            {/*Cuenta de destino */}
+            <Button
+              variant="contained"
+              color="success"
+              onClick={(e) => setFormInputs({ ...formInputs, ["origin"]: "", ["destination"]: "" })}
+              style={{ paddingBottom: "10px" }}
+            >
+              {" "}
+              Vaciar cuentas seleccionadas{" "}
+            </Button>
 
-          <div style={{padding : "10px"}}> </div>
+            <div style={{ padding: "10px" }}> </div>
 
-          <TextField
-            name="origin"
-            select
-            variant="outlined"
-            color="primary"
-            label="Cuenta de origen"
-            fullWidth
-            required
-            sx={{ mb: 4 }}
-            onChange={(event) => handleFieldChange(event)}
-            value={formInputs.origin}
-          >
-            {originAccounts &&
-              originAccounts.corriente &&
-              originAccounts.corriente.map((account) => 
-                {
-                    if(account == formInputs.destination)
-                        return <MenuItem disabled value={account}>{`Corriente ${account}`}</MenuItem>
-                    return <MenuItem value={account}>{`Corriente ${account}`}</MenuItem>
+            <TextField
+              name="origin"
+              select
+              variant="outlined"
+              color="primary"
+              label="Cuenta de origen"
+              fullWidth
+              required
+              sx={{ mb: 4 }}
+              onChange={(event) => handleFieldChange(event)}
+              value={formInputs.origin}
+            >
+              {originAccounts &&
+                originAccounts.corriente &&
+                originAccounts.corriente.map((account) => {
+                  if (account == formInputs.destination)
+                    return <MenuItem disabled value={account}>{`Corriente ${account}`}</MenuItem>;
+                  return <MenuItem value={account}>{`Corriente ${account}`}</MenuItem>;
                 })}
 
-            {originAccounts &&
-              originAccounts.ahorro &&
-              originAccounts.ahorro.map((account) => 
-                {
-                    if(account == formInputs.destination)
-                        return <MenuItem disabled value={account}>{`Ahorro ${account}`}</MenuItem>
-                    return <MenuItem value={account}>{`Ahorro ${account}`}</MenuItem>
+              {originAccounts &&
+                originAccounts.ahorro &&
+                originAccounts.ahorro.map((account) => {
+                  if (account == formInputs.destination)
+                    return <MenuItem disabled value={account}>{`Ahorro ${account}`}</MenuItem>;
+                  return <MenuItem value={account}>{`Ahorro ${account}`}</MenuItem>;
                 })}
-          </TextField>
+            </TextField>
 
-          <TextField
-            name="destination"
-            select
-            variant="outlined"
-            color="primary"
-            label="Cuenta de destino"
-            fullWidth
-            required
-            sx={{ mb: 4 }}
-            onChange={(event) => handleFieldChange(event)}
-            value={formInputs.destination}
-          >
-            {originAccounts &&
-              originAccounts.corriente &&
-              originAccounts.corriente.map((account) => 
-                {
-                    if(account == formInputs.origin)
-                        return <MenuItem disabled value={account}>{`Corriente ${account}`}</MenuItem>
-                    return <MenuItem value={account}>{`Corriente ${account}`}</MenuItem>
+            <TextField
+              name="destination"
+              select
+              variant="outlined"
+              color="primary"
+              label="Cuenta de destino"
+              fullWidth
+              required
+              sx={{ mb: 4 }}
+              onChange={(event) => handleFieldChange(event)}
+              value={formInputs.destination}
+            >
+              {originAccounts &&
+                originAccounts.corriente &&
+                originAccounts.corriente.map((account) => {
+                  if (account == formInputs.origin)
+                    return <MenuItem disabled value={account}>{`Corriente ${account}`}</MenuItem>;
+                  return <MenuItem value={account}>{`Corriente ${account}`}</MenuItem>;
                 })}
 
-            {originAccounts &&
-              originAccounts.ahorro &&
-              originAccounts.ahorro.map((account) => 
-                {
-                    if(account == formInputs.origin)
-                        return <MenuItem disabled value={account}>{`Ahorro ${account}`}</MenuItem>
-                    return <MenuItem value={account}>{`Ahorro ${account}`}</MenuItem>
+              {originAccounts &&
+                originAccounts.ahorro &&
+                originAccounts.ahorro.map((account) => {
+                  if (account == formInputs.origin)
+                    return <MenuItem disabled value={account}>{`Ahorro ${account}`}</MenuItem>;
+                  return <MenuItem value={account}>{`Ahorro ${account}`}</MenuItem>;
                 })}
-          </TextField>
+            </TextField>
 
-          <TextField
-            name="amount"
-            type="number"
-            variant="outlined"
-            color="primary"
-            label="Monto"
-            fullWidth
-            required
-            sx={{ mb: 4 }}
-            onChange={(event) => handleFieldChange(event)}
-            value={formInputs.amount}
-          />
+            <TextField
+              name="amount"
+              type="number"
+              variant="outlined"
+              color="primary"
+              label="Monto"
+              fullWidth
+              required
+              sx={{ mb: 4 }}
+              onChange={(event) => handleFieldChange(event)}
+              value={formInputs.amount}
+            />
 
-          <TextField
-            name="description"
-            type="text"
-            variant="outlined"
-            color="primary"
-            label="Concepto"
-            fullWidth
-            required
-            sx={{ mb: 4 }}
-            onChange={(event) => handleFieldChange(event)}
-            value={formInputs.description}
-          />
+            <TextField
+              name="description"
+              type="text"
+              variant="outlined"
+              color="primary"
+              label="Concepto"
+              fullWidth
+              required
+              sx={{ mb: 4 }}
+              onChange={(event) => handleFieldChange(event)}
+              value={formInputs.description}
+            />
 
-          <TextField
-            name="currency"
-            type="text"
-            variant="outlined"
-            color="primary"
-            label="Moneda"
-            fullWidth
-            required
-            sx={{ mb: 4 }}
-            onChange={(event) => handleFieldChange(event)}
-            value={formInputs.currency}
-          />
-          <Button variant="outlined" color="primary" type="submit" fullWidth>
-            Enviar
-          </Button>
-        </form>
-      </Box>
-    </div>
-    {/* dialog de exito de registro*/}
-    <div>
-      <Dialog
-        open={modalOn}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {modalText.title}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            {modalText.text}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseModal}>{modalText.button}</Button>
-        </DialogActions>
-      </Dialog>
-    </div>
+            <TextField
+              name="currency"
+              type="text"
+              variant="outlined"
+              color="primary"
+              label="Moneda"
+              fullWidth
+              required
+              sx={{ mb: 4 }}
+              onChange={(event) => handleFieldChange(event)}
+              value={formInputs.currency}
+            />
+            <Button variant="outlined" color="primary" type="submit" fullWidth>
+              Enviar
+            </Button>
+          </form>
+        </Box>
+      </div>
+      {/* dialog de exito de registro*/}
+      <div>
+        <Dialog open={modalOn} aria-labelledby="alert-dialog-title" aria-describedby="alert-dialog-description">
+          <DialogTitle id="alert-dialog-title">{modalText.title}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">{modalText.text}</DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseModal}>{modalText.button}</Button>
+          </DialogActions>
+        </Dialog>
+      </div>
     </>
   );
 };

@@ -1,12 +1,12 @@
-import { useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 
 import { useDashboardLayoutContext } from "../../context/dashboardLayout";
 import AsideNavigation from "../AsideNavigation/AsideNavigation";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { MenuIcon, ArrowLeftLineIcon, RightBracketIcon } from "components/ux/Icons";
 
-import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
@@ -14,13 +14,12 @@ import SERVER_URLS from "utils/serversUrls";
 
 const { URL_HOME } = SERVER_URLS;
 
-
 type Props = Record<string, never>;
 
 export default function AsideMenu(_: Props) {
   const { state, dispatch } = useDashboardLayoutContext();
   const lg = useMediaQuery("(max-width:1279px)");
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
   const [backdrop, setBackdrop] = useState(false);
 
   const collapseLayout = (state: boolean) => {
@@ -35,12 +34,12 @@ export default function AsideMenu(_: Props) {
 
   const signOut = async () => {
     setBackdrop(true);
-    Cookies.remove('auth.auth_token');
-    Cookies.remove('auth.refresh_token');
+    Cookies.remove("auth.auth_token");
+    Cookies.remove("auth.refresh_token");
     const timer = setTimeout(() => {
       navigate(URL_HOME);
     }, 600);
-  }
+  };
 
   return (
     <aside
@@ -56,30 +55,18 @@ export default function AsideMenu(_: Props) {
           {state.asideMenu.collapse ? <MenuIcon /> : <ArrowLeftLineIcon />}
         </button>
       </div>
-      
-      <AsideNavigation collapseLayout={collapseLayout} collapse={state.asideMenu.collapse as boolean}/>
 
-      <div className={`${"p-20 text-grey-400 left top-100"} ${
-            state.asideMenu.collapse ? null : null
-          }`}>
-      <button className={`${"p-1 top-100"} ${
-            state.asideMenu.collapse ? null : null
-          }`} onClick = {signOut}>
-          {state.asideMenu.collapse ? null : <RightBracketIcon /> }
-          {
-            state.asideMenu.collapse ? null : "Cerrar sesión"
-          }
-          
+      <AsideNavigation collapseLayout={collapseLayout} collapse={state.asideMenu.collapse as boolean} />
+
+      <div className={`${"p-20 text-grey-400 left top-100"} ${state.asideMenu.collapse ? null : null}`}>
+        <button className={`${"p-1 top-100"} ${state.asideMenu.collapse ? null : null}`} onClick={signOut}>
+          {state.asideMenu.collapse ? null : <RightBracketIcon />}
+          {state.asideMenu.collapse ? null : "Cerrar sesión"}
         </button>
       </div>
-      <Backdrop
-        sx={{ color: '#ffff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={backdrop}
-      >
+      <Backdrop sx={{ color: "#ffff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={backdrop}>
         <CircularProgress color="inherit" />
       </Backdrop>
-
     </aside>
   );
 }
-
