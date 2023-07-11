@@ -23,10 +23,12 @@ const { URL_NEW_TRANSACTIONS } = SERVER_URLS;
 
 const URL_TRANSACTIONS = `${import.meta.env.VITE_API_URL}/user_transactions`;
 const URL_ACCOUNTS = `${import.meta.env.VITE_API_URL}/user_account`;
+const URL_WALLETS = `${import.meta.env.VITE_API_URL}/user_wallets`;
 
 type IWAccountsFields = {
   origin: string;
-  destination: string;
+  email_destination: string;
+  wallet: string;
   amount: string;
   transaction_type: string;
   description: string;
@@ -41,9 +43,11 @@ Enviar los datos al back e informar sobre las respuestas al usuario
 
 const InterWalletAccountsTransactions = () => {
   const [originAccounts, setOriginAccounts] = useState({});
+  const [wallets, setWallets] = useState([]);
   const [formInputs, setFormInputs] = useState<IWAccountsFields>({
-    origin: "", // TODO: Se hace un query para ver las cuentas del usuario logeado y elegir una de ellas
-    destination: "",
+    origin: "", 
+    email_destination: "",
+    wallet: "",
     amount: "",
     transaction_type: "inter_wallet",
     description: "",
@@ -64,8 +68,19 @@ const InterWalletAccountsTransactions = () => {
       });
       setOriginAccounts(response.data);
     }
+    
+    async function getWallets() {
+      const response = await axios.get(URL_WALLETS, {
+        headers: {
+          Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
+        },
+      });
+      setWallets(response.data);
+    }
+
     getOriginAccounts();
-  }, []);
+    getWallets();
+      }, []);
 
   const handleFieldChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target;
@@ -130,8 +145,8 @@ const InterWalletAccountsTransactions = () => {
               originAccounts.ahorro.map((account) => <MenuItem value={account}>{`Ahorro ${account}`}</MenuItem>)}
           </TextField>
 
-          <TextField    /*Deberia ser un correo electronico porque son transacciones interwallet y colocar el nombre de la wallet*/
-            name="destination"
+          {/* <TextField    Deberia ser un correo electronico porque son transacciones interwallet y colocar el nombre de la wallet
+            name="email_destination"
             type="text"
             variant="outlined"
             color="primary"
@@ -140,8 +155,40 @@ const InterWalletAccountsTransactions = () => {
             required
             sx={{ mb: 4 }}
             onChange={(event) => handleFieldChange(event)}
-            value={formInputs.destination}
+            value={formInputs.email_destination}
+          /> */}
+
+          <TextField
+            name="email_destination"
+            type="email"
+            variant="outlined"
+            color="primary"
+            label="Correo electrónico"
+            fullWidth
+            required
+            sx={{ mb: 4 }}
+            onChange={(event) => handleFieldChange(event)}
+            value={formInputs.email_destination}
           />
+
+          <TextField
+            name="wallet"
+            select
+            variant="outlined"
+            color="primary"
+            label="Wallet"
+            fullWidth
+            required
+            sx={{ mb: 4 }}
+            onChange={(event) => handleFieldChange(event)}
+            value={formInputs.wallet}
+          >
+            {wallets.map((wallet) => (
+              <MenuItem key={wallet.id} value={wallet.id}>
+                {wallet.alias}
+              </MenuItem>
+            ))}
+          </TextField>
 
           <TextField
             name="amount"

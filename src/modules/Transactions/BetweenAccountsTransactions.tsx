@@ -42,7 +42,7 @@ Enviar los datos al back e informar sobre las respuestas al usuario
 const BetweenAccountsTransactions = () => {
   const [originAccounts, setOriginAccounts] = useState({});
   const [formInputs, setFormInputs] = useState<BetweenAccountsFields>({
-    origin: "", // TODO: Se hace un query para ver las cuentas del usuario logeado y elegir una de ellas
+    origin: "",
     destination: "",
     amount: "",
     transaction_type: "b_a",
@@ -81,14 +81,15 @@ const BetweenAccountsTransactions = () => {
           Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
         },
       });    
+      console.log(response.status)
       if (response.status == 200) {
         console.log(response.data.message);
         setModal(true);
         setModalText({"title" : "Transferencia Exitosa", "text" : response.data.message, "button" : "Volver"})
       }
     } catch (error) {
-      console.log(error.response.data.message);
       console.log(error);
+      console.log(error.response.data.message);
       setModal(true);
       setModalText({"title" : "Error al realizar la transferencia", "text" : error.response.data.message, "button" : "Volver"})
     }
