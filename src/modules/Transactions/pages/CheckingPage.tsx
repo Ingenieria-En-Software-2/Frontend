@@ -18,8 +18,6 @@ import InfoUser from "../widgets/InfoUser";
 //   [key: string]: string | number | JSX.Element;
 // }
 
-const URL_TRANSACTIONS = `${import.meta.env.VITE_API_URL}/user_transactions`;
-
 const columns: Array<Column> = [
   { id: "id", label: "Transaction ID", align: "center" },
   { id: "transaction_date", label: "Fecha, Hora", align: "center" },
