@@ -180,7 +180,10 @@ const LogInWidget = () => {
         }
         if (resp.status === 400) {
           setOpenExceptionHandler(true);
-          setErrorHandlerMessages({ title: "Falló el login", description: "El correo no ha sido verificado." });
+          setErrorHandlerMessages({
+            title: "Falló el login",
+            description: "El correo no ha sido verificado, se le ha enviado nuevamente un correo de verificación.",
+          });
         }
         if (resp.status === 500) {
           setOpenExceptionHandler(true);
