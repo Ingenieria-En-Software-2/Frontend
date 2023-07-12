@@ -12,6 +12,7 @@ export const SERVER_URLS = Object.freeze({
   URL_NEW_TRANSACTIONS: "/new_transaction",
   URL_SAVINGS_TRANSACTION: "/savings-transaction",
   URL_CHECKING_TRANSACTION: "/checking-transaction",
+  URL_CREATE_RECIPIENT_AFFILIATION: "/recipient-affiliation",
 });
 
 export default SERVER_URLS;

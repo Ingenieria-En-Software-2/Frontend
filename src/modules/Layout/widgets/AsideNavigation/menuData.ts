@@ -10,6 +10,7 @@ const {
   URL_NEW_TRANSACTIONS,
   URL_SAVINGS_TRANSACTION,
   URL_CHECKING_TRANSACTION,
+  URL_CREATE_RECIPIENT_AFFILIATION,
 } = SERVER_URLS;
 
 export const menuData: Array<MenuItemInterface> = [
@@ -61,5 +62,12 @@ export const menuData: Array<MenuItemInterface> = [
     href: URL_CHECKING_TRANSACTION,
     leftIcon: CardIcon,
     text: "Cuenta Corriente",
+  },
+  {
+    id: "mobile-payment-link",
+    type: "link",
+    href: URL_CREATE_RECIPIENT_AFFILIATION,
+    leftIcon: UsersIcon,
+    text: "Afiliación de Destinatarios",
   },
 ];
