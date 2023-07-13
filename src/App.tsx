@@ -13,6 +13,8 @@ import SignupPage from "modules/Auth/pages/SignupPage";
 import VerifyPage from "modules/Auth/pages/VerifyPage";
 import CreateAccount from "modules/Accounts/widgets/CreateAccount";
 import SavingsPage from "modules/Transactions/pages/SavingsPage";
+import DailyTransactions from "modules/Transactions/pages/DailyTransactions";
+
 import CheckingPage from "modules/Transactions/pages/CheckingPage";
 import { Provider } from "react-redux";
 import getStore from "context/store/createStore";
@@ -30,6 +32,7 @@ const {
   URL_NEW_TRANSACTIONS,
   URL_SAVINGS_TRANSACTION,
   URL_CHECKING_TRANSACTION,
+  URL_DAILY_TRANSACTIONS,
 } = SERVER_URLS;
 
 function App() {
@@ -49,6 +52,7 @@ function App() {
             <Route path={URL_CREATE_ACCOUNT} element={<CreateAccount />} />
             <Route path={URL_CHECKING_TRANSACTION} element={<CheckingPage />} />
             <Route path={URL_SAVINGS_TRANSACTION} element={<SavingsPage />} />
+            <Route path={URL_DAILY_TRANSACTIONS} element={<DailyTransactions />} />
           </Routes>
         </Gate>
       </Provider>

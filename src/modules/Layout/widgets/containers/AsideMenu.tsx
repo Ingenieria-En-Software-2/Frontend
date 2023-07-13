@@ -5,22 +5,22 @@ import AsideNavigation from "../AsideNavigation/AsideNavigation";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { MenuIcon, ArrowLeftLineIcon, RightBracketIcon } from "components/ux/Icons";
 
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
-
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import SERVER_URLS from "utils/serversUrls";
 
 const { URL_HOME } = SERVER_URLS;
 
-type Props = Record<string, never>;
+type p = Record<string, never>;
+interface Props {
+  prop: p;
+  backDropCallBack : boolean;
+}
 
-export default function AsideMenu(_: Props) {
+export default function AsideMenu({prop, backDropCallBack}: Props) {
   const { state, dispatch } = useDashboardLayoutContext();
   const lg = useMediaQuery("(max-width:1279px)");
   const navigate = useNavigate();
-  const [backdrop, setBackdrop] = useState(false);
 
   const collapseLayout = (state: boolean) => {
     if (state) dispatch({ type: "COLLAPSE" });
@@ -33,9 +33,9 @@ export default function AsideMenu(_: Props) {
   }, [lg, dispatch]);
 
   const signOut = async () => {
-    setBackdrop(true);
     Cookies.remove("auth.auth_token");
     Cookies.remove("auth.refresh_token");
+    backDropCallBack(true);
     const timer = setTimeout(() => {
       navigate(URL_HOME);
     }, 600);
@@ -64,9 +64,6 @@ export default function AsideMenu(_: Props) {
           {state.asideMenu.collapse ? null : "Cerrar sesión"}
         </button>
       </div>
-      <Backdrop sx={{ color: "#ffff", zIndex: (theme) => theme.zIndex.drawer + 1 }} open={backdrop}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
     </aside>
   );
 }

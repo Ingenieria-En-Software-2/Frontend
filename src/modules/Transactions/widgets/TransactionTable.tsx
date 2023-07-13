@@ -16,6 +16,8 @@ import {
 
 import { InfoAlert } from "../../../components/Alerts";
 
+import { CloseIcon, CheckIcon } from "../../../components/ux/Icons";
+
 export interface Column {
   id: string;
   label: string;
@@ -29,6 +31,10 @@ interface Props {
   columns: ReadonlyArray<Column>;
   rows: ReadonlyArray<{ id: string; [key: string]: string | number | JSX.Element }>;
   error?: string;
+  buttons? : boolean;
+  parentCallback : any;
+  searchBy? : any,
+  mode : string
 }
 
 // ====================== CONSULT FORM ======================
@@ -177,7 +183,7 @@ function getTransactionsByPeriod(rows: any, initDate: string, endDate: string) {
  * @param setConsultInfo
  * @returns
  */
-function ConsultForm({ consultInfo, setConsultInfo }: any) {
+function ConsultForm({ consultInfo, setConsultInfo, changesDone}: any) {
   switch (consultInfo.consult) {
     // By month: Indicate a month
     case "4":
@@ -196,7 +202,7 @@ function ConsultForm({ consultInfo, setConsultInfo }: any) {
           }}
         >
           {months.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
+            <MenuItem key={option.value} value={option.value} onClick={(event) => {changesDone(["month",option.value]);}}>
               {option.label}
             </MenuItem>
           ))}
@@ -218,7 +224,7 @@ function ConsultForm({ consultInfo, setConsultInfo }: any) {
           }}
         >
           {quarters.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
+            <MenuItem key={option.value} value={option.value} onClick={(event) => {changesDone(["quarter",option.value])}}>
               {option.label}
             </MenuItem>
           ))}
@@ -237,6 +243,7 @@ function ConsultForm({ consultInfo, setConsultInfo }: any) {
           sx={{ width: 150, height: "auto", backgroundColor: "#f0f9ff" }}
           onChange={(event) => {
             setConsultInfo({ ...consultInfo, year: event.target.value });
+            changesDone(["year",event.target.value]);
           }}
         />
       );
@@ -255,6 +262,7 @@ function ConsultForm({ consultInfo, setConsultInfo }: any) {
           sx={{ width: 150, height: "auto", backgroundColor: "#f0f9ff" }}
           onChange={(event) => {
             setConsultInfo({ ...consultInfo, date: event.target.value });
+            changesDone(["date",event.target.value]);
           }}
           InputLabelProps={{ shrink: true }}
         />
@@ -273,6 +281,7 @@ function ConsultForm({ consultInfo, setConsultInfo }: any) {
             sx={{ width: 150, height: "auto", backgroundColor: "#f0f9ff" }}
             onChange={(event) => {
               setConsultInfo({ ...consultInfo, initDate: event.target.value });
+              changesDone(["period",consultInfo.initDate, consultInfo.endDate]);
             }}
             InputLabelProps={{ shrink: true }}
           />
@@ -285,6 +294,7 @@ function ConsultForm({ consultInfo, setConsultInfo }: any) {
             sx={{ width: 150, height: "auto", backgroundColor: "#f0f9ff", marginLeft: 2 }}
             onChange={(event) => {
               setConsultInfo({ ...consultInfo, endDate: event.target.value });
+              changesDone(["period",consultInfo.initDate, consultInfo.endDate]);
             }}
             InputLabelProps={{ shrink: true }}
           />
@@ -309,7 +319,7 @@ function ConsultForm({ consultInfo, setConsultInfo }: any) {
  *
  * @returns {JSX.Element} The DataTable component
  */
-export default function DataTable({ title = "", columns, rows, error }: Props): JSX.Element {
+export default function DataTable({ title = "", columns, rows, error, buttons = false, parentCallback, searchBy,mode}: Props): JSX.Element {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(15);
   const [visibleRows, setVisibleRows] = React.useState(rows);
@@ -376,12 +386,47 @@ export default function DataTable({ title = "", columns, rows, error }: Props): 
     consultActions[consultInfo.consult]();
   }, [consultInfo]);
 
+  const onTrigger = (e : event) => {
+        parentCallback([e.currentTarget.id,e.currentTarget.title]);
+    };
+
+  const handleChangesDone = (changedData) => {
+    searchBy(changedData);
+  }
+
+  const passTypeSearch = (data) => {
+    if (data==1){
+      return "all"
+    }
+    if (data==2){
+      return "today"
+    }
+    if (data==3){
+      return "week"
+    }
+    if (data==4){
+      return "month"
+    }
+    if (data==5){
+      return "quarter"
+    }
+    if (data==6){
+      return "year"
+    }
+    if (data==7){
+      return "date"
+    }
+    if (data==8){
+      return "period"
+    }
+  }
+
   return (
     <Box>
       <Grid container direction="row" justifyContent="flex-end" alignItems="center" sx={{ my: 2 }}>
         {/* Form to request data to consult */}
         <Box>
-          <ConsultForm consultInfo={consultInfo} setConsultInfo={setConsultInfo} />
+          <ConsultForm changesDone={handleChangesDone} consultInfo={consultInfo} setConsultInfo={setConsultInfo} />
         </Box>
         {/* Selector to consultOptions */}
         <Box sx={{ ml: 2 }}>
@@ -400,7 +445,7 @@ export default function DataTable({ title = "", columns, rows, error }: Props): 
             value={consultInfo.consult}
           >
             {consultOptions.map((state) => (
-              <MenuItem key={state.value} value={state.value}>
+              <MenuItem key={state.value} value={state.value} onClick={(event) => {mode(passTypeSearch(state.value));}}>
                 {state.label}
               </MenuItem>
             ))}
@@ -430,7 +475,7 @@ export default function DataTable({ title = "", columns, rows, error }: Props): 
                 {/* Title */}
                 {title && (
                   <TableRow>
-                    <TableCell colSpan={columns.length} align="center" sx={headerStyle}>
+                    <TableCell colSpan={buttons ? columns.length+1 : columns.length} align="center" sx={headerStyle}>
                       {title}
                     </TableCell>
                   </TableRow>
@@ -443,6 +488,11 @@ export default function DataTable({ title = "", columns, rows, error }: Props): 
                       {column.label}
                     </TableCell>
                   ))}
+
+                  {buttons &&
+                  <TableCell sx={headerStyle}> Opciones </TableCell>
+                  }
+                  
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -464,8 +514,21 @@ export default function DataTable({ title = "", columns, rows, error }: Props): 
                         </TableCell>
                       );
                     })}
+
+                    {buttons &&
+                      <TableCell>
+                        <button id={row.id} onClick={onTrigger} className="p-1 text-green-700 fa-2x" title="Aprobar" style={{backgroundColor : "transparent"}}>
+                           <CheckIcon/>
+                        </button>
+                        <button id={row.id} onClick={onTrigger} className="p-1 text-red-700 fa-2x left-10" title="Reversar" style={{backgroundColor : "transparent"}}>
+                           <CloseIcon />
+                        </button>
+                      </TableCell>
+                    }                
+
                   </TableRow>
                 ))}
+
               </TableBody>
             </Table>
           </TableContainer>
