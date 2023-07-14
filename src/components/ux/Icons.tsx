@@ -20,6 +20,7 @@ import {
   faTimesCircle,
   faCreditCard,
   faRightFromBracket,
+  faCalendar,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -110,4 +111,8 @@ export function CardIcon({ className }: ComponentProps) {
 
 export function RightBracketIcon({ className }: ComponentProps) {
   return <FontAwesomeIcon className={className} icon={faRightFromBracket} />;
+}
+
+export function EventIcon({ className }: ComponentProps) {
+  return <FontAwesomeIcon className={className} icon={faCalendar} />;
 }

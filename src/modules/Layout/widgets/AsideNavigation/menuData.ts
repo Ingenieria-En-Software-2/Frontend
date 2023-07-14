@@ -1,4 +1,13 @@
-import { HomeIcon, UsersIcon, RolesIcon, AddIcon, CardIcon,SpinnerIcon, SearchIcon} from "components/ux/Icons";
+import {
+  HomeIcon,
+  UsersIcon,
+  RolesIcon,
+  AddIcon,
+  CardIcon,
+  SpinnerIcon,
+  SearchIcon,
+  EventIcon,
+} from "components/ux/Icons";
 import MenuItemInterface from "../../types/menuItem.type";
 import SERVER_URLS from "utils/serversUrls";
 
@@ -12,7 +21,7 @@ const {
   URL_CHECKING_TRANSACTION,
   URL_DAILY_TRANSACTIONS,
   URL_PAGO_MOVIL,
-  URL_EVENT_LOGGER
+  URL_EVENT_LOGGER,
 } = SERVER_URLS;
 
 export const menuData: Array<MenuItemInterface> = [
@@ -83,7 +92,7 @@ export const menuData: Array<MenuItemInterface> = [
     id: "create-account-link",
     type: "link",
     href: URL_EVENT_LOGGER,
-    leftIcon: SpinnerIcon,
+    leftIcon: EventIcon,
     text: "Logger de Eventos",
   },
 ];

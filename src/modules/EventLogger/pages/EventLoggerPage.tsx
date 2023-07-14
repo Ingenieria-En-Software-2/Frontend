@@ -25,8 +25,8 @@ const EventLoggerPage = () => {
   // Get transactions from API
   useEffect(() => {
     async function getEvents() {
-      const URL_LOG_EVENTS = `${import.meta.env.VITE_API_URL}/log-events`;
-      const response = await axios.get(URL_LOG_EVENTS, {
+      const URL_LOG_EVENT = `${import.meta.env.VITE_API_URL}/log_event`;
+      const response = await axios.get(URL_LOG_EVENT, {
         headers: {
           Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
         },
@@ -44,33 +44,33 @@ const EventLoggerPage = () => {
     getEvents();
   }, []);
 
-  const dummyRows = [
-    {
-      id: "1",
-      occurrence_time: "2021-03-01 10:00:00",
-      description: "Depósito de dinero",
-    },
-    {
-      id: "2",
-      occurrence_time: "2023-07-08 10:00:00",
-      description: "Depósito de dinero",
-    },
-    {
-      id: "3",
-      occurrence_time: "2023-10-02 10:00:00",
-      description: "Depósito de dinero",
-    },
-    {
-      id: "4",
-      occurrence_time: "2021-09-01 10:00:00",
-      description: "Depósito de dinero",
-    },
-    {
-      id: "5",
-      occurrence_time: "2021-10-01 10:00:00",
-      description: "Depósito de dinero",
-    },
-  ];
+  // const dummyRows = [
+  //   {
+  //     id: "1",
+  //     occurrence_time: "2021-03-01 10:00:00",
+  //     description: "Depósito de dinero",
+  //   },
+  //   {
+  //     id: "2",
+  //     occurrence_time: "2023-07-08 10:00:00",
+  //     description: "Depósito de dinero",
+  //   },
+  //   {
+  //     id: "3",
+  //     occurrence_time: "2023-10-02 10:00:00",
+  //     description: "Depósito de dinero",
+  //   },
+  //   {
+  //     id: "4",
+  //     occurrence_time: "2021-09-01 10:00:00",
+  //     description: "Depósito de dinero",
+  //   },
+  //   {
+  //     id: "5",
+  //     occurrence_time: "2021-10-01 10:00:00",
+  //     description: "Depósito de dinero",
+  //   },
+  // ];
 
   return (
     <div className="main-container">
@@ -78,7 +78,7 @@ const EventLoggerPage = () => {
         <DashboardLayoutBasic>
           <Box sx={{ width: "100%" }}>
             <Title title="Logger de Eventos" />
-            <EventLoggerTable columns={columns} rows={dummyRows} error={error} />
+            <EventLoggerTable columns={columns} rows={rows} error={error} />
           </Box>
         </DashboardLayoutBasic>
       </DashboardWrapper>
