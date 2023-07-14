@@ -62,7 +62,7 @@ const DailyTransactions = () => {
   }, [g,input]);
 
   async function getTransactions() {
-    const URL_TRANSACTIONS = `${import.meta.env.VITE_API_URL}/user_transactions/${g}/${input}`;
+    const URL_TRANSACTIONS = `${import.meta.env.VITE_API_URL}/user_transactions/${g}/${input}/0`;
 
     try {
       const response = await axios.get(URL_TRANSACTIONS, {
@@ -93,13 +93,13 @@ const DailyTransactions = () => {
       
     } catch (error) {
       setRowTrans([])
-      //console.log(error);
-      //setModal(true);
+      console.log(error);
+      /*setModal(true);
       setModalText({
         title: "Ups!",
         text: error.response.data.message,
         button: "Volver",
-      });
+      });*/
     }
   }
 
@@ -145,11 +145,11 @@ const DailyTransactions = () => {
 
   const handleSearchBy = (data) => {
     if (g == "period"){
-      const concatenation = data[1].concat(" ").concat(data[2])
+      const concatenation = data[0].concat(" ").concat(data[1])
       setInput(concatenation);
     }
     else{
-      setInput(data[1]);
+      setInput(data[0]);
     }
   }
 

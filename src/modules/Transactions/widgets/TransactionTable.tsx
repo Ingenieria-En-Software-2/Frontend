@@ -18,6 +18,9 @@ import { InfoAlert } from "../../../components/Alerts";
 
 import { CloseIcon, CheckIcon } from "../../../components/ux/Icons";
 
+import { useEffect, useState } from "react";
+
+
 export interface Column {
   id: string;
   label: string;
@@ -184,6 +187,15 @@ function getTransactionsByPeriod(rows: any, initDate: string, endDate: string) {
  * @returns
  */
 function ConsultForm({ consultInfo, setConsultInfo, changesDone}: any) {
+  /*const [changeFirst, setChangeFirst] = useState(false)
+  const [changeSecond, setChangeSecond] = useState(false)
+
+  useEffect(() => {
+    if (changeFirst==true && changeSecond==true){
+      changesDone([consultInfo.initDate, consultInfo.endDate]);
+    }
+  }, [changeFirst,changeSecond]);*/
+
   switch (consultInfo.consult) {
     // By month: Indicate a month
     case "4":
@@ -202,7 +214,7 @@ function ConsultForm({ consultInfo, setConsultInfo, changesDone}: any) {
           }}
         >
           {months.map((option) => (
-            <MenuItem key={option.value} value={option.value} onClick={(event) => {changesDone(["month",option.value]);}}>
+            <MenuItem key={option.value} value={option.value} onClick={(event) => {changesDone([option.value]);}}>
               {option.label}
             </MenuItem>
           ))}
@@ -224,7 +236,7 @@ function ConsultForm({ consultInfo, setConsultInfo, changesDone}: any) {
           }}
         >
           {quarters.map((option) => (
-            <MenuItem key={option.value} value={option.value} onClick={(event) => {changesDone(["quarter",option.value])}}>
+            <MenuItem key={option.value} value={option.value} onClick={(event) => {changesDone([option.value])}}>
               {option.label}
             </MenuItem>
           ))}
@@ -243,7 +255,7 @@ function ConsultForm({ consultInfo, setConsultInfo, changesDone}: any) {
           sx={{ width: 150, height: "auto", backgroundColor: "#f0f9ff" }}
           onChange={(event) => {
             setConsultInfo({ ...consultInfo, year: event.target.value });
-            changesDone(["year",event.target.value]);
+            changesDone([event.target.value]);
           }}
         />
       );
@@ -262,7 +274,7 @@ function ConsultForm({ consultInfo, setConsultInfo, changesDone}: any) {
           sx={{ width: 150, height: "auto", backgroundColor: "#f0f9ff" }}
           onChange={(event) => {
             setConsultInfo({ ...consultInfo, date: event.target.value });
-            changesDone(["date",event.target.value]);
+            changesDone([event.target.value]);
           }}
           InputLabelProps={{ shrink: true }}
         />
@@ -281,7 +293,7 @@ function ConsultForm({ consultInfo, setConsultInfo, changesDone}: any) {
             sx={{ width: 150, height: "auto", backgroundColor: "#f0f9ff" }}
             onChange={(event) => {
               setConsultInfo({ ...consultInfo, initDate: event.target.value });
-              changesDone(["period",consultInfo.initDate, consultInfo.endDate]);
+              changesDone([consultInfo.initDate, consultInfo.endDate]);
             }}
             InputLabelProps={{ shrink: true }}
           />
@@ -294,7 +306,7 @@ function ConsultForm({ consultInfo, setConsultInfo, changesDone}: any) {
             sx={{ width: 150, height: "auto", backgroundColor: "#f0f9ff", marginLeft: 2 }}
             onChange={(event) => {
               setConsultInfo({ ...consultInfo, endDate: event.target.value });
-              changesDone(["period",consultInfo.initDate, consultInfo.endDate]);
+              changesDone([consultInfo.initDate, consultInfo.endDate]);
             }}
             InputLabelProps={{ shrink: true }}
           />
