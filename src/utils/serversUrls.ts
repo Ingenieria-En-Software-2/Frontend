@@ -13,6 +13,7 @@ export const SERVER_URLS = Object.freeze({
   URL_SAVINGS_TRANSACTION: "/savings-transaction",
   URL_CHECKING_TRANSACTION: "/checking-transaction",
   URL_DAILY_TRANSACTIONS : "/daily-transactions",
+  URL_PAGO_MOVIL : "/pago-movil",
 });
 
 export default SERVER_URLS;

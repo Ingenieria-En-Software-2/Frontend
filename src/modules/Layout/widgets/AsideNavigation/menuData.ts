@@ -11,6 +11,7 @@ const {
   URL_SAVINGS_TRANSACTION,
   URL_CHECKING_TRANSACTION,
   URL_DAILY_TRANSACTIONS,
+  URL_PAGO_MOVIL,
 } = SERVER_URLS;
 
 export const menuData: Array<MenuItemInterface> = [
@@ -69,5 +70,12 @@ export const menuData: Array<MenuItemInterface> = [
     href: URL_DAILY_TRANSACTIONS,
     leftIcon: CardIcon,
     text: "Transacciones Diarias",
+  },
+  {
+    id: "create-account-link",
+    type: "link",
+    href: URL_PAGO_MOVIL,
+    leftIcon: CardIcon,
+    text: "Pago Móvil",
   },
 ];
