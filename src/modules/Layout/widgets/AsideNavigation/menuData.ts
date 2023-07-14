@@ -12,6 +12,7 @@ const {
   URL_CHECKING_TRANSACTION,
   URL_DAILY_TRANSACTIONS,
   URL_PAGO_MOVIL,
+  URL_EVENT_LOGGER
 } = SERVER_URLS;
 
 export const menuData: Array<MenuItemInterface> = [
@@ -77,5 +78,12 @@ export const menuData: Array<MenuItemInterface> = [
     href: URL_PAGO_MOVIL,
     leftIcon: SpinnerIcon,
     text: "Pago Móvil",
+  },
+  {
+    id: "create-account-link",
+    type: "link",
+    href: URL_EVENT_LOGGER,
+    leftIcon: SpinnerIcon,
+    text: "Logger de Eventos",
   },
 ];
