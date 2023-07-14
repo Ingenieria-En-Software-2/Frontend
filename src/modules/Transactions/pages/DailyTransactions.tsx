@@ -70,6 +70,7 @@ const DailyTransactions = () => {
           Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
         },
       });
+      //console.log(response);
       //console.log(response.data.transactions);
       //console.log(response.status);
       //console.log(response.data.transactions[0]["origin"]);

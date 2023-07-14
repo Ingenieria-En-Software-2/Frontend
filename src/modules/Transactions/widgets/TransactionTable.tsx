@@ -20,6 +20,8 @@ import { CloseIcon, CheckIcon } from "../../../components/ux/Icons";
 
 import { useEffect, useState } from "react";
 
+import { Button } from "@mui/material";
+
 
 export interface Column {
   id: string;
@@ -195,6 +197,9 @@ function ConsultForm({ consultInfo, setConsultInfo, changesDone}: any) {
       changesDone([consultInfo.initDate, consultInfo.endDate]);
     }
   }, [changeFirst,changeSecond]);*/
+  const handleSendInfo = () => {
+    changesDone([consultInfo.initDate, consultInfo.endDate]);
+  }
 
   switch (consultInfo.consult) {
     // By month: Indicate a month
@@ -293,7 +298,6 @@ function ConsultForm({ consultInfo, setConsultInfo, changesDone}: any) {
             sx={{ width: 150, height: "auto", backgroundColor: "#f0f9ff" }}
             onChange={(event) => {
               setConsultInfo({ ...consultInfo, initDate: event.target.value });
-              changesDone([consultInfo.initDate, consultInfo.endDate]);
             }}
             InputLabelProps={{ shrink: true }}
           />
@@ -306,10 +310,11 @@ function ConsultForm({ consultInfo, setConsultInfo, changesDone}: any) {
             sx={{ width: 150, height: "auto", backgroundColor: "#f0f9ff", marginLeft: 2 }}
             onChange={(event) => {
               setConsultInfo({ ...consultInfo, endDate: event.target.value });
-              changesDone([consultInfo.initDate, consultInfo.endDate]);
             }}
             InputLabelProps={{ shrink: true }}
           />
+          <Button variant="contained" color="success" size="small" onClick={handleSendInfo}
+          sx={{ height: "auto", marginLeft: 2 }} >Buscar</Button>
         </div>
       );
     default:
