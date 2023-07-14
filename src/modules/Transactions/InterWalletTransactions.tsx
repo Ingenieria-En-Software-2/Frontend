@@ -177,6 +177,7 @@ const InterWalletAccountsTransactions = () => {
               value={formInputs.email_destination}
             />
 
+            {/*
             <TextField
               name="wallet"
               select
@@ -194,7 +195,20 @@ const InterWalletAccountsTransactions = () => {
                   {wallet.alias}
                 </MenuItem>
               ))}
-            </TextField>
+            </TextField>*/}
+
+            <TextField
+              name="wallet"
+              type="text"
+              variant="outlined"
+              color="primary"
+              label="Wallet"
+              fullWidth
+              required
+              sx={{ mb: 4 }}
+              onChange={(event) => handleFieldChange(event)}
+              value={formInputs.wallet}
+            />
 
             <TextField
               name="amount"
