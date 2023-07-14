@@ -325,14 +325,14 @@ export default function EventLoggerTable({ title = "", columns, rows, error }: P
   });
 
   const consultOptions = [
-    { value: "1", label: "Todas las transacciones" },
-    { value: "2", label: "Transacciones de hoy" },
-    { value: "3", label: "Transacciones de la semana" },
-    { value: "4", label: "Transacciones dado mes" },
-    { value: "5", label: "Transacciones dado trimestre" },
-    { value: "6", label: "Transacciones dado año" },
-    { value: "7", label: "Transacciones dado fecha" },
-    { value: "8", label: "Transacciones dado periodo" },
+    { value: "1", label: "Todos las eventos" },
+    { value: "2", label: "Eventos de hoy" },
+    { value: "3", label: "Eventos de la semana" },
+    { value: "4", label: "Eventos dado mes" },
+    { value: "5", label: "Eventos dado trimestre" },
+    { value: "6", label: "Eventos dado año" },
+    { value: "7", label: "Eventos dado fecha" },
+    { value: "8", label: "Eventos dado periodo" },
   ];
 
   const handleChangePage = (_event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
