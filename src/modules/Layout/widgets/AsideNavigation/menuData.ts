@@ -1,4 +1,4 @@
-import { HomeIcon, UsersIcon, RolesIcon, AddIcon, CardIcon } from "components/ux/Icons";
+import { HomeIcon, UsersIcon, RolesIcon, AddIcon, CardIcon,SpinnerIcon, SearchIcon} from "components/ux/Icons";
 import MenuItemInterface from "../../types/menuItem.type";
 import SERVER_URLS from "utils/serversUrls";
 
@@ -68,14 +68,14 @@ export const menuData: Array<MenuItemInterface> = [
     id: "create-account-link",
     type: "link",
     href: URL_DAILY_TRANSACTIONS,
-    leftIcon: CardIcon,
+    leftIcon: SearchIcon,
     text: "Transacciones Diarias",
   },
   {
     id: "create-account-link",
     type: "link",
     href: URL_PAGO_MOVIL,
-    leftIcon: CardIcon,
+    leftIcon: SpinnerIcon,
     text: "Pago Móvil",
   },
 ];

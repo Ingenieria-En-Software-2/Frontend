@@ -1,6 +1,6 @@
 import DashboardLayoutBasic from "modules/Layout/widgets/containers/DashboardLayoutBasic";
 import { DashboardWrapper } from "modules/Layout/context/dashboardLayout";
-import { Button, Link, MenuItem, Stack, Tab, Tabs, TextField, Typography } from "@mui/material";
+import { Button, Link, MenuItem, Stack, Tab, Tabs, TextField, Typography, Grid} from "@mui/material";
 import { useEffect, useState, useRef } from "react";
 import Box from "@mui/material/Box";
 import Title from "components/Title";
@@ -52,7 +52,7 @@ const PagoMovil = () => {
   const [modalOn, setModal] = useState(false);
   const [modalText, setModalText] = useState({ title: "", text: "", button: "" });
   const navigate = useNavigate();
-  const [currentAmount, setCurrentAmount] = useState(1000)
+  const [currentAmount, setCurrentAmount] = useState("Selecciona una cuenta")
 
   useEffect(() => {
     async function getOriginAccounts() {
@@ -65,8 +65,29 @@ const PagoMovil = () => {
       setOriginAccounts(response.data);
     }
     getOriginAccounts();
-    setCurrentAmount(formInputs.origin);
   }, []);
+
+  useEffect(() => {
+    lookForCurrentAmont()
+  }, [formInputs.origin]);
+
+  const lookForCurrentAmont = async () => {
+    try {
+      const URL_AMOUNT = `${URL_ACCOUNTS}/${formInputs.origin}`;
+      const res = await axios({
+          method: 'put',
+          url: URL_ACCOUNTS,
+          params : { "account" : formInputs.origin },
+          headers: {
+              Authorization : `Bearer ${Cookies.get("auth.auth_token")}`
+          }
+      });
+      //console.log(res);
+      setCurrentAmount(res.data.balance)
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const handleFieldChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target;
@@ -139,8 +160,11 @@ const PagoMovil = () => {
                     originAccounts.ahorro.map((account) => <MenuItem value={account}>{`Ahorro ${account}`}</MenuItem>)}
                 </TextField>
 
-                <Typography variant="h5" style={{color:'black'}}>
-                  Monto Disponible: {currentAmount}
+                <Typography variant="h6" style={{color:'#0e7490'}}>
+                Monto Disponible:
+                  <Box component="span" sx={{ p: 2, border: '1px grey', backgroundColor : '#0e7490', color: 'white',
+                  borderRadius: '16px', marginLeft: 10}}> 
+                  {currentAmount} </Box>
                 </Typography>;
 
                 <TextField
