@@ -14,6 +14,7 @@ export const SERVER_URLS = Object.freeze({
   URL_CHECKING_TRANSACTION: "/checking-transaction",
   URL_DAILY_TRANSACTIONS : "/daily-transactions",
   URL_PAGO_MOVIL : "/pago-movil",
+  URL_EVENT_LOGGER : "/event-logger",
 });
 
 export default SERVER_URLS;
