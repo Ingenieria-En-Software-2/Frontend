@@ -25,6 +25,11 @@ import {
   useGetRolesQuery,
 } from "services/dbApi";
 
+
+import axios from "axios";
+import Cookies from "js-cookie";
+
+
 // ------------------ Formularios ------------------
 const textInputs: Array<Column> = [
   { id: "username", label: "Usuario" },
@@ -83,6 +88,44 @@ function AddUser({ roles, users }: AddProps) {
 
   // Add user to database
   const [createUser, { error, isLoading }] = useCreateUserMutation();
+
+  const handleAddChanged = async (e) => {
+    e.preventDefault();
+
+    // Verify if username is unique
+    if (users.some((user) => user.login === inputs.username)) {
+      setFormErrorMessages([<InfoAlert message="El nombre de usuario ya existe" />]);
+      return;
+    }
+
+    const URL_USER_ADD_BACKEND = `${import.meta.env.VITE_AUTH_URL}/register`
+    try {
+        const response = await axios({
+            method: 'post',
+            url: URL_USER_ADD_BACKEND,
+            data: {
+                    'login': inputs.username,
+                    'password': "Ab123456#",
+                    'name': inputs.names,
+                    'lastname': inputs.surnames,
+                    'person_type' : 'legal',
+                    'user_type': inputs.usertype,
+                    'role_id': inputs.role,
+                  },
+            headers: {
+                Authorization : `Bearer ${Cookies.get("auth.auth_token")}`
+            }
+        });
+        console.log(response);
+        return response
+      } catch (error) {
+        console.log(error)
+      }
+
+    handleCloseModal();
+
+  }
+
   const handleAdd = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -119,7 +162,7 @@ function AddUser({ roles, users }: AddProps) {
         handleClose={handleCloseModal}
         title={title}
         content={
-          <FormControl sx={{ my: 2 }} component="form" onSubmit={handleAdd}>
+          <FormControl sx={{ my: 2 }} component="form" onSubmit={handleAddChanged}>
             {/* Error Messages */}
             {formErrorMessages.map((message) => (
               <Box>{message}</Box>
@@ -220,6 +263,7 @@ function EditUser({ user, roles, users }: EditProps) {
   // Modal state
   const [open, setOpen] = useState(false);
   const handleOpenModal = () => setOpen(true);
+
   const handleCloseModal = () => {
     setOpen(false);
     setFormErrorMessages([]);
@@ -227,6 +271,49 @@ function EditUser({ user, roles, users }: EditProps) {
 
   // Update user in database (not same id)
   const [updateUser] = useUpdateUserMutation();
+
+  const handleEditChanged = async (e) => {
+    e.preventDefault();
+
+    // Verify if username is unique
+    if (users.some((u) => u.login === inputs.username && user.login !== inputs.username)) {
+      setFormErrorMessages([<InfoAlert message="El nombre de usuario ya existe" />]);
+      return;
+    }
+
+    const URL_USER_ADD_BACKEND = `${import.meta.env.VITE_AUTH_URL}/register`
+    try {
+      const response = await axios({
+          method: 'get',
+          url: URL_USER_ADD_BACKEND,
+          params: {
+                  'login': inputs.username,
+                  'password': "Ab123456#",
+                  'name': inputs.names,
+                  'lastname': inputs.surnames,
+                  'person_type' : 'legal',
+                  'user_type': inputs.usertype,
+                  'role_id': inputs.role,
+                },
+          headers: {
+              Authorization : `Bearer ${Cookies.get("auth.auth_token")}`
+          }
+      });
+      console.log(response);
+    } catch (error) {
+      console.log(error)
+    }
+    // Update inputs
+    setInputs({
+      username: inputs.username,
+      names: inputs.names,
+      surnames: inputs.surnames,
+      usertype: inputs.usertype,
+      role: inputs.role,
+    });
+    handleCloseModal();
+  }
+
   const handleEdit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -268,7 +355,7 @@ function EditUser({ user, roles, users }: EditProps) {
         handleClose={handleCloseModal}
         title={title}
         content={
-          <FormControl sx={{ my: 2 }} component="form" onSubmit={handleEdit}>
+          <FormControl sx={{ my: 2 }} component="form" onSubmit={handleEditChanged}>
             {/* Error Messages */}
             {formErrorMessages.map((message) => (
               <Box>{message}</Box>
@@ -356,6 +443,28 @@ function DeleteUser({ user }: DeleteProps) {
   const title = `Eliminar usuario "${user.login}"`;
 
   const [deleteUser, { error, isLoading }] = useDeleteUserMutation();
+
+  const handleDeleteChanged = async () => {
+    const URL_USER_ADD_BACKEND = `${import.meta.env.VITE_AUTH_URL}/register`
+    try {
+      const response = await axios({
+          method: 'put',
+          url: URL_USER_ADD_BACKEND,
+          params: {
+                  'id': user.id,
+                },
+          headers: {
+              Authorization : `Bearer ${Cookies.get("auth.auth_token")}`
+          }
+      });
+      console.log(response);
+    } catch (error) {
+      console.log(error)
+    }
+
+    handleCloseModal();
+  }
+
   const handleDelete = () => {
     deleteUser(user.id);
 
@@ -380,7 +489,7 @@ function DeleteUser({ user }: DeleteProps) {
           <Box sx={{ my: 2 }}>
             <Box>¿Estás seguro de eliminar al usuario "{user.login}"?</Box>
             <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-              <Button sx={{ mt: 2, backgroundColor: "#e0f2fe" }} onClick={handleDelete}>
+              <Button sx={{ mt: 2, backgroundColor: "#e0f2fe" }} onClick={handleDeleteChanged}>
                 Eliminar
               </Button>
             </Box>

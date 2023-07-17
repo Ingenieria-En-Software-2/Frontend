@@ -49,7 +49,7 @@ const DailyTransactions = () => {
   // const { data, error: errorTransactions } = useGetTransactionsByUserQuery();
   const [rows, setRows] = useState([]);
   const [error, setError] = useState("");
-  const [g, setG] = useState("all");
+  const [g, setG] = useState("today");
   const [input , setInput] = useState("all");
   const [rowTransactions, setRowTrans] = useState([]);
   const [modalOn, setModal] = useState(false);

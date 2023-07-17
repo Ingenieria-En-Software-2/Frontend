@@ -32,54 +32,40 @@ const SavingsPage = () => {
   // const { data, error: errorTransactions } = useGetTransactionsByUserQuery();
   const [rows, setRows] = useState([]);
   const [error, setError] = useState("");
-
-  // useEffect(() => {
-  //   if (data) {
-  //     console.log("data", data);
-  //     setRows(
-  //       data.items.map((item, index) => ({
-  //         id: index.toString(),
-  //         transaction_id: item.id,
-  //         transaction_date: item.transaction_date,
-  //         transaction_type: item.transaction_type,
-  //         transaction_description: item.description,
-  //         amount: item.amount,
-  //       }))
-  //     );
-  //     if (data.items.length === 0) {
-  //       setError("No se encontraron transacciones de cuenta corriente");
-  //     }
-  //   }
-  // }, [data]);
-
-  // useEffect(() => {
-  //   if (errorTransactions) {
-  //     console.log("errorTransactions", errorTransactions);
-  //     setError("Ocurrió un error al cargar las transacciones");
-  //   }
-  // }, [errorTransactions]);
+  const [g, setG] = useState("all");
+  const [input , setInput] = useState("all");
 
   // Get transactions from API
   useEffect(() => {
-    async function getTransactions() {
-      const URL_TRANSACTIONS = `${import.meta.env.VITE_API_URL}/user_transactions`;
+    getTransactions();
+  }, []);
+
+  async function getTransactions() {
+    const URL_TRANSACTIONS = `${import.meta.env.VITE_API_URL}/user_transactions/${g}/${input}/2`;
+
+    try {
       const response = await axios.get(URL_TRANSACTIONS, {
         headers: {
           Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
         },
       });
-
-      if (response.data) {
-        const items = response.data.items;
-        setRows(items);
-
-        if (response.data.items.length === 0) {
-          setError("No se encontraron transacciones de cuenta corriente");
-        }
+      let newArr = [];
+      for (var val of response.data.transactions) {
+        const cell = {
+                        id: val["transaction_id"],
+                        transaction_date: val["transaction_date"],
+                        transaction_type: val["transaction_type"],
+                        description: val["description"],
+                        amount: val["amount"],
+                      }
+        newArr.push(cell);
       }
+      setRows(newArr);   
+    } catch (error) {
+      setRows([])
+      console.log(error);
     }
-    getTransactions();
-  }, []);
+  }
 
   const dummyRows = [
     {
@@ -119,6 +105,20 @@ const SavingsPage = () => {
     },
   ];
 
+  const handleSearchBy = (data) => {
+    if (g == "period"){
+      const concatenation = data[0].concat(" ").concat(data[1])
+      setInput(concatenation);
+    }
+    else{
+      setInput(data[0]);
+    }
+  }
+
+  const handleMode = (data) => {
+    setG(data);
+  }
+
   return (
     <div className="main-container">
       <DashboardWrapper>
@@ -126,7 +126,8 @@ const SavingsPage = () => {
           <Box sx={{ width: "100%" }}>
             <InfoUser user={{ name: "User", document: "C-123456789" }} />
             <Title title="Cuenta de Ahorros" />
-            <TransactionTable title="Detalle de transacciones" columns={columns} rows={dummyRows} error={error} />
+            <TransactionTable searchBy={handleSearchBy} mode={handleMode}
+            title="Detalle de transacciones" columns={columns} rows={rows} error={error} />
           </Box>
         </DashboardLayoutBasic>
       </DashboardWrapper>
