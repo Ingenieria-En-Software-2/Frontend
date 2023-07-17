@@ -17,7 +17,7 @@ const columns: Array<Column> = [
   { id: "id", label: "ID", align: "center" },
   { id: "occurrence_time", label: "Fecha, Hora", align: "center" },
   { id: "description", label: "Evento", align: "center" },
-  { id: "module", label: "Módulo", align: "center" },
+  // { id: "module", label: "Módulo", align: "center" },
   { id: "actions", label: "Acciones", align: "center" },
 ];
 
@@ -53,10 +53,10 @@ const EventDetailsModal = ({ event }: any) => {
               <Box sx={{ fontWeight: "bold" }}>Hora:</Box>
               <Box>{event.occurrence_time.split(",")[1]}</Box>
             </Box>
-            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            {/* <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <Box sx={{ fontWeight: "bold" }}>Módulo:</Box>
               <Box>{event.module}</Box>
-            </Box>
+            </Box> */}
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <Box sx={{ fontWeight: "bold" }}>Evento:</Box>
               <Box>{event.description}</Box>
@@ -160,7 +160,7 @@ const EventLoggerPage = () => {
 
           // Add module and actions columns
           rows.forEach((row: any) => {
-            row.module = "Usuarios";
+            // row.module = "Usuarios";
             row.actions = (
               <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <EventDetailsModal event={row} />
