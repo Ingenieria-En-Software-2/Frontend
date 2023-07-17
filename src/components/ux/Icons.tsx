@@ -21,6 +21,8 @@ import {
   faCreditCard,
   faRightFromBracket,
   faCalendar,
+  faFileArchive,
+  faMagnifyingGlassPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -115,4 +117,8 @@ export function RightBracketIcon({ className }: ComponentProps) {
 
 export function EventIcon({ className }: ComponentProps) {
   return <FontAwesomeIcon className={className} icon={faCalendar} />;
+}
+
+export function SearchInfoIcon({ className }: ComponentProps) {
+  return <FontAwesomeIcon className={className} icon={faMagnifyingGlassPlus} />;
 }

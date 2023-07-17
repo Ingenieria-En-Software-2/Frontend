@@ -93,7 +93,7 @@ export default function DataTable({ title = "", columns, rows, addForm, error }:
             variant="outlined"
             size="small"
             autoComplete="off"
-            sx={{ width: "auto", height: "auto", backgroundColor: "#e0f2fe" }}
+            sx={{ width: "auto", height: "auto", backgroundColor: "#f0f9ff" }}
             placeholder="Filtrar"
             type="search"
             onInput={(e) => requestSearch((e.target as HTMLInputElement).value)}
