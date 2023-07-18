@@ -21,8 +21,8 @@ import { Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
 
 const { URL_CREATE_RECIPIENT_AFFILIATION } = SERVER_URLS;
 
-const URL_RECIPIENT_AFFILIATION = `${import.meta.env.VITE_API_URL}/mobile_payment_recipient_affiliation`;
-const URL_WALLETS = `${import.meta.env.VITE_API_URL}/user_wallets`;
+const URL_RECIPIENT_AFFILIATION = `${import.meta.env.VITE_BACKEND_URL}/user/user_affiliates`;
+const URL_WALLETS = `${import.meta.env.VITE_BACKEND_URL}/api/user_wallets`;
 
 type RecipientAffiliationFields = {
   identification_document: string;
@@ -101,24 +101,58 @@ const RecipientAffiliationMobilePayments = () => {
     e.preventDefault();
     console.log(formInputs);
     try {
-      const response = await axios.post(URL_RECIPIENT_AFFILIATION, formInputs, {
+      /* const response = await axios.post(URL_RECIPIENT_AFFILIATION, formInputs, {
         headers: {
           Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
         },
-      });
-      console.log(response.status);
+      }); */
+      const opts = {
+        method: "POST",
+        headers: {
+          "Authorization": 'Bearer ' + `${Cookies.get("auth.auth_token")}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          identification_document: formInputs.identification_document,
+          name: formInputs.destination,
+          phone: formInputs.phone,
+          email: formInputs.email,
+          wallet: formInputs.destination_wallet
+        })
+      };
+  
+      fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/user_affiliates`, opts)
+        .then((resp) => {
+          console.log(resp);
+          if (resp.status === 200) {
+            setModal(true);
+            setModalText({
+              title: "Configuración de Pago Móvil Exitosa",
+              text: "El destinatario ha sido afiliado exitosamente",
+              button: "Volver" });
+            return resp.json();
+          }
+          if (resp.status === 401) {
+            setModal(true);
+            setModalText({
+              title: "Error al afiliar destinatario",
+              text: "Ha ocurrido un error al afiliar el destinatario",
+              button: "Volver"});
+            return resp.json();
+          }
+        });
+      /* console.log(response.status);
       if (response.status == 200) {
         console.log(response.data.message);
         setModal(true);
         setModalText({ title: "Configuración de Pago Móvil Exitosa", text: response.data.message, button: "Volver" });
-      }
+      } */
     } catch (error) {
       console.log(error);
-      console.log(error.response.data.message);
       setModal(true);
       setModalText({
         title: "Error al afiliar destinatario",
-        text: error.response.data.message,
+        text: "Ha ocurrido un error al afiliar el destinatario",
         button: "Volver",
       });
     }
@@ -294,7 +328,6 @@ const RecipientAffiliationMobilePayments = () => {
                             color="primary"
                             label="Wallet"
                             fullWidth
-                            required
                             sx={{ mb: 4 }}
                             onChange={(event) => handleFieldChange(event)}
                             value={formInputs.destination_wallet}
