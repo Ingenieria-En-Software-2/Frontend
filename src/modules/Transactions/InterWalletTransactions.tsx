@@ -46,7 +46,7 @@ const InterWalletAccountsTransactions = () => {
   const [wallets, setWallets] = useState([]);
   const [formInputs, setFormInputs] = useState<IWAccountsFields>({
     origin: "",
-    email_destination: "",
+    destination: "",
     wallet: "",
     amount: "",
     transaction_type: "inter_wallet",
@@ -75,8 +75,11 @@ const InterWalletAccountsTransactions = () => {
           Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
         },
       });
-      console.log(response);
-      setWallets(response.data);
+      console.log(response.data.wallets);
+      const index = response.data.wallets.findIndex(d => d.description === 'Caribbean Wallet');
+      response.data.wallets.splice(index, 1);
+      //const other_wallets = response.data.wallets.splice(index, 1)
+      setWallets(response.data.wallets);
     }
 
     getOriginAccounts();
@@ -125,7 +128,7 @@ const InterWalletAccountsTransactions = () => {
     navigate(URL_NEW_TRANSACTIONS);
   };
 
-  console.log(originAccounts);
+  //console.log(originAccounts);
 
   return (
     <>
@@ -156,21 +159,8 @@ const InterWalletAccountsTransactions = () => {
                 originAccounts.ahorro.map((account) => <MenuItem value={account}>{`Ahorro ${account}`}</MenuItem>)}
             </TextField>
 
-            {/* <TextField    Deberia ser un correo electronico porque son transacciones interwallet y colocar el nombre de la wallet
-            name="email_destination"
-            type="text"
-            variant="outlined"
-            color="primary"
-            label="Cuenta de destino"
-            fullWidth
-            required
-            sx={{ mb: 4 }}
-            onChange={(event) => handleFieldChange(event)}
-            value={formInputs.email_destination}
-          /> */}
-
             <TextField
-              name="email_destination"
+              name="destination"
               type="email"
               variant="outlined"
               color="primary"
@@ -179,10 +169,10 @@ const InterWalletAccountsTransactions = () => {
               required
               sx={{ mb: 4 }}
               onChange={(event) => handleFieldChange(event)}
-              value={formInputs.email_destination}
+              value={formInputs.destination}
             />
 
-            {/*
+            
             <TextField
               name="wallet"
               select
@@ -197,23 +187,10 @@ const InterWalletAccountsTransactions = () => {
             >
               {wallets.map((wallet) => (
                 <MenuItem key={wallet.id} value={wallet.id}>
-                  {wallet.alias}
+                  {wallet.description}
                 </MenuItem>
               ))}
-            </TextField>*/}
-
-            <TextField
-              name="wallet"
-              type="text"
-              variant="outlined"
-              color="primary"
-              label="Wallet"
-              fullWidth
-              required
-              sx={{ mb: 4 }}
-              onChange={(event) => handleFieldChange(event)}
-              value={formInputs.wallet}
-            />
+            </TextField>
 
             <TextField
               name="amount"

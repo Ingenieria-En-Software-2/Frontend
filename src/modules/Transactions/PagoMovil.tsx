@@ -50,9 +50,11 @@ const PagoMovil = () => {
     currency:""
   });
   const [modalOn, setModal] = useState(false);
+  const [wallets, setWallets] = useState([]);
   const [modalText, setModalText] = useState({ title: "", text: "", button: "" });
   const navigate = useNavigate();
   const [currentAmount, setCurrentAmount] = useState("Selecciona una cuenta")
+  const URL_WALLETS = `${import.meta.env.VITE_API_URL}/wallet`;
 
   useEffect(() => {
     async function getOriginAccounts() {
@@ -64,6 +66,15 @@ const PagoMovil = () => {
       });
       setOriginAccounts(response.data);
     }
+    async function getWallets() {
+      const response = await axios.get(URL_WALLETS, {
+        headers: {
+          Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
+        },
+      });
+      setWallets(response.data.wallets);
+    }
+    getWallets();
     getOriginAccounts();
   }, []);
 
@@ -215,7 +226,7 @@ const PagoMovil = () => {
 
                 <TextField
                   name="destination_wallet"
-                  type="text"
+                  select
                   variant="outlined"
                   color="primary"
                   label="Wallet de destino"
@@ -223,9 +234,15 @@ const PagoMovil = () => {
                   required
                   sx={{ mb: 4 }}
                   onChange={(event) => handleFieldChange(event)}
-                  key='dest_wallet'
                   value={formInputs.destination_wallet}
-                />
+                >
+                  {wallets.map((wallet) => (
+                    <MenuItem key={wallet.id} value={wallet.id}>
+                      {wallet.description}
+                    </MenuItem>
+                  ))}
+                </TextField>
+
 
                 <TextField
                   name="currency"
