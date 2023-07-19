@@ -35,27 +35,27 @@ type RecipientAffiliationFields = {
 
 const RecipientAffiliationMobilePayments = () => {
   // Sample recipient affiliates
-  const sampleRecipientAffiliates = [
-    {
-      id: 1,
-      identification_document: '12345678',
-      destination: 'John Doe',
-      phone: '1234567890',
-      email: 'john.doe@example.com',
-      destination_wallet: 'Wallet 1',
-    },
-    {
-      id: 2,
-      identification_document: '23456789',
-      destination: 'Jane Doe',
-      phone: '2345678901',
-      email: 'jane.doe@example.com',
-      destination_wallet: 'Wallet 2',
-    },
-  ];  
+  // const sampleRecipientAffiliates = [
+  //   {
+  //     id: 1,
+  //     identification_document: '12345678',
+  //     destination: 'John Doe',
+  //     phone: '1234567890',
+  //     email: 'john.doe@example.com',
+  //     destination_wallet: 'Wallet 1',
+  //   },
+  //   {
+  //     id: 2,
+  //     identification_document: '23456789',
+  //     destination: 'Jane Doe',
+  //     phone: '2345678901',
+  //     email: 'jane.doe@example.com',
+  //     destination_wallet: 'Wallet 2',
+  //   },
+  // ];  
 
   const [wallets, setWallets] = useState([]);
-  const [recipientAffiliates, setRecipientAffiliates] = useState(sampleRecipientAffiliates);
+  const [recipientAffiliates, setRecipientAffiliates] = useState([]);
   const [formInputs, setFormInputs] = useState<RecipientAffiliationFields>({
     identification_document: "",
     destination: "",
@@ -163,7 +163,7 @@ const RecipientAffiliationMobilePayments = () => {
     navigate(URL_CREATE_RECIPIENT_AFFILIATION);
   };
 
-  const handleFieldEdit = (event: React.ChangeEvent<HTMLInputElement>, id: string, field: string) => {
+  const handleFieldEdit = (event: React.ChangeEvent<HTMLInputElement>, id: number, field: string) => {
     // Find the index of the recipient affiliate with the given ID
     const index = recipientAffiliates.findIndex((affiliate) => affiliate.id === id);
   
@@ -179,11 +179,11 @@ const RecipientAffiliationMobilePayments = () => {
   };
     
   // Edit the recipient affiliate with the given ID
-  const handleEdit = (id: string) => {
+  const handleEdit = (id: number) => {
     setEditingId(id);
   };
     
-  const handleSave = async (id: string) => {
+  const handleSave = async (id: number) => {
     try {
       // Find the updated recipient affiliate with the given ID
       const updatedAffiliate = recipientAffiliates.find((affiliate) => affiliate.id === id);
@@ -218,7 +218,7 @@ const RecipientAffiliationMobilePayments = () => {
   };
       
   // Delete the recipient affiliate with the given ID
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: number) => {
     try {
       // Replace with the URL of your delete recipient affiliate endpoint
       const url = `${URL_RECIPIENT_AFFILIATION}/${id}`;
