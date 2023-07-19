@@ -108,6 +108,10 @@ const PagoMovil = () => {
         setModal(true);
         setModalText({ title: "Pago Móvil realizado con éxito", text: response.data.message, button: "Volver" });
       }
+      if (response.status == 201){
+        setModal(true);
+        setModalText({ title: "Pago Móvil Retenido", text: response.data.message, button: "Volver" });
+      }
     } catch (error) {
       //console.log(error.response.data.message);
       setModal(true);

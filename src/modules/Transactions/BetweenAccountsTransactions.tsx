@@ -59,7 +59,7 @@ const BetweenAccountsTransactions = () => {
       const response = await axios.get(URL_ACCOUNTS, {
         headers: {
           Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
-          Origin: `${URL_TRANSACTIONS}`,
+          //Origin: `${URL_TRANSACTIONS}`,
         },
       });
       setOriginAccounts(response.data);
@@ -87,6 +87,10 @@ const BetweenAccountsTransactions = () => {
         setModal(true);
         setModalText({ title: "Transferencia Exitosa", text: response.data.message, button: "Volver" });
       }
+      if (response.status == 201){
+        setModal(true);
+        setModalText({ title: "Transferencia Retenida", text: response.data.message, button: "Volver" });
+      }
     } catch (error) {
       console.log(error);
       console.log(error.response.data.message);
@@ -107,7 +111,7 @@ const BetweenAccountsTransactions = () => {
 
   const unfillAccountText = () => {};
 
-  console.log(originAccounts);
+  //console.log(originAccounts);
 
   return (
     <>

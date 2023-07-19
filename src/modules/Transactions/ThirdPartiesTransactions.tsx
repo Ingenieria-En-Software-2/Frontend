@@ -87,6 +87,10 @@ const ThirdPartiesAccountsTransactions = () => {
         setModal(true);
         setModalText({ title: "Transferencia Exitosa", text: response.data.message, button: "Volver" });
       }
+      if (response.status == 201){
+        setModal(true);
+        setModalText({ title: "Transferencia Retenida", text: response.data.message, button: "Volver" });
+      }
     } catch (error) {
       console.log(error.response.data.message);
       setModal(true);

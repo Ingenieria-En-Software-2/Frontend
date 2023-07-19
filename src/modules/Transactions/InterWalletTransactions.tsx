@@ -23,7 +23,7 @@ const { URL_NEW_TRANSACTIONS } = SERVER_URLS;
 
 const URL_TRANSACTIONS = `${import.meta.env.VITE_API_URL}/user_transactions`;
 const URL_ACCOUNTS = `${import.meta.env.VITE_API_URL}/user_account`;
-const URL_WALLETS = `${import.meta.env.VITE_API_URL}/user_wallets`;
+const URL_WALLETS = `${import.meta.env.VITE_API_URL}/wallet`;
 
 type IWAccountsFields = {
   origin: string;
@@ -75,6 +75,7 @@ const InterWalletAccountsTransactions = () => {
           Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
         },
       });
+      console.log(response);
       setWallets(response.data);
     }
 
@@ -101,6 +102,10 @@ const InterWalletAccountsTransactions = () => {
         console.log(response.data.message);
         setModal(true);
         setModalText({ title: "Transferencia Exitosa", text: response.data.message, button: "Volver" });
+      }
+      if (response.status == 201){
+        setModal(true);
+        setModalText({ title: "Transferencia Retenida", text: response.data.message, button: "Volver" });
       }
     } catch (error) {
       console.log(error);
