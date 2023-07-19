@@ -85,6 +85,7 @@ const DailyTransactions = () => {
                         transaction_type: val["transaction_type"],
                         description : val["description"],
                         amount :val["amount"],
+                        status : val['status']
                       }
         newArr.push(cell);
       }
@@ -105,7 +106,7 @@ const DailyTransactions = () => {
   }
 
   const reverseTransaction = async (transaction_id) => {
-    const URL_REVERSE = `${import.meta.env.VITE_API_URL}/user_transactions/${transaction_id}`;
+    const URL_REVERSE = `${import.meta.env.VITE_API_URL}/user_transactions/${transaction_id}/3`;
     try {
       const res = await axios({
           method: 'put',
@@ -129,6 +130,32 @@ const DailyTransactions = () => {
 
   }
 
+  const approveTransaction = async (transaction_id) => {
+    const URL_APPROVE = `${import.meta.env.VITE_API_URL}/user_transactions/${transaction_id}/2`;
+    try {
+      const res = await axios({
+          method: 'put',
+          url: URL_APPROVE,
+          headers: {
+              Authorization : `Bearer ${Cookies.get("auth.auth_token")}`
+          }
+      });
+      console.log(res);
+      if (res.data.status == 200){
+        setModal(true);
+        setModalText({ title: "Se ha aprobado la transferencia", text: res.data.message, button: "Volver" });
+      }
+    } catch (error) {
+      setModal(true);
+      setModalText({
+        title: "Error al aprobar la transferencia",
+        text: error.response.data.message,
+        button: "Volver",
+      });
+    }
+
+  }
+
   const handleCloseModal = () => {
     setModal(false);
     navigate(URL_DAILY_TRANSACTIONS);
@@ -137,6 +164,7 @@ const DailyTransactions = () => {
   const handleCallback = (childData) => {
         if (childData[1] == "Aprobar"){
           console.log("Se aprueba")
+          approveTransaction(childData[0]);
         }
         else{
           console.log("Se reversa")

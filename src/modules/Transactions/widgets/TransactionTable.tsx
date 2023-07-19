@@ -522,6 +522,7 @@ export default function DataTable({ title = "", columns, rows, error, buttons = 
                       "&:last-child td, &:last-child th": { border: 0 },
                       "&:nth-of-type(odd)": { backgroundColor: "#f0f9ff" },
                     }}
+                    title = {row.status == 1 ? "Transacción Retenida" : row.status == 2 ? "Transacción Completada": "Transacción Cancelada"}
                   >
                     {columns.map((column) => {
                       const value = row[column.id];
@@ -532,16 +533,36 @@ export default function DataTable({ title = "", columns, rows, error, buttons = 
                       );
                     })}
 
-                    {buttons &&
+                    {buttons && row.status == 1 &&
                       <TableCell>
                         <button id={row.id} onClick={onTrigger} className="p-1 text-green-700 fa-2x" title="Aprobar" style={{backgroundColor : "transparent"}}>
-                           <CheckIcon/>
+                           <CheckIcon/> 
                         </button>
                         <button id={row.id} onClick={onTrigger} className="p-1 text-red-700 fa-2x left-10" title="Reversar" style={{backgroundColor : "transparent"}}>
                            <CloseIcon />
                         </button>
                       </TableCell>
-                    }                
+                    }   
+                    {buttons && row.status == 2 &&
+                      <TableCell>
+                        <button id={row.id} disabled onClick={onTrigger} className="p-1 text-grey-700 fa-2x" title="Aprobar" style={{backgroundColor : "transparent"}}>
+                           <CheckIcon/> 
+                        </button>
+                        <button id={row.id} onClick={onTrigger} className="p-1 text-red-700 fa-2x left-10" title="Reversar" style={{backgroundColor : "transparent"}}>
+                           <CloseIcon />
+                        </button>
+                      </TableCell>
+                    }  
+                    {buttons && row.status == 3 &&
+                      <TableCell>
+                        <button id={row.id} onClick={onTrigger} className="p-1 text-green-700 fa-2x" title="Aprobar" style={{backgroundColor : "transparent"}}>
+                           <CheckIcon/> 
+                        </button>
+                        <button id={row.id} disabled onClick={onTrigger} className="p-1 text-grey-700 fa-2x left-10" title="Reversar" style={{backgroundColor : "transparent"}}>
+                           <CloseIcon />
+                        </button>
+                      </TableCell>
+                    }                    
 
                   </TableRow>
                 ))}
