@@ -21,10 +21,11 @@ import { Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material'
 
 const { URL_CREATE_RECIPIENT_AFFILIATION } = SERVER_URLS;
 
-const URL_RECIPIENT_AFFILIATION = `${import.meta.env.VITE_BACKEND_URL}/user/user_affiliates`;
-const URL_WALLETS = `${import.meta.env.VITE_BACKEND_URL}/api/user_wallets`;
+const URL_RECIPIENT_AFFILIATION = `${import.meta.env.VITE_API_URL}/user/user_affiliates`;
+const URL_WALLETS = `${import.meta.env.VITE_API_URL}/user_wallets`;
 
 type RecipientAffiliationFields = {
+  id: number,
   identification_document: string;
   destination: string;
   phone: string;
@@ -67,37 +68,12 @@ const RecipientAffiliationMobilePayments = () => {
   const [modalText, setModalText] = useState({ title: "", text: "", button: "" });
   const [editingId, setEditingId] = useState(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    async function getWallets() {
-      const response = await axios.get(URL_WALLETS, {
-        headers: {
-          Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
-          Origin: `${URL_RECIPIENT_AFFILIATION}`,
-        },
-      });
-      setWallets(response.data);
-    }
-
-    async function getRecipientAffiliates() {
-      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/user/affiliates_list`, {
-        headers: {
-          Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
-          Origin: `${URL_RECIPIENT_AFFILIATION}`,
-        },
-      });
-      setRecipientAffiliates(Object.values(response.data)[2]);
-    }
-
-    getWallets();
-    getRecipientAffiliates();
-  }, []);
-
+  
   const handleFieldChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target;
     setFormInputs({ ...formInputs, [name]: value });
   };
-
+  
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     // console.log(formInputs);
@@ -117,9 +93,9 @@ const RecipientAffiliationMobilePayments = () => {
         })
       };
   
-      fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/user_affiliates`, opts)
+      fetch(URL_RECIPIENT_AFFILIATION, opts)
         .then((resp) => {
-          console.log(resp);
+          // console.log(resp);
           if (resp.status === 200) {
             setModal(true);
             setModalText({
@@ -147,6 +123,30 @@ const RecipientAffiliationMobilePayments = () => {
       });
     }
   };
+  
+  useEffect(() => {
+    // async function getWallets() {
+    //   const response = await axios.get(URL_WALLETS, {
+    //     headers: {
+    //       Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
+    //       Origin: `${URL_RECIPIENT_AFFILIATION}`,
+    //     },
+    //   });
+    //   setWallets(response.data);
+    // }
+
+    async function getRecipientAffiliates() {
+      const response = await axios.get(URL_RECIPIENT_AFFILIATION, {
+        headers: {
+          Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
+        },
+      });
+      setRecipientAffiliates(Object.values(response.data)[2]);
+    }
+
+    // getWallets();
+    getRecipientAffiliates();
+  }, [handleSubmit]);
 
   const handleCloseModal = () => {
     setModal(false);
@@ -209,21 +209,35 @@ const RecipientAffiliationMobilePayments = () => {
       
   // Delete the recipient affiliate with the given ID
   const handleDelete = async (id: number) => {
-    try {
-      // Replace with the URL of your delete recipient affiliate endpoint
-      const url = `${URL_RECIPIENT_AFFILIATION}/${id}`;
-  
-      const response = await axios.delete(url, {
+    try {  
+      const response = await axios.delete(URL_RECIPIENT_AFFILIATION, {
+        data: { affiliate_id: id },
         headers: {
           Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
         },
       });
   
       // Handle successful response
-      console.log(response.data);
+      // console.log(response.data);
   
       // Remove the deleted recipient affiliate from the state
-      setRecipientAffiliates((prev) => prev.filter((affiliate) => affiliate.id !== id));
+      setRecipientAffiliates((prev) => prev.filter((affiliate: RecipientAffiliationFields) => affiliate.id !== id));
+
+      if (response.status === 200) {
+        setModal(true);
+        setModalText({
+          title: "Eliminación de Afiliado Exitosa",
+          text: "El destinatario ha sido eliminado exitosamente",
+          button: "Volver" });
+      }
+      if (response.status === 401) {
+        setModal(true);
+        setModalText({
+          title: "Error al eliminar destinatario",
+          text: "Ha ocurrido un error al eliminar el destinatario",
+          button: "Volver"});
+      }
+
     } catch (error) {
       // Handle error response
       console.error(error);
@@ -231,8 +245,8 @@ const RecipientAffiliationMobilePayments = () => {
   };
   
 
-  console.log(wallets);
-  console.log(recipientAffiliates);
+  // console.log(wallets);
+  // console.log(recipientAffiliates);
 
   return (
     <div className="main-container">
@@ -367,7 +381,7 @@ const RecipientAffiliationMobilePayments = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {recipientAffiliates.map((affiliate) => (
+                  {recipientAffiliates.map((affiliate: RecipientAffiliationFields) => (
                     <TableRow key={affiliate.id}>
                       {editingId === affiliate.id ? (
                         <TableCell>
@@ -420,11 +434,11 @@ const RecipientAffiliationMobilePayments = () => {
                         <TableCell>{affiliate.destination_wallet}</TableCell>
                       )}                      
                       <TableCell>
-                        {editingId === affiliate.id ? (
+                        {/* {editingId === affiliate.id ? (
                           <Button onClick={() => handleSave(affiliate.id)}>Guardar</Button>
                         ) : (
                           <Button onClick={() => handleEdit(affiliate.id)}>Editar</Button>
-                        )}
+                        )} */}
                         <Button onClick={() => handleDelete(affiliate.id)}>Eliminar</Button>
                       </TableCell>
                     </TableRow>
