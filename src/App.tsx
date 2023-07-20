@@ -16,6 +16,7 @@ import CheckingPage from "modules/Transactions/pages/CheckingPage";
 import SavingsPage from "modules/Transactions/pages/SavingsPage";
 import DailyTransactions from "modules/Transactions/pages/DailyTransactions";
 import PagoMovil from "modules/Transactions/PagoMovil";
+import ConfigPagoMovil from "modules/Transactions/ConfigPagoMovil";
 import EventLoggerPage from "modules/EventLogger/pages/EventLoggerPage";
 
 import { Provider } from "react-redux";
@@ -36,6 +37,7 @@ const {
   URL_CHECKING_TRANSACTION,
   URL_DAILY_TRANSACTIONS,
   URL_PAGO_MOVIL,
+  URL_CONFIG_PAGO_MOVIL,
   URL_EVENT_LOGGER,
 } = SERVER_URLS;
 
@@ -58,6 +60,7 @@ function App() {
             <Route path={URL_SAVINGS_TRANSACTION} element={<SavingsPage />} />
             <Route path={URL_DAILY_TRANSACTIONS} element={<DailyTransactions />} />
             <Route path={URL_PAGO_MOVIL} element={<PagoMovil />} />
+            <Route path={URL_CONFIG_PAGO_MOVIL} element={<ConfigPagoMovil />} />
             <Route path={URL_EVENT_LOGGER} element={<EventLoggerPage />} />
           </Routes>
         </Gate>
