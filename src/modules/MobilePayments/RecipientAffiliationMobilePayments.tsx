@@ -80,9 +80,10 @@ const RecipientAffiliationMobilePayments = () => {
     }
 
     async function getRecipientAffiliates() {
-      const response = await axios.get(URL_RECIPIENT_AFFILIATION, {
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/user/affiliates_list`, {
         headers: {
           Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
+          Origin: `${URL_RECIPIENT_AFFILIATION}`,
         },
       });
       setRecipientAffiliates(response.data);
@@ -99,7 +100,7 @@ const RecipientAffiliationMobilePayments = () => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    console.log(formInputs);
+    // console.log(formInputs);
     try {
       /* const response = await axios.post(URL_RECIPIENT_AFFILIATION, formInputs, {
         headers: {
