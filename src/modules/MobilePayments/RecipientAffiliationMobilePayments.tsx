@@ -86,7 +86,7 @@ const RecipientAffiliationMobilePayments = () => {
           Origin: `${URL_RECIPIENT_AFFILIATION}`,
         },
       });
-      setRecipientAffiliates(response.data);
+      setRecipientAffiliates(Object.values(response.data)[2]);
     }
 
     getWallets();
@@ -102,11 +102,6 @@ const RecipientAffiliationMobilePayments = () => {
     e.preventDefault();
     // console.log(formInputs);
     try {
-      /* const response = await axios.post(URL_RECIPIENT_AFFILIATION, formInputs, {
-        headers: {
-          Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
-        },
-      }); */
       const opts = {
         method: "POST",
         headers: {
@@ -142,12 +137,6 @@ const RecipientAffiliationMobilePayments = () => {
             return resp.json();
           }
         });
-      /* console.log(response.status);
-      if (response.status == 200) {
-        console.log(response.data.message);
-        setModal(true);
-        setModalText({ title: "Configuración de Pago Móvil Exitosa", text: response.data.message, button: "Volver" });
-      } */
     } catch (error) {
       console.log(error);
       setModal(true);
@@ -243,7 +232,7 @@ const RecipientAffiliationMobilePayments = () => {
   
 
   console.log(wallets);
-  console.log(recipientAffiliates)
+  console.log(recipientAffiliates);
 
   return (
     <div className="main-container">
