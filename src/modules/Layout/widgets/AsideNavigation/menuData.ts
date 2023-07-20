@@ -22,6 +22,7 @@ const {
   URL_DAILY_TRANSACTIONS,
   URL_PAGO_MOVIL,
   URL_EVENT_LOGGER,
+  URL_CREATE_RECIPIENT_AFFILIATION,
 } = SERVER_URLS;
 
 
@@ -121,6 +122,13 @@ export const data = [
     href: URL_EVENT_LOGGER,
     leftIcon: EventIcon,
     text: "Logger de Eventos",
+  },
+  {
+    id: "mobile-payment-link",
+    type: "link",
+    href: URL_CREATE_RECIPIENT_AFFILIATION,
+    leftIcon: UsersIcon,
+    text: "Afiliación de Destinatarios",
   },
 ];
 

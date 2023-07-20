@@ -8,6 +8,7 @@ import SERVER_URLS from "utils/serversUrls.ts";
 import UserProfiles from "modules/User/widgets/UserProfiles.tsx";
 import UserRoles from "modules/User/widgets/UserRoles";
 import NewTransaction from "modules/Transactions/NewTransaction";
+import RecipientAffiliationMobilePayments from "modules/MobilePayments/RecipientAffiliationMobilePayments";
 import LoginPage from "modules/Auth/pages/LoginPage";
 import SignupPage from "modules/Auth/pages/SignupPage";
 import VerifyPage from "modules/Auth/pages/VerifyPage";
@@ -39,6 +40,7 @@ const {
   URL_PAGO_MOVIL,
   URL_CONFIG_PAGO_MOVIL,
   URL_EVENT_LOGGER,
+  URL_CREATE_RECIPIENT_AFFILIATION,
 } = SERVER_URLS;
 
 function App() {
@@ -62,6 +64,7 @@ function App() {
             <Route path={URL_PAGO_MOVIL} element={<PagoMovil />} />
             <Route path={URL_CONFIG_PAGO_MOVIL} element={<ConfigPagoMovil />} />
             <Route path={URL_EVENT_LOGGER} element={<EventLoggerPage />} />
+            <Route path={URL_CREATE_RECIPIENT_AFFILIATION} element={<RecipientAffiliationMobilePayments />} />
           </Routes>
         </Gate>
       </Provider>
