@@ -15,6 +15,7 @@ export const SERVER_URLS = Object.freeze({
   URL_DAILY_TRANSACTIONS : "/daily-transactions",
   URL_PAGO_MOVIL : "/pago-movil",
   URL_EVENT_LOGGER : "/event-logger",
+  URL_CREATE_RECIPIENT_AFFILIATION: "/recipient-affiliation",
 });
 
 export default SERVER_URLS;
