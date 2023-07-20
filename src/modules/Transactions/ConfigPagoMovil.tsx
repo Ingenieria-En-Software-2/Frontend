@@ -144,7 +144,7 @@ const PagoMovil = () => {
                 />
 
                 <TextField
-                  name="to"
+                  name="receiver_name"
                   type="text"
                   variant="outlined"
                   color="primary"
@@ -153,12 +153,12 @@ const PagoMovil = () => {
                   required
                   sx={{ mb: 4 }}
                   onChange={(event) => handleFieldChange(event)}
-                  key='to'
+                  key='receiver_name'
                   value={formInputs.receiver_name}
                 />
 
                 <TextField
-                  name="phone"
+                  name="phone_number"
                   type="text"
                   variant="outlined"
                   color="primary"
@@ -167,13 +167,13 @@ const PagoMovil = () => {
                   required
                   sx={{ mb: 4 }}
                   onChange={(event) => handleFieldChange(event)}
-                  key='phone'
+                  key='phone_number'
                   value={formInputs.phone_number}
                 />
 
                 <TextField
-                  name="origin"
-                  key = 'origin'
+                  name="account_id"
+                  key='account_id'
                   select
                   variant="outlined"
                   color="primary"
