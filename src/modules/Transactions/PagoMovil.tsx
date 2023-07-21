@@ -1,6 +1,6 @@
 import DashboardLayoutBasic from "modules/Layout/widgets/containers/DashboardLayoutBasic";
 import { DashboardWrapper } from "modules/Layout/context/dashboardLayout";
-import { Button, Link, MenuItem, Stack, Tab, Tabs, TextField, Typography, Grid} from "@mui/material";
+import { Button, Link, MenuItem, Stack, Tab, Tabs, TextField, Typography, Grid } from "@mui/material";
 import { useEffect, useState, useRef } from "react";
 import Box from "@mui/material/Box";
 import Title from "components/Title";
@@ -32,8 +32,8 @@ type PagoMovilFields = {
   destination_wallet: string;
   amount: string;
   description: string;
-  transaction_type:string;
-  currency:string;
+  transaction_type: string;
+  currency: string;
 };
 
 const PagoMovil = () => {
@@ -47,13 +47,13 @@ const PagoMovil = () => {
     transaction_type: "pago_movil",
     description: "",
     amount: "",
-    currency:""
+    currency: "",
   });
   const [modalOn, setModal] = useState(false);
   const [wallets, setWallets] = useState([]);
   const [modalText, setModalText] = useState({ title: "", text: "", button: "" });
   const navigate = useNavigate();
-  const [currentAmount, setCurrentAmount] = useState("Selecciona una cuenta")
+  const [currentAmount, setCurrentAmount] = useState("Selecciona una cuenta");
   const URL_WALLETS = `${import.meta.env.VITE_API_URL}/wallet`;
 
   useEffect(() => {
@@ -79,26 +79,26 @@ const PagoMovil = () => {
   }, []);
 
   useEffect(() => {
-    lookForCurrentAmont()
+    lookForCurrentAmont();
   }, [formInputs.origin]);
 
   const lookForCurrentAmont = async () => {
     try {
       const URL_AMOUNT = `${URL_ACCOUNTS}/${formInputs.origin}`;
       const res = await axios({
-          method: 'put',
-          url: URL_ACCOUNTS,
-          params : { "account" : formInputs.origin },
-          headers: {
-              Authorization : `Bearer ${Cookies.get("auth.auth_token")}`
-          }
+        method: "put",
+        url: URL_ACCOUNTS,
+        params: { account: formInputs.origin },
+        headers: {
+          Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
+        },
       });
       //console.log(res);
-      setCurrentAmount(res.data.balance)
+      setCurrentAmount(res.data.balance);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   const handleFieldChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target;
@@ -119,7 +119,7 @@ const PagoMovil = () => {
         setModal(true);
         setModalText({ title: "Pago Móvil realizado con éxito", text: response.data.message, button: "Volver" });
       }
-      if (response.status == 201){
+      if (response.status == 201) {
         setModal(true);
         setModalText({ title: "Pago Móvil Retenido", text: response.data.message, button: "Volver" });
       }
@@ -140,7 +140,6 @@ const PagoMovil = () => {
     navigate(URL_PAGO_MOVIL);
   };
 
-
   return (
     <div className="main-container">
       <DashboardWrapper>
@@ -151,10 +150,9 @@ const PagoMovil = () => {
 
               <form onSubmit={handleSubmit}>
                 {/*Cuenta de destino */}
-
                 <TextField
                   name="origin"
-                  key = 'origin'
+                  key="origin"
                   select
                   variant="outlined"
                   color="primary"
@@ -174,14 +172,23 @@ const PagoMovil = () => {
                     originAccounts.ahorro &&
                     originAccounts.ahorro.map((account) => <MenuItem value={account}>{`Ahorro ${account}`}</MenuItem>)}
                 </TextField>
-
-                <Typography variant="h6" style={{color:'#0e7490'}}>
-                Monto Disponible:
-                  <Box component="span" sx={{ p: 2, border: '1px grey', backgroundColor : '#0e7490', color: 'white',
-                  borderRadius: '16px', marginLeft: 10}}> 
-                  {currentAmount} </Box>
-                </Typography>;
-
+                <Typography variant="h6" style={{ color: "#0e7490" }}>
+                  Monto Disponible:
+                  <Box
+                    component="span"
+                    sx={{
+                      p: 2,
+                      border: "1px grey",
+                      backgroundColor: "#0e7490",
+                      color: "white",
+                      borderRadius: "16px",
+                      marginLeft: 10,
+                    }}
+                  >
+                    {currentAmount}{" "}
+                  </Box>
+                </Typography>
+                ;
                 <TextField
                   name="destination_ci"
                   type="text"
@@ -192,10 +199,9 @@ const PagoMovil = () => {
                   required
                   sx={{ mb: 4 }}
                   onChange={(event) => handleFieldChange(event)}
-                  key='dest_ci'
+                  key="dest_ci"
                   value={formInputs.destination_ci}
                 />
-
                 <TextField
                   name="destination_name"
                   type="text"
@@ -206,10 +212,9 @@ const PagoMovil = () => {
                   required
                   sx={{ mb: 4 }}
                   onChange={(event) => handleFieldChange(event)}
-                  key='dest_name'
+                  key="dest_name"
                   value={formInputs.destination_name}
                 />
-
                 <TextField
                   name="destination_phone"
                   type="text"
@@ -220,10 +225,9 @@ const PagoMovil = () => {
                   required
                   sx={{ mb: 4 }}
                   onChange={(event) => handleFieldChange(event)}
-                  key='dest_phone'
+                  key="dest_phone"
                   value={formInputs.destination_phone}
                 />
-
                 <TextField
                   name="destination_wallet"
                   select
@@ -242,8 +246,6 @@ const PagoMovil = () => {
                     </MenuItem>
                   ))}
                 </TextField>
-
-
                 <TextField
                   name="currency"
                   type="text"
@@ -254,10 +256,9 @@ const PagoMovil = () => {
                   required
                   sx={{ mb: 4 }}
                   onChange={(event) => handleFieldChange(event)}
-                  key='currency'
+                  key="currency"
                   value={formInputs.currency}
                 />
-
                 <TextField
                   name="amount"
                   type="number"
@@ -268,10 +269,9 @@ const PagoMovil = () => {
                   required
                   sx={{ mb: 4 }}
                   onChange={(event) => handleFieldChange(event)}
-                  key='amount'
+                  key="amount"
                   value={formInputs.amount}
-                />                
-
+                />
                 <TextField
                   name="description"
                   type="text"
@@ -282,10 +282,9 @@ const PagoMovil = () => {
                   required
                   sx={{ mb: 4 }}
                   onChange={(event) => handleFieldChange(event)}
-                  key='desc'
+                  key="desc"
                   value={formInputs.description}
                 />
-
                 <Button variant="outlined" color="primary" type="submit" fullWidth>
                   Enviar
                 </Button>

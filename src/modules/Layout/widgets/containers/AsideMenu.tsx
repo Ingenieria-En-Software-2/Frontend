@@ -14,10 +14,10 @@ const { URL_HOME } = SERVER_URLS;
 type p = Record<string, never>;
 interface Props {
   prop: p;
-  backDropCallBack : boolean;
+  backDropCallBack: boolean;
 }
 
-export default function AsideMenu({prop, backDropCallBack}: Props) {
+export default function AsideMenu({ prop, backDropCallBack }: Props) {
   const { state, dispatch } = useDashboardLayoutContext();
   const lg = useMediaQuery("(max-width:1279px)");
   const navigate = useNavigate();

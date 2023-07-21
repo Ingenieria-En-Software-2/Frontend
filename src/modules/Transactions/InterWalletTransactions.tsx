@@ -76,7 +76,7 @@ const InterWalletAccountsTransactions = () => {
         },
       });
       console.log(response.data.wallets);
-      const index = response.data.wallets.findIndex(d => d.description === 'Caribbean Wallet');
+      const index = response.data.wallets.findIndex((d) => d.description === "Caribbean Wallet");
       response.data.wallets.splice(index, 1);
       //const other_wallets = response.data.wallets.splice(index, 1)
       setWallets(response.data.wallets);
@@ -106,7 +106,7 @@ const InterWalletAccountsTransactions = () => {
         setModal(true);
         setModalText({ title: "Transferencia Exitosa", text: response.data.message, button: "Volver" });
       }
-      if (response.status == 201){
+      if (response.status == 201) {
         setModal(true);
         setModalText({ title: "Transferencia Retenida", text: response.data.message, button: "Volver" });
       }
@@ -172,7 +172,6 @@ const InterWalletAccountsTransactions = () => {
               value={formInputs.destination}
             />
 
-            
             <TextField
               name="wallet"
               select

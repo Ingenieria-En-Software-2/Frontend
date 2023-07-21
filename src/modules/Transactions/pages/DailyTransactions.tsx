@@ -50,7 +50,7 @@ const DailyTransactions = () => {
   const [rows, setRows] = useState([]);
   const [error, setError] = useState("");
   const [g, setG] = useState("today");
-  const [input , setInput] = useState("all");
+  const [input, setInput] = useState("all");
   const [rowTransactions, setRowTrans] = useState([]);
   const [modalOn, setModal] = useState(false);
   const [modalText, setModalText] = useState({ title: "", text: "", button: "" });
@@ -59,7 +59,7 @@ const DailyTransactions = () => {
   // Get transactions from API
   useEffect(() => {
     getTransactions();
-  }, [g,input]);
+  }, [g, input]);
 
   async function getTransactions() {
     const URL_TRANSACTIONS = `${import.meta.env.VITE_API_URL}/user_transactions/${g}/${input}/0`;
@@ -77,24 +77,22 @@ const DailyTransactions = () => {
       let newArr = [];
       for (var val of response.data.transactions) {
         const cell = {
-                        id: val["transaction_id"],
-                        ci: val["ci"],
-                        name: val["user_name_origin"],
-                        date: val["transaction_date"],
-                        hour: val["transaction_hour"],
-                        transaction_type: val["transaction_type"],
-                        description : val["description"],
-                        amount :val["amount"],
-                        status : val['status']
-                      }
+          id: val["transaction_id"],
+          ci: val["ci"],
+          name: val["user_name_origin"],
+          date: val["transaction_date"],
+          hour: val["transaction_hour"],
+          transaction_type: val["transaction_type"],
+          description: val["description"],
+          amount: val["amount"],
+          status: val["status"],
+        };
         newArr.push(cell);
       }
       setRowTrans(newArr);
       //console.log(rowTransactions);
-      
-      
     } catch (error) {
-      setRowTrans([])
+      setRowTrans([]);
       console.log(error);
       /*setModal(true);
       setModalText({
@@ -109,13 +107,13 @@ const DailyTransactions = () => {
     const URL_REVERSE = `${import.meta.env.VITE_API_URL}/user_transactions/${transaction_id}/3`;
     try {
       const res = await axios({
-          method: 'put',
-          url: URL_REVERSE,
-          headers: {
-              Authorization : `Bearer ${Cookies.get("auth.auth_token")}`
-          }
+        method: "put",
+        url: URL_REVERSE,
+        headers: {
+          Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
+        },
       });
-      if (res.data.status == 200){
+      if (res.data.status == 200) {
         setModal(true);
         setModalText({ title: "Se ha revertido la transferencia", text: res.data.message, button: "Volver" });
       }
@@ -127,21 +125,20 @@ const DailyTransactions = () => {
         button: "Volver",
       });
     }
-
-  }
+  };
 
   const approveTransaction = async (transaction_id) => {
     const URL_APPROVE = `${import.meta.env.VITE_API_URL}/user_transactions/${transaction_id}/2`;
     try {
       const res = await axios({
-          method: 'put',
-          url: URL_APPROVE,
-          headers: {
-              Authorization : `Bearer ${Cookies.get("auth.auth_token")}`
-          }
+        method: "put",
+        url: URL_APPROVE,
+        headers: {
+          Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
+        },
       });
       console.log(res);
-      if (res.data.status == 200){
+      if (res.data.status == 200) {
         setModal(true);
         setModalText({ title: "Se ha aprobado la transferencia", text: res.data.message, button: "Volver" });
       }
@@ -153,8 +150,7 @@ const DailyTransactions = () => {
         button: "Volver",
       });
     }
-
-  }
+  };
 
   const handleCloseModal = () => {
     setModal(false);
@@ -162,29 +158,27 @@ const DailyTransactions = () => {
   };
 
   const handleCallback = (childData) => {
-        if (childData[1] == "Aprobar"){
-          console.log("Se aprueba")
-          approveTransaction(childData[0]);
-        }
-        else{
-          console.log("Se reversa")
-          reverseTransaction(childData[0]);
-        }
+    if (childData[1] == "Aprobar") {
+      console.log("Se aprueba");
+      approveTransaction(childData[0]);
+    } else {
+      console.log("Se reversa");
+      reverseTransaction(childData[0]);
     }
+  };
 
   const handleSearchBy = (data) => {
-    if (g == "period"){
-      const concatenation = data[0].concat(" ").concat(data[1])
+    if (g == "period") {
+      const concatenation = data[0].concat(" ").concat(data[1]);
       setInput(concatenation);
-    }
-    else{
+    } else {
       setInput(data[0]);
     }
-  }
+  };
 
   const handleMode = (data) => {
     setG(data);
-  }
+  };
 
   return (
     <div className="main-container">
@@ -193,8 +187,16 @@ const DailyTransactions = () => {
           <Box sx={{ width: "100%" }}>
             <InfoUser user={{ name: "User", document: "C-123456789" }} />
             <Title title="Transacciones del día" />
-            <TransactionTable parentCallback={handleCallback} searchBy={handleSearchBy} mode={handleMode}
-            title="Detalle de transacciones" columns={columns} rows={rowTransactions} error={error} buttons={true}/>
+            <TransactionTable
+              parentCallback={handleCallback}
+              searchBy={handleSearchBy}
+              mode={handleMode}
+              title="Detalle de transacciones"
+              columns={columns}
+              rows={rowTransactions}
+              error={error}
+              buttons={true}
+            />
           </Box>
 
           <div>
@@ -208,7 +210,6 @@ const DailyTransactions = () => {
               </DialogActions>
             </Dialog>
           </div>
-
         </DashboardLayoutBasic>
       </DashboardWrapper>
     </div>

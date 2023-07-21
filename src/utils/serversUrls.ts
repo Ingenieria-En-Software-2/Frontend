@@ -12,9 +12,9 @@ export const SERVER_URLS = Object.freeze({
   URL_NEW_TRANSACTIONS: "/new_transaction",
   URL_SAVINGS_TRANSACTION: "/savings-transaction",
   URL_CHECKING_TRANSACTION: "/checking-transaction",
-  URL_DAILY_TRANSACTIONS : "/daily-transactions",
-  URL_PAGO_MOVIL : "/pago-movil",
-  URL_EVENT_LOGGER : "/event-logger",
+  URL_DAILY_TRANSACTIONS: "/daily-transactions",
+  URL_PAGO_MOVIL: "/pago-movil",
+  URL_EVENT_LOGGER: "/event-logger",
   URL_CREATE_RECIPIENT_AFFILIATION: "/recipient-affiliation",
 });
 

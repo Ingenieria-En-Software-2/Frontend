@@ -33,7 +33,7 @@ const SavingsPage = () => {
   const [rows, setRows] = useState([]);
   const [error, setError] = useState("");
   const [g, setG] = useState("all");
-  const [input , setInput] = useState("all");
+  const [input, setInput] = useState("all");
 
   // Get transactions from API
   useEffect(() => {
@@ -52,17 +52,17 @@ const SavingsPage = () => {
       let newArr = [];
       for (var val of response.data.transactions) {
         const cell = {
-                        id: val["transaction_id"],
-                        transaction_date: val["transaction_date"],
-                        transaction_type: val["transaction_type"],
-                        description: val["description"],
-                        amount: val["amount"],
-                      }
+          id: val["transaction_id"],
+          transaction_date: val["transaction_date"],
+          transaction_type: val["transaction_type"],
+          description: val["description"],
+          amount: val["amount"],
+        };
         newArr.push(cell);
       }
-      setRows(newArr);   
+      setRows(newArr);
     } catch (error) {
-      setRows([])
+      setRows([]);
       console.log(error);
     }
   }
@@ -106,18 +106,17 @@ const SavingsPage = () => {
   ];
 
   const handleSearchBy = (data) => {
-    if (g == "period"){
-      const concatenation = data[0].concat(" ").concat(data[1])
+    if (g == "period") {
+      const concatenation = data[0].concat(" ").concat(data[1]);
       setInput(concatenation);
-    }
-    else{
+    } else {
       setInput(data[0]);
     }
-  }
+  };
 
   const handleMode = (data) => {
     setG(data);
-  }
+  };
 
   return (
     <div className="main-container">
@@ -126,8 +125,14 @@ const SavingsPage = () => {
           <Box sx={{ width: "100%" }}>
             <InfoUser user={{ name: "User", document: "C-123456789" }} />
             <Title title="Cuenta de Ahorros" />
-            <TransactionTable searchBy={handleSearchBy} mode={handleMode}
-            title="Detalle de transacciones" columns={columns} rows={rows} error={error} />
+            <TransactionTable
+              searchBy={handleSearchBy}
+              mode={handleMode}
+              title="Detalle de transacciones"
+              columns={columns}
+              rows={rows}
+              error={error}
+            />
           </Box>
         </DashboardLayoutBasic>
       </DashboardWrapper>

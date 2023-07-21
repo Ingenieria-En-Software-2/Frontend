@@ -189,12 +189,7 @@ const EventLoggerPage = () => {
         <DashboardLayoutBasic>
           <Box sx={{ width: "100%" }}>
             <Title title="Logger de Eventos" />
-            <DataTable
-              columns={columns}
-              rows={rows}
-              addForm={<></>}
-              error={error}
-            />
+            <DataTable columns={columns} rows={rows} addForm={<></>} error={error} />
           </Box>
         </DashboardLayoutBasic>
       </DashboardWrapper>

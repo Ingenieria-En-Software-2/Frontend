@@ -25,29 +25,27 @@ const {
   URL_CREATE_RECIPIENT_AFFILIATION,
 } = SERVER_URLS;
 
-
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useEffect } from "react";
 
-
 export async function getCurrentRole() {
-  const URL_USER_ROLE_BACKEND = `${import.meta.env.VITE_API_URL}/user`
+  const URL_USER_ROLE_BACKEND = `${import.meta.env.VITE_API_URL}/user`;
   try {
-      const response = await axios({
-          method: 'put',
-          url: URL_USER_ROLE_BACKEND,
-          headers: {
-              Authorization : `Bearer ${Cookies.get("auth.auth_token")}`
-          }
-      });
-      console.log(response);
-      return response.data;
-    } catch (error) {
-      console.log(error);
-      return error;
-    }
+    const response = await axios({
+      method: "put",
+      url: URL_USER_ROLE_BACKEND,
+      headers: {
+        Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
+      },
+    });
+    console.log(response);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return error;
   }
+}
 
 const gettingCurrentRole = await getCurrentRole();
 const currentRole = gettingCurrentRole.role;
@@ -133,19 +131,19 @@ export const data = [
 ];
 
 function dataSelected() {
-  var dataForMenu = []
-  if (currentRole == 1){
+  var dataForMenu = [];
+  if (currentRole == 1) {
     //perfiles roles crear cuenta reversar
-    dataForMenu = [data[0],data[1],data[2],data[7]]
+    dataForMenu = [data[0], data[1], data[2], data[7]];
   }
-  if (currentRole == 2){
+  if (currentRole == 2) {
     //roles ahorro corriente transferencias pagomovil
-    dataForMenu = [data[0],data[3],data[4],data[5],data[6],data[8]]
+    dataForMenu = [data[0], data[3], data[4], data[5], data[6], data[8]];
   }
   return dataForMenu;
 }
 
-export const menuData: Array<MenuItemInterface> = dataSelected()
+export const menuData: Array<MenuItemInterface> = dataSelected();
 
 /*[
   {

@@ -25,10 +25,8 @@ import {
   useGetRolesQuery,
 } from "services/dbApi";
 
-
 import axios from "axios";
 import Cookies from "js-cookie";
-
 
 // ------------------ Formularios ------------------
 const textInputs: Array<Column> = [
@@ -98,33 +96,32 @@ function AddUser({ roles, users }: AddProps) {
       return;
     }
 
-    const URL_USER_ADD_BACKEND = `${import.meta.env.VITE_AUTH_URL}/register`
+    const URL_USER_ADD_BACKEND = `${import.meta.env.VITE_AUTH_URL}/register`;
     try {
-        const response = await axios({
-            method: 'post',
-            url: URL_USER_ADD_BACKEND,
-            data: {
-                    'login': inputs.username,
-                    'password': "Ab123456#",
-                    'name': inputs.names,
-                    'lastname': inputs.surnames,
-                    'person_type' : 'legal',
-                    'user_type': inputs.usertype,
-                    'role_id': inputs.role,
-                  },
-            headers: {
-                Authorization : `Bearer ${Cookies.get("auth.auth_token")}`
-            }
-        });
-        console.log(response);
-        return response
-      } catch (error) {
-        console.log(error)
-      }
+      const response = await axios({
+        method: "post",
+        url: URL_USER_ADD_BACKEND,
+        data: {
+          login: inputs.username,
+          password: "Ab123456#",
+          name: inputs.names,
+          lastname: inputs.surnames,
+          person_type: "legal",
+          user_type: inputs.usertype,
+          role_id: inputs.role,
+        },
+        headers: {
+          Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
+        },
+      });
+      console.log(response);
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
 
     handleCloseModal();
-
-  }
+  };
 
   const handleAdd = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -281,27 +278,27 @@ function EditUser({ user, roles, users }: EditProps) {
       return;
     }
 
-    const URL_USER_ADD_BACKEND = `${import.meta.env.VITE_AUTH_URL}/register`
+    const URL_USER_ADD_BACKEND = `${import.meta.env.VITE_AUTH_URL}/register`;
     try {
       const response = await axios({
-          method: 'get',
-          url: URL_USER_ADD_BACKEND,
-          params: {
-                  'login': inputs.username,
-                  'password': "Ab123456#",
-                  'name': inputs.names,
-                  'lastname': inputs.surnames,
-                  'person_type' : 'legal',
-                  'user_type': inputs.usertype,
-                  'role_id': inputs.role,
-                },
-          headers: {
-              Authorization : `Bearer ${Cookies.get("auth.auth_token")}`
-          }
+        method: "get",
+        url: URL_USER_ADD_BACKEND,
+        params: {
+          login: inputs.username,
+          password: "Ab123456#",
+          name: inputs.names,
+          lastname: inputs.surnames,
+          person_type: "legal",
+          user_type: inputs.usertype,
+          role_id: inputs.role,
+        },
+        headers: {
+          Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
+        },
       });
       console.log(response);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
     // Update inputs
     setInputs({
@@ -312,7 +309,7 @@ function EditUser({ user, roles, users }: EditProps) {
       role: inputs.role,
     });
     handleCloseModal();
-  }
+  };
 
   const handleEdit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -445,25 +442,25 @@ function DeleteUser({ user }: DeleteProps) {
   const [deleteUser, { error, isLoading }] = useDeleteUserMutation();
 
   const handleDeleteChanged = async () => {
-    const URL_USER_ADD_BACKEND = `${import.meta.env.VITE_AUTH_URL}/register`
+    const URL_USER_ADD_BACKEND = `${import.meta.env.VITE_AUTH_URL}/register`;
     try {
       const response = await axios({
-          method: 'put',
-          url: URL_USER_ADD_BACKEND,
-          params: {
-                  'id': user.id,
-                },
-          headers: {
-              Authorization : `Bearer ${Cookies.get("auth.auth_token")}`
-          }
+        method: "put",
+        url: URL_USER_ADD_BACKEND,
+        params: {
+          id: user.id,
+        },
+        headers: {
+          Authorization: `Bearer ${Cookies.get("auth.auth_token")}`,
+        },
       });
       console.log(response);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
 
     handleCloseModal();
-  }
+  };
 
   const handleDelete = () => {
     deleteUser(user.id);
